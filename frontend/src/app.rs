@@ -34,15 +34,6 @@ fn placeholder_text() -> impl Element {
         .s(Align::new().center_y())
 }
 
-#[static_ref]
-fn page_name() -> &'static Mutable<PageName> {
-    Mutable::new(PageName::Unknown)
-}
-
-pub fn set_page_name(new_page_name: PageName) {
-    page_name().set_neq(new_page_name);
-}
-
 // ------ page routing ------
 
 fn page() -> impl Element {
@@ -50,4 +41,13 @@ fn page() -> impl Element {
         PageName::Home => front_page().into_raw_element(),
         PageName::Unknown => El::new().child("404").into_raw_element(),
     }))
+}
+
+#[static_ref]
+fn page_name() -> &'static Mutable<PageName> {
+    Mutable::new(PageName::Unknown)
+}
+
+pub fn set_page_name(new_page_name: PageName) {
+    page_name().set_neq(new_page_name);
 }
