@@ -10,7 +10,7 @@ pub fn header() -> impl Element {
         .s(Background::new().color(GRAY_4))
         .s(Font::new().size(80).color(hsluv!(18,100,48,100)))
         .s(Spacing::new(20))
-        .item(logo())
+
         .item(back_button())
         .item(link("Home", Route::Root))
 
@@ -33,7 +33,5 @@ fn link(label: &str, route: Route) -> impl Element {
         .to(route)
 }
 
-fn logo() -> impl Element {
 
-}
 

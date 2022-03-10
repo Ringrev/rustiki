@@ -8,6 +8,7 @@ mod app;
 mod router;
 mod registration_page;
 mod new_article_page;
+mod header;
 
 // ------ ------
 //     Start
