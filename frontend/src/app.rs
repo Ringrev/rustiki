@@ -1,6 +1,7 @@
 use zoon::{format, *, Element};
 use zoon::*;
 use crate::{router::{previous_route, router, Route}};
+use crate::header::header;
 
 // ------ page names ------
 
@@ -14,7 +15,7 @@ pub enum PageName {
 
 pub fn root() -> impl Element {
     Column::new()
-        .item(El::new().child(""))//navbar placeholder
+        .item(header())//navbar placeholder
         .item(page())
 }
 
@@ -23,6 +24,7 @@ pub fn root() -> impl Element {
 fn front_page() -> impl Element {
     Column::new()
         .s(Padding::new().top(50))
+
         .item(placeholder_text())
 }
 
