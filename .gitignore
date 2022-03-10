@@ -3,3 +3,5 @@ cargo_install_root
 mzoon
 mzoon.exe
 frontend/wasm-pack*
+.idea
+
