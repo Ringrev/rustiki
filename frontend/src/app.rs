@@ -1,12 +1,14 @@
 use zoon::{format, *, Element};
 use zoon::*;
-use crate::{router::{previous_route, router, Route}};
+use crate::{new_article_page, registration_page, router::{previous_route, router, Route}};
 
 // ------ page names ------
 
 #[derive(Clone, Copy, PartialEq, PartialOrd)]
 pub enum PageName {
     Home,
+    Registration,
+    NewArticle,
     Unknown,
 }
 
@@ -40,6 +42,8 @@ fn page() -> impl Element {
     El::new().child_signal(page_name().signal().map(|page_name| match page_name {
         PageName::Home => front_page().into_raw_element(),
         PageName::Unknown => El::new().child("404").into_raw_element(),
+        PageName::NewArticle => new_article_page::page().into_raw_element(),
+        PageName::Registration => registration_page::page().into_raw_element(),
     }))
 }
 

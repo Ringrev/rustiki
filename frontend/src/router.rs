@@ -3,6 +3,7 @@ use zoon::{println,*};
 use crate::{app::{self, PageName}};
 
 // ------ Route history ------
+
 #[static_ref]
 fn route_history() -> &'static Mutable<VecDeque<Route>> {
     Mutable::new(VecDeque::new())
@@ -40,6 +41,12 @@ pub fn router() -> &'static Router<Route> {
             Route::Root => {
                 app::set_page_name(PageName::Home);
             }
+            Route::Registration => {
+                app::set_page_name(PageName::Registration);
+            }
+            Route::NewArticle => {
+                app::set_page_name(PageName::NewArticle);
+            }
         }
     })
 }
@@ -49,7 +56,12 @@ pub fn router() -> &'static Router<Route> {
 #[route]
 #[derive(Clone)]
 pub enum Route {
+    #[route("registration")]
+    Registration,
+
+    #[route("new_article")]
+    NewArticle,
+
     #[route()]
     Root,
-
 }
