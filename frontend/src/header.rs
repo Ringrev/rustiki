@@ -10,15 +10,14 @@ pub fn header() -> impl Element {
     Row::new()
         .s(Background::new().color(GRAY_4))
 
-        .s(Font::new().size(100).color(hsluv!(18,100,48,100)))
+        //.s(Font::new().size(100).color(hsluv!(18,100,48,100)))
         .s(Spacing::new(10))
-        .s(Padding::new())
+        .s(Padding::all(20))
         .s(Borders::new())
         .item(logo())
         .item(back_button())
        // .item(link("Home", Route::Root))
-        .item(search_bar())
-        .item(send_button())
+        .item(search_box())
         .item(log_inn())
 }
 
@@ -48,13 +47,22 @@ fn link(label: &str, route: Route) -> impl Element {
         .to(route)
 }
 
+fn search_box() -> impl Element {
+    Row::new()
+        .s(Align::new().center_x().center_y())
+        .item(search_bar())
+        .item(search_button())
+
+}
+
 fn search_bar() -> impl Element {
     TextInput::new()
         .s(Align::new().center_x())
         .s(Padding::all(10))
         .s(RoundedCorners::new().left(5))
-        .s(Width::fill())
-        .s(Font::new().size(17))
+        .s(Width::fill().min(350).max(400))
+        .s(Font::new().size(20))
+        .s(RoundedCorners::new().right(25).left(25))
         .focus(true)
        // .on_change(super::set_new_message_text)
         .label_hidden("New message text")
@@ -62,22 +70,24 @@ fn search_bar() -> impl Element {
 
 }
 
-fn send_button() -> impl Element {
+fn search_button() -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
     Button::new()
         .s(Padding::all(25))
         .s(RoundedCorners::new().right(5))
         .s(Background::new().color_signal(hovered_signal.map_bool(|| GREEN_7, || GREEN_8)))
         .s(Font::new().color(GRAY_0).size(17))
+        .s(Align::new().left())
+        .s(RoundedCorners::new().right(25).left(25))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         //.on_press(super::send_message)
-        .label("Send")
+        .label("Search")
 }
 
 fn log_inn() -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
     Button::new()
-        .s(Font::new().size(25))
+        .s(Font::new().size(20).color(GRAY_0))
         .s(Align::new().right().bottom())
         .s(Spacing::new(20))
         .s(RoundedCorners::new().right(25).left(25))
