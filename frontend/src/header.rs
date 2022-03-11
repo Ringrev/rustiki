@@ -18,7 +18,7 @@ pub fn header() -> impl Element {
         .item(back_button())
        // .item(link("Home", Route::Root))
         .item(search_box())
-        .item(log_inn())
+        .item(buttons_row())
 }
 
 fn logo() -> impl Element {
@@ -35,9 +35,11 @@ fn back_button() -> impl Element {
     Button::new()
         .s(Background::new().color_signal(hovered_signal.map_bool(|| GRAY_8, || GRAY_4)))
         .s(Padding::new().x(2).y(2))
+        .s(Align::new().bottom().left())
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .label("< Back")
         .on_press(routing::back)
+
 }
 
 fn link(label: &str, route: Route) -> impl Element {
@@ -84,6 +86,17 @@ fn search_button() -> impl Element {
         .label("Search")
 }
 
+
+fn buttons_row() -> impl Element {
+    Row::new()
+        .s(Align::new().bottom().right())
+        .s(Spacing::new(6))
+        .item(log_inn())
+        .item(log_inn())
+        .item(log_inn())
+}
+
+
 fn log_inn() -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
     Button::new()
@@ -92,7 +105,7 @@ fn log_inn() -> impl Element {
         .s(Spacing::new(20))
         .s(RoundedCorners::new().right(25).left(25))
         .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_1, || GRAY_9)))
+            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
         .s(Padding::all(17))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .label("Log in")
