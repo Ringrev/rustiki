@@ -1,4 +1,4 @@
-
+use std::borrow::Cow;
 use crate::{app, router::Route};
 use zoon::{named_color::*, *};
 
@@ -22,11 +22,14 @@ pub fn header() -> impl Element {
 }
 
 fn logo() -> impl Element {
-    Image::new()
-        .url("https://www.catastrophicreations.com/wp-content/uploads/2021/02/IMG_7465-2glance.jpg%22")
-        .description("A cat")
-        .s(Width::new(200))
-       // .s(Padding::top(Default::default(), 50))
+    // Image::new()
+    //     .url("https://www.catastrophicreations.com/wp-content/uploads/2021/02/IMG_7465-2glance.jpg%22")
+    //     .description("A cat")
+    //     .s(Width::new(200))
+
+    Paragraph::new()
+        .s(Font::new().size(50).weight(FontWeight::Bold))
+        .content("Rustiki")
 }
 
 
@@ -53,6 +56,7 @@ fn search_box() -> impl Element {
     Row::new()
         .s(Align::new().center_x().center_y())
         .item(search_bar())
+        .s(Spacing::new(6))
         .item(search_button())
 
 }
@@ -63,7 +67,7 @@ fn search_bar() -> impl Element {
         .s(Padding::all(10))
         .s(RoundedCorners::new().left(5))
         .s(Width::fill().min(350).max(400))
-        .s(Font::new().size(20))
+        .s(Font::new().size(16))
         .s(RoundedCorners::new().right(25).left(25))
         .focus(true)
        // .on_change(super::set_new_message_text)
@@ -75,9 +79,9 @@ fn search_bar() -> impl Element {
 fn search_button() -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
     Button::new()
-        .s(Padding::all(25))
+        .s(Padding::all(20))
         .s(RoundedCorners::new().right(5))
-        .s(Background::new().color_signal(hovered_signal.map_bool(|| GREEN_7, || GREEN_8)))
+        .s(Background::new().color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
         .s(Font::new().color(GRAY_0).size(17))
         .s(Align::new().left())
         .s(RoundedCorners::new().right(25).left(25))
@@ -91,13 +95,13 @@ fn buttons_row() -> impl Element {
     Row::new()
         .s(Align::new().bottom().right())
         .s(Spacing::new(6))
-        .item(log_inn())
-        .item(log_inn())
-        .item(log_inn())
+        .item(log_in())
+        .item(log_in())
+        .item(log_in())
 }
 
 
-fn log_inn() -> impl Element {
+fn log_in() -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
     Button::new()
         .s(Font::new().size(20).color(GRAY_0))
