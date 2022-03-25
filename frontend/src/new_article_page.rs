@@ -8,11 +8,11 @@ use zoon::web_sys::HtmlTextAreaElement;
 
 pub fn page() -> impl Element {
     Column::new()
+        .s(Align::center())
         .item(Paragraph::new().content("Create new article"))
         .item(title_panel())
         .item(Text::with_signal(title_text().signal_cloned()))
         .item(main_text_panel())
-        .item(text_area())
 }
 
 // ------ state of title
@@ -103,27 +103,19 @@ fn set_main_text(main: String) {
 
 // ------ title text input
 
-fn text_area() -> impl Element {
-    RawHtmlEl::new("textarea")
-        .style("width", "500px")
-        .style("border", "1px solid grey")
-}
-
-
-
 
 fn main_text_input(id: &str) -> impl Element {
-
-    TextInput::new()
-        .s(Padding::new().x(10).y(6))
-        .s(Shadows::new(vec![
-            Shadow::new().inner().x(-1).y(1).blur(2).color(hsluv!(0,0,0,20))
-        ]))
-        .s(Width::new(500))
-        .s(Height::fill())
+    TextArea::new()
+        .s(Width::new(300))
+        .s(Padding::all(10))
+        .s(Shadows::new(vec![Shadow::new()
+            .inner()
+            .y(1)
+            .blur(2)
+            .color(hsluv!(0,0,0,20))]))
         .id(id)
         .on_change(set_main_text)
-        .placeholder(Placeholder::new("Your article text"))
+        .placeholder(Placeholder::new("Main text of your article"))
         .text_signal(main_text().signal_cloned())
 }
 
