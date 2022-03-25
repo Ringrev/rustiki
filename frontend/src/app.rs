@@ -1,6 +1,6 @@
 use zoon::{format, *, Element};
 use zoon::*;
-use crate::{new_article_page, registration_page, router::{previous_route, router, Route}};
+use crate::{new_article_page, registration_page, header::header, router::{previous_route, router, Route}};
 
 // ------ page names ------
 
@@ -16,7 +16,7 @@ pub enum PageName {
 
 pub fn root() -> impl Element {
     Column::new()
-        .item(El::new().child(""))//navbar placeholder
+        .item(header())//navbar placeholder
         .item(page())
 }
 
