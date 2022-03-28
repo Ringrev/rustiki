@@ -712,6 +712,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ab5ef0d4909ef3724cc8cce6ccc8572c5c817592e9285f5464f8e86f8bd3726e"
 
 [[package]]
+name = "heck"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2540771e65fc8cb83cd6e8a237f70c319bd5c29f78ed1084ba5d50eeac86f7f9"
+
+[[package]]
 name = "hermit-abi"
 version = "0.1.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -723,7 +729,7 @@ dependencies = [
 [[package]]
 name = "hsluv"
 version = "0.1.0"
-source = "git+https://github.com/arn-the-long-beard/MoonZoon?branch=doc/zoon_elements#889254e8c742e59d18fd8c2f8012bcd2413961c9"
+source = "git+https://github.com/lindahageselle/MoonZoon?branch=feat/textarea#a673172ecb55014f1eece5e3fbb79508201eaa97"
 dependencies = [
  "hsluv_macro",
  "rust-hsluv",
@@ -732,7 +738,7 @@ dependencies = [
 [[package]]
 name = "hsluv_macro"
 version = "0.1.0"
-source = "git+https://github.com/arn-the-long-beard/MoonZoon?branch=doc/zoon_elements#889254e8c742e59d18fd8c2f8012bcd2413961c9"
+source = "git+https://github.com/lindahageselle/MoonZoon?branch=feat/textarea#a673172ecb55014f1eece5e3fbb79508201eaa97"
 dependencies = [
  "quote 1.0.14",
  "syn 1.0.84",
@@ -987,7 +993,7 @@ dependencies = [
 [[package]]
 name = "moonlight"
 version = "0.1.0"
-source = "git+https://github.com/arn-the-long-beard/MoonZoon?branch=doc/zoon_elements#889254e8c742e59d18fd8c2f8012bcd2413961c9"
+source = "git+https://github.com/lindahageselle/MoonZoon?branch=feat/textarea#a673172ecb55014f1eece5e3fbb79508201eaa97"
 dependencies = [
  "chrono",
  "getrandom",
@@ -1411,11 +1417,12 @@ dependencies = [
 [[package]]
 name = "route_macro"
 version = "0.1.0"
-source = "git+https://github.com/arn-the-long-beard/MoonZoon?branch=doc/zoon_elements#889254e8c742e59d18fd8c2f8012bcd2413961c9"
+source = "git+https://github.com/lindahageselle/MoonZoon?branch=feat/textarea#a673172ecb55014f1eece5e3fbb79508201eaa97"
 dependencies = [
  "proc-macro2 1.0.36",
  "quote 1.0.14",
  "syn 1.0.84",
+ "urlencoding",
 ]
 
 [[package]]
@@ -1453,6 +1460,12 @@ checksum = "5eebeaeb360c87bfb72e84abdb3447159c0eaececf1bef2aecd65a8be949d1c9"
 dependencies = [
  "base64",
 ]
+
+[[package]]
+name = "rustversion"
+version = "1.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f2cc38e8fa666e2de3c4aba7edeb5ffc5246c1c2ed0e3d17e560aeeba736b23f"
 
 [[package]]
 name = "rusty_ulid"
@@ -1614,10 +1627,32 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 [[package]]
 name = "static_ref_macro"
 version = "0.1.0"
-source = "git+https://github.com/arn-the-long-beard/MoonZoon?branch=doc/zoon_elements#889254e8c742e59d18fd8c2f8012bcd2413961c9"
+source = "git+https://github.com/lindahageselle/MoonZoon?branch=feat/textarea#a673172ecb55014f1eece5e3fbb79508201eaa97"
 dependencies = [
  "proc-macro2 1.0.36",
  "quote 1.0.14",
+ "syn 1.0.84",
+]
+
+[[package]]
+name = "strum"
+version = "0.24.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e96acfc1b70604b8b2f1ffa4c57e59176c7dbb05d556c71ecd2f5498a1dee7f8"
+dependencies = [
+ "strum_macros",
+]
+
+[[package]]
+name = "strum_macros"
+version = "0.24.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6878079b17446e4d3eba6192bb0a2950d5b14f0ed8424b852310e5a94345d0ef"
+dependencies = [
+ "heck",
+ "proc-macro2 1.0.36",
+ "quote 1.0.14",
+ "rustversion",
  "syn 1.0.84",
 ]
 
@@ -1843,6 +1878,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "urlencoding"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "68b90931029ab9b034b300b797048cf23723400aa757e8a2bfb9d748102f9821"
+
+[[package]]
 name = "uuid"
 version = "0.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1879,6 +1920,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "632f73e236b219150ea279196e54e610f5dbafa5d61786303d4da54f84e47fce"
 dependencies = [
  "cfg-if 1.0.0",
+ "serde",
+ "serde_json",
  "wasm-bindgen-macro",
 ]
 
@@ -2013,7 +2056,7 @@ checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
 [[package]]
 name = "zoon"
 version = "0.1.0"
-source = "git+https://github.com/arn-the-long-beard/MoonZoon?branch=doc/zoon_elements#889254e8c742e59d18fd8c2f8012bcd2413961c9"
+source = "git+https://github.com/lindahageselle/MoonZoon?branch=feat/textarea#a673172ecb55014f1eece5e3fbb79508201eaa97"
 dependencies = [
  "apply",
  "chrono",
@@ -2026,7 +2069,7 @@ dependencies = [
  "gensym",
  "hsluv",
  "js-sys",
- "moonlight 0.1.0 (git+https://github.com/arn-the-long-beard/MoonZoon?branch=doc/zoon_elements)",
+ "moonlight 0.1.0 (git+https://github.com/lindahageselle/MoonZoon?branch=feat/textarea)",
  "once_cell",
  "paste",
  "pin-project",
@@ -2035,6 +2078,7 @@ dependencies = [
  "serde",
  "serde_json",
  "static_ref_macro",
+ "strum",
  "thiserror",
  "wasm-bindgen",
  "wasm-bindgen-futures",
