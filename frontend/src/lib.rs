@@ -10,6 +10,7 @@ mod registration_page;
 mod new_article_page;
 mod header;
 mod log_in_page;
+mod footer;
 
 // ------ ------
 //     Start

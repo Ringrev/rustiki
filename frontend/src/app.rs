@@ -1,6 +1,7 @@
 use zoon::{format, *, Element};
 use zoon::*;
 use crate::{new_article_page, registration_page, header::header, log_in_page, router::{previous_route, router, Route}};
+use crate::footer::footer;
 
 // ------ page names ------
 
@@ -19,6 +20,8 @@ pub fn root() -> impl Element {
     Column::new()
         .item(header())//navbar placeholder
         .item(page())
+        .item(footer())
+
 }
 
 // ------ front page content ------
