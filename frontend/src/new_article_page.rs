@@ -17,8 +17,8 @@ pub fn page() -> impl Element {
             .s(Padding::new().x(100).y(20))
             .item(Paragraph::new().content("Create new article"))
             .item(title_panel())
-            .item(Text::with_signal(title_text().signal_cloned()))
             .item(main_text_panel())
+            .item(tag_panel())
         )
         .item(button_panel())
 }
@@ -190,7 +190,7 @@ fn tag_label(id: &str) -> impl Element {
         .s(Font::new().color(hsluv!(0,0,0,100)))
         .s(Padding::all(0))
         .for_input(id)
-        .label("Your tag:")
+        .label("Add a tag:")
 }
 
 fn set_tag_text(tag: String) {
@@ -201,17 +201,16 @@ fn set_tag_text(tag: String) {
 
 
 fn tag_input(id: &str) -> impl Element {
-    TextArea::new()
-        .s(Width::new(600))
-        .s(Height::new(400))
-        .s(Padding::all(10))
+    TextInput::new()
+        .s(Width::new(300))
+        .s(Padding::new().x(10).y(6))
         .s(Shadows::new(vec![Shadow::new()
             .inner()
             .y(1)
             .blur(2)
             .color(hsluv!(0,0,0,20))]))
         .id(id)
-        .on_change(set_main_text)
-        .placeholder(Placeholder::new("Write a tag"))
-        .text_signal(main_text().signal_cloned())
+        .on_change(set_tag_text)
+        .placeholder(Placeholder::new("Tag..."))
+        .text_signal(tag_text().signal_cloned())
 }
