@@ -24,7 +24,7 @@ pub fn root() -> impl Element {
 
 fn front_page() -> impl Element {
     Column::new()
-        .s(Padding::new().top(50))
+        .s(Padding::new().top(0))
         .item(placeholder_text())
 }
 
