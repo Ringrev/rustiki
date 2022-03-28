@@ -47,6 +47,9 @@ pub fn router() -> &'static Router<Route> {
             Route::NewArticle => {
                 app::set_page_name(PageName::NewArticle);
             }
+            Route::LogIn => {
+                app::set_page_name(PageName::LogIn);
+            }
         }
     })
 }
@@ -61,6 +64,9 @@ pub enum Route {
 
     #[route("new_article")]
     NewArticle,
+
+    #[route("log_in")]
+    LogIn,
 
     #[route()]
     Root,

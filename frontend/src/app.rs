@@ -1,7 +1,6 @@
 use zoon::{format, *, Element};
 use zoon::*;
-use crate::{new_article_page, registration_page, header::header, router::{previous_route, router, Route}};
-use crate::footer::footer;
+use crate::{new_article_page, registration_page, header::header, log_in_page, router::{previous_route, router, Route}};
 
 // ------ page names ------
 
@@ -10,6 +9,7 @@ pub enum PageName {
     Home,
     Registration,
     NewArticle,
+    LogIn,
     Unknown,
 }
 
@@ -19,7 +19,6 @@ pub fn root() -> impl Element {
     Column::new()
         .item(header())//navbar placeholder
         .item(page())
-        .item(footer())
 }
 
 // ------ front page content ------
@@ -46,6 +45,7 @@ fn page() -> impl Element {
         PageName::Unknown => El::new().child("404").into_raw_element(),
         PageName::NewArticle => new_article_page::page().into_raw_element(),
         PageName::Registration => registration_page::page().into_raw_element(),
+        PageName::LogIn => log_in_page::page().into_raw_element(),
     }))
 }
 

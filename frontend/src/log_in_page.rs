@@ -15,50 +15,51 @@ pub fn page() -> impl Element {
             .s(Align::left(Default::default()))
             .s(Align::center())
             .s(Padding::new().x(100).y(20))
-            .item(Paragraph::new().content("Create new article"))
-            .item(title_panel())
-            .item(Text::with_signal(title_text().signal_cloned()))
-            .item(main_text_panel())
+            .item(Paragraph::new().content("Log in"))
+            .item(user_name_panel())
+            .item(Text::with_signal(user_name_text().signal_cloned()))
+            .item(password_panel())
+            .item(Text::with_signal(password_text().signal_cloned()))
         )
         .item(button_panel())
 }
 
-// ------ state of title
+// ------ state of user_name
 
 #[static_ref]
-fn title_text() -> &'static Mutable<String> {
+fn user_name_text() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
-// ------ title label and input combined
+// ------ user_name label and input combined
 
-fn title_panel() -> impl Element {
-    let id = "title_input";
+fn user_name_panel() -> impl Element {
+    let id = "user_name_input";
     Column::new()
         .s(Spacing::new(15))
-        .item(title_text_label(id))
+        .item(user_name_text_label(id))
         .s(Spacing::new(0))
-        .item(title_text_input(id))
-        // .s(Padding::all(0))
+        .item(user_name_text_input(id))
+    // .s(Padding::all(0))
 }
 
-// ------ title label
+// ------ user_name label
 
-fn title_text_label(id: &str) -> impl Element {
+fn user_name_text_label(id: &str) -> impl Element {
     Label::new()
         .s(Font::new().color(hsluv!(0,0,0,100)))
         .s(Padding::all(0))
         .for_input(id)
-        .label("Title:")
+        .label("User:")
 }
 
-fn set_title(title: String) {
-    title_text().set(title);
+fn set_user_name(user_name: String) {
+    user_name_text().set(user_name);
 }
 
-// ------ title text input
+// ------ user_name text input
 
-fn title_text_input(id: &str) -> impl Element {
+fn user_name_text_input(id: &str) -> impl Element {
     TextInput::new()
         .s(Width::new(300))
         .s(Padding::new().x(10).y(6))
@@ -68,77 +69,75 @@ fn title_text_input(id: &str) -> impl Element {
             .blur(2)
             .color(hsluv!(0,0,0,20))]))
         .id(id)
-        .on_change(set_title)
-        .placeholder(Placeholder::new("Title of your article"))
-        .text_signal(title_text().signal_cloned())
+        .on_change(set_user_name)
+        .placeholder(Placeholder::new("Your user id "))
+        .text_signal(user_name_text().signal_cloned())
 }
+// Password start
 
+// ------ state of password
 
-////////////////////////////////////////////////////////////
-
-
-// ------ state: main text
 #[static_ref]
-fn main_text() -> &'static Mutable<String> {
+fn password_text() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
-// ------ title label and input combined
+// ------ password label and input combined
 
-fn main_text_panel() -> impl Element {
-    let id = "main_input";
+fn password_panel() -> impl Element {
+    let id = "password_input";
     Column::new()
         .s(Spacing::new(15))
-        .item(main_text_label(id))
+        .item(password_text_label(id))
         .s(Spacing::new(0))
-        .item(main_text_input(id))
+        .item(password_text_input(id))
     // .s(Padding::all(0))
 }
 
-// ------ title label
+// ------ password label
 
-fn main_text_label(id: &str) -> impl Element {
+fn password_text_label(id: &str) -> impl Element {
     Label::new()
         .s(Font::new().color(hsluv!(0,0,0,100)))
         .s(Padding::all(0))
         .for_input(id)
-        .label("Article text:")
+        .label("Password:")
 }
 
-fn set_main_text(main: String) {
-    main_text().set(main);
+fn set_password(password: String) {
+    password_text().set(password);
 }
 
-// ------ title text input
+// ------ password text input
 
-
-fn main_text_input(id: &str) -> impl Element {
-    TextArea::new()
-        .s(Width::new(600))
-        .s(Height::new(400))
-        .s(Padding::all(10))
+fn password_text_input(id: &str) -> impl Element {
+    TextInput::new()
+        .s(Width::new(300))
+        .s(Padding::new().x(10).y(6))
         .s(Shadows::new(vec![Shadow::new()
             .inner()
             .y(1)
             .blur(2)
             .color(hsluv!(0,0,0,20))]))
         .id(id)
-        .on_change(set_main_text)
-        .placeholder(Placeholder::new("Main text of your article"))
-        .text_signal(main_text().signal_cloned())
+        .on_change(set_password)
+        .placeholder(Placeholder::new("Your password"))
+        .text_signal(password_text().signal_cloned())
 }
+
+// Password end
 
 // ------
 
 fn button_panel() -> impl Element {
     Row::new()
         .item(cancel_button())
-        .item(publish_button())
+        .item(log_in_button())
         .s(Spacing::new(10))
         .s(Align::right(Default::default()))
 }
 
-fn publish_button() -> impl Element {
+fn log_in_button() -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
     Button::new()
         .s(Font::new().size(16).color(GRAY_0))
@@ -146,8 +145,8 @@ fn publish_button() -> impl Element {
             .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
         .s(Padding::new().y(10).x(15))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Publish")
-        // .on_press()
+        .label("Log in")
+    // .on_press()
 }
 
 fn cancel_button() -> impl Element {
@@ -159,5 +158,5 @@ fn cancel_button() -> impl Element {
         .s(Padding::new().y(10).x(15))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .label("Cancel")
-        // .on_press()
+    // .on_press()
 }
