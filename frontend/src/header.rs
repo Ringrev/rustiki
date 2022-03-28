@@ -1,6 +1,8 @@
 use std::borrow::Cow;
 use crate::{app, router::Route};
 use zoon::{named_color::*, *};
+use zoon::dominator::routing::go_to_url;
+use crate::app::PageName;
 
 // ------ ------
 //     View
@@ -9,17 +11,23 @@ use zoon::{named_color::*, *};
 pub fn header() -> impl Element {
     Row::new()
         .s(Background::new().color(GRAY_4))
-
-        //.s(Font::new().size(100).color(hsluv!(18,100,48,100)))
         .s(Spacing::new(10))
         .s(Padding::all(20))
         .s(Borders::new())
         .item(logo())
-        //.item(back_button())
-       // .item(link("Home", Route::Root))
+        // .item(create_new_article())
         .item(search_box())
         .item(buttons_row())
 }
+
+// fn create_new_article() -> impl Element {
+//     Link::new()
+//         .to(Route::NewArticle)
+//         .s(Font::new().size(16).color(GRAY_0))
+//         .label("Create new article")
+//         .s(Padding::new().x(30))
+//         .s(Padding::top(Default::default(), 20))
+// }
 
 fn logo() -> impl Element {
     // Image::new()
@@ -27,22 +35,10 @@ fn logo() -> impl Element {
     //     .description("A cat")
     //     .s(Width::new(200))
 
-    Paragraph::new()
+    Link::new()
+        .to(Route::Root)
         .s(Font::new().size(50).weight(FontWeight::Bold))
-        .content("Rustiki")
-}
-
-
-fn back_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Button::new()
-        .s(Background::new().color_signal(hovered_signal.map_bool(|| GRAY_8, || GRAY_4)))
-        .s(Padding::new().x(2).y(2))
-        .s(Align::new().bottom().left())
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("< Back")
-        .on_press(routing::back)
-
+        .label("Rustiki")
 }
 
 fn link(label: &str, route: Route) -> impl Element {
@@ -96,14 +92,17 @@ fn buttons_row() -> impl Element {
         .s(Align::new().bottom().right())
         .s(Spacing::new(6))
         .item(log_in())
-        .item(log_in())
-        .item(log_in())
+        // .item(log_in())
+        // .item(log_in())
 }
 
 
 fn log_in() -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Button::new()
+    // Commented out button because could not figure out how to send to Route without a "Link" element.
+    // We can change this back to button if we figure it out. Nothing else changed
+    // Button::new()
+    Link::new()
         .s(Font::new().size(20).color(GRAY_0))
         .s(Align::new().right().bottom())
         .s(Spacing::new(20))
@@ -113,5 +112,5 @@ fn log_in() -> impl Element {
         .s(Padding::all(17))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .label("Log in")
-       // .on_press(log_in)
+        .to(Route::LogIn)
 }
