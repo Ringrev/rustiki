@@ -15,7 +15,7 @@ pub fn header() -> impl Element {
         .s(Padding::all(20))
         .s(Borders::new())
         .item(logo())
-        .item(back_button())
+        //.item(back_button())
        // .item(link("Home", Route::Root))
         .item(search_box())
         .item(buttons_row())
@@ -72,7 +72,7 @@ fn search_bar() -> impl Element {
         .focus(true)
        // .on_change(super::set_new_message_text)
         .label_hidden("New message text")
-        .placeholder(Placeholder::new("Search here you clown"))
+        .placeholder(Placeholder::new("Search for Wiki"))
 
 }
 
