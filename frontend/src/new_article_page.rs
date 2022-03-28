@@ -161,3 +161,57 @@ fn cancel_button() -> impl Element {
         .label("Cancel")
         // .on_press()
 }
+
+
+
+
+// ------ state: tags
+#[static_ref]
+fn tag_text() -> &'static Mutable<String> {
+    Mutable::new("".to_string())
+}
+
+// ------ tag label and input combined
+
+fn tag_panel() -> impl Element {
+    let id = "tag_input";
+    Column::new()
+        .s(Spacing::new(15))
+        .item(tag_label(id))
+        .s(Spacing::new(0))
+        .item(tag_input(id))
+    // .s(Padding::all(0))
+}
+
+// ------ tag label
+
+fn tag_label(id: &str) -> impl Element {
+    Label::new()
+        .s(Font::new().color(hsluv!(0,0,0,100)))
+        .s(Padding::all(0))
+        .for_input(id)
+        .label("Your tag:")
+}
+
+fn set_tag_text(tag: String) {
+   tag_text().set(tag);
+}
+
+// ------ tag input
+
+
+fn tag_input(id: &str) -> impl Element {
+    TextArea::new()
+        .s(Width::new(600))
+        .s(Height::new(400))
+        .s(Padding::all(10))
+        .s(Shadows::new(vec![Shadow::new()
+            .inner()
+            .y(1)
+            .blur(2)
+            .color(hsluv!(0,0,0,20))]))
+        .id(id)
+        .on_change(set_main_text)
+        .placeholder(Placeholder::new("Write a tag"))
+        .text_signal(main_text().signal_cloned())
+}
