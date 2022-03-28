@@ -5,7 +5,6 @@ use zoon::named_color::*;
 use zoon::Tag::Header;
 use zoon::text_input::InputTypeText;
 use zoon::web_sys::HtmlTextAreaElement;
-use uuid::Uuid;
 
 
 pub fn page() -> impl Element {
@@ -228,8 +227,8 @@ fn tags() -> &'static MutableVec<Arc<Tag>> {
 }
 
 #[static_ref]
-fn new_tag() -> &'static Mutable<Tag> {
-    Mutable::new()
+fn new_tag() -> &'static Mutable<String> {
+    Mutable::new(String::new())
 }
 
 #[static_ref]
@@ -244,10 +243,10 @@ fn add_tag() {
         return;
     }
     let tag = Tag {
-        id: tag_id()+1,
-        text: tag,
+        id: tag_id().to_owned().get_cloned()+1,
+        text: tag.to_string(),
     };
-    tag_id() +=1;
+    tag_id().update(|id|id+1);
     tags().lock_mut().push_cloned(Arc::new(tag));
     new_tag.clear();
 }
@@ -258,30 +257,42 @@ fn tags_view() -> impl Element {
         .s(Spacing::new(10))
 }
 
-fn tag(tag: Arc<String>) -> impl Element {
+fn tag(tag: Arc<Tag>) -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Column::new()
-        .item(Paragraph::new()
-            .content(tag.to_string())
-            .s(Padding::new().x(10))
-            .s(Background::new().color(GRAY_2))
-            .s(RoundedCorners::all(10))
 
-        )
-        .element_on_right(remove_tag_button(&tag))
-        // .element_on_right_signal(hovered_signal.map_true(move || remove_tag_button(&tag)))
+    Row::new()
+        .item(Label::new()
+            .for_input(tag.id)
+            .label(tag.text.to_string())
+            .element_on_right( remove_tag_button(&tag)))
+        .s(Padding::new().x(10))
+        .s(Background::new().color(GRAY_2))
+        .s(RoundedCorners::all(10))
+
+
+
+
+
+    // Column::new()
+    //     .item(Paragraph::new()
+    //         .content(tag.text.to_string())
+    //         .s(Padding::new().x(10))
+    //         .s(Background::new().color(GRAY_2))
+    //         .s(RoundedCorners::all(10))
+    //     )
+    //     .element_on_right( remove_tag_button(&tag))
 }
 
-fn remove_tag(tag: String) {
-    tags().lock_mut().retain(|tag| tag.to_string().eq_ignore_ascii_case(tag))
+fn remove_tag(id: i32) {
+    tags().lock_mut().retain(|tag| tag.id != id)
 }
 
-fn remove_tag_button(tag: &Arc<String>) -> impl Element {
+fn remove_tag_button(tag: &Tag) -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    let id = tag.to_string();
+    let id = tag.id;
     Button::new()
-        .s(Font::new().size(20).center().color_signal(
-            hovered_signal.map_bool(|| hsluv!(10.5, 37.7, 48.8), || hsluv!(12.2, 34.7, 68.2)),
+        .s(Font::new().size(20).color_signal(
+            hovered_signal.map_bool(|| GRAY_9, || GRAY_4),
         ))
         .on_hovered_change(move |is_hovered| hovered.set_neq(is_hovered))
         .on_press(move || remove_tag(id))
