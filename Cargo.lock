@@ -729,7 +729,7 @@ dependencies = [
 [[package]]
 name = "hsluv"
 version = "0.1.0"
-source = "git+https://github.com/lindahageselle/MoonZoon?branch=feat/textarea#a673172ecb55014f1eece5e3fbb79508201eaa97"
+source = "git+https://github.com/lindahageselle/MoonZoon?rev=a673172#a673172ecb55014f1eece5e3fbb79508201eaa97"
 dependencies = [
  "hsluv_macro",
  "rust-hsluv",
@@ -738,7 +738,7 @@ dependencies = [
 [[package]]
 name = "hsluv_macro"
 version = "0.1.0"
-source = "git+https://github.com/lindahageselle/MoonZoon?branch=feat/textarea#a673172ecb55014f1eece5e3fbb79508201eaa97"
+source = "git+https://github.com/lindahageselle/MoonZoon?rev=a673172#a673172ecb55014f1eece5e3fbb79508201eaa97"
 dependencies = [
  "quote 1.0.14",
  "syn 1.0.84",
@@ -993,10 +993,9 @@ dependencies = [
 [[package]]
 name = "moonlight"
 version = "0.1.0"
-source = "git+https://github.com/lindahageselle/MoonZoon?branch=feat/textarea#a673172ecb55014f1eece5e3fbb79508201eaa97"
+source = "git+https://github.com/MoonZoon/MoonZoon?rev=15cb619faca5f78a47e08f4af4bfa595f0eb64b1#15cb619faca5f78a47e08f4af4bfa595f0eb64b1"
 dependencies = [
  "chrono",
- "getrandom",
  "rusty_ulid",
  "serde",
  "serde_json",
@@ -1005,9 +1004,10 @@ dependencies = [
 [[package]]
 name = "moonlight"
 version = "0.1.0"
-source = "git+https://github.com/MoonZoon/MoonZoon?rev=15cb619faca5f78a47e08f4af4bfa595f0eb64b1#15cb619faca5f78a47e08f4af4bfa595f0eb64b1"
+source = "git+https://github.com/lindahageselle/MoonZoon?rev=a673172#a673172ecb55014f1eece5e3fbb79508201eaa97"
 dependencies = [
  "chrono",
+ "getrandom",
  "rusty_ulid",
  "serde",
  "serde_json",
@@ -1417,7 +1417,7 @@ dependencies = [
 [[package]]
 name = "route_macro"
 version = "0.1.0"
-source = "git+https://github.com/lindahageselle/MoonZoon?branch=feat/textarea#a673172ecb55014f1eece5e3fbb79508201eaa97"
+source = "git+https://github.com/lindahageselle/MoonZoon?rev=a673172#a673172ecb55014f1eece5e3fbb79508201eaa97"
 dependencies = [
  "proc-macro2 1.0.36",
  "quote 1.0.14",
@@ -1627,7 +1627,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 [[package]]
 name = "static_ref_macro"
 version = "0.1.0"
-source = "git+https://github.com/lindahageselle/MoonZoon?branch=feat/textarea#a673172ecb55014f1eece5e3fbb79508201eaa97"
+source = "git+https://github.com/lindahageselle/MoonZoon?rev=a673172#a673172ecb55014f1eece5e3fbb79508201eaa97"
 dependencies = [
  "proc-macro2 1.0.36",
  "quote 1.0.14",
@@ -2056,7 +2056,7 @@ checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
 [[package]]
 name = "zoon"
 version = "0.1.0"
-source = "git+https://github.com/lindahageselle/MoonZoon?branch=feat/textarea#a673172ecb55014f1eece5e3fbb79508201eaa97"
+source = "git+https://github.com/lindahageselle/MoonZoon?rev=a673172#a673172ecb55014f1eece5e3fbb79508201eaa97"
 dependencies = [
  "apply",
  "chrono",
@@ -2069,7 +2069,7 @@ dependencies = [
  "gensym",
  "hsluv",
  "js-sys",
- "moonlight 0.1.0 (git+https://github.com/lindahageselle/MoonZoon?branch=feat/textarea)",
+ "moonlight 0.1.0 (git+https://github.com/lindahageselle/MoonZoon?rev=a673172)",
  "once_cell",
  "paste",
  "pin-project",

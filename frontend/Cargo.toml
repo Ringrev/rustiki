@@ -13,8 +13,8 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-#zoon = { git = "https://github.com/arn-the-long-beard/MoonZoon", branch = "doc/zoon_elements" }
-zoon = { git = "https://github.com/lindahageselle/MoonZoon", branch = "feat/textarea" }
+#zoon = { git = "https://github.com/arn-the-long-beard/MoonZoon", rev="2d169b7" }
+zoon = { git = "https://github.com/lindahageselle/MoonZoon", rev= "a673172" }
 rand = { version = "0.8.3", features = ["small_rng", "getrandom"], default-features = false }
 getrandom = { version = "0.2", features = ["js"], default-features = false }
 
