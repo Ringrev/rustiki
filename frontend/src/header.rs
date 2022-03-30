@@ -91,13 +91,13 @@ fn buttons_row() -> impl Element {
     Row::new()
         .s(Align::new().bottom().right())
         .s(Spacing::new(6))
-        .item(log_in())
-        // .item(log_in())
-        // .item(log_in())
+        .item(registration_button())
+        .item(log_in_button())
+        .item(new_article_button())
 }
 
 
-fn log_in() -> impl Element {
+fn log_in_button() -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
     // Commented out button because could not figure out how to send to Route without a "Link" element.
     // We can change this back to button if we figure it out. Nothing else changed
@@ -113,4 +113,41 @@ fn log_in() -> impl Element {
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .label("Log in")
         .to(Route::LogIn)
+}
+
+
+fn new_article_button() -> impl Element {
+    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
+    // Commented out button because could not figure out how to send to Route without a "Link" element.
+    // We can change this back to button if we figure it out. Nothing else changed
+    // Button::new()
+    Link::new()
+        .s(Font::new().size(20).color(GRAY_0))
+        .s(Align::new().right().bottom())
+        .s(Spacing::new(20))
+        .s(RoundedCorners::new().right(25).left(25))
+        .s(Background::new()
+            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
+        .s(Padding::all(17))
+        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
+        .label("Create New Article")
+        .to(Route::NewArticle)
+}
+
+fn registration_button() -> impl Element {
+    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
+    // Commented out button because could not figure out how to send to Route without a "Link" element.
+    // We can change this back to button if we figure it out. Nothing else changed
+    // Button::new()
+    Link::new()
+        .s(Font::new().size(20).color(GRAY_0))
+        .s(Align::new().right().bottom())
+        .s(Spacing::new(20))
+        .s(RoundedCorners::new().right(25).left(25))
+        .s(Background::new()
+            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
+        .s(Padding::all(17))
+        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
+        .label("Registration")
+        .to(Route::Registration)
 }

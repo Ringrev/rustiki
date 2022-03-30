@@ -133,8 +133,9 @@ fn button_panel() -> impl Element {
     Row::new()
         .item(cancel_button())
         .item(log_in_button())
+        //.item(registration_button())
         .s(Spacing::new(10))
-        .s(Align::right(Default::default()))
+        .s(Align::center())
 }
 
 fn log_in_button() -> impl Element {
@@ -146,6 +147,7 @@ fn log_in_button() -> impl Element {
         .s(Padding::new().y(10).x(15))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .label("Log in")
+
     // .on_press()
 }
 
@@ -160,3 +162,15 @@ fn cancel_button() -> impl Element {
         .label("Cancel")
     // .on_press()
 }
+
+/*fn registration_button() -> impl Element {
+    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
+    Button::new()
+        .s(Font::new().size(16).color(GRAY_0))
+        .s(Background::new()
+            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
+        .s(Padding::new().y(10).x(15))
+        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
+        .label("Registration")
+    // .on_press()
+}*/
