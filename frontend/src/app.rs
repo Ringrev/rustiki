@@ -1,7 +1,10 @@
 use zoon::{format, *, Element};
 use zoon::*;
+use zoon::named_color::GRAY_0;
+use shared::{DownMsg, UpMsg, User};
 use crate::{new_article_page, registration_page, header::header, log_in_page, router::{previous_route, router, Route}};
 use crate::footer::footer;
+use crate::connection::connection;
 
 // ------ page names ------
 
@@ -24,12 +27,44 @@ pub fn root() -> impl Element {
 
 }
 
+#[static_ref]
+fn user() -> &'static Mutable<String> {
+    Mutable::new("no user".to_string())
+}
+
+pub fn set_user() {
+    user().set(String::from("Hallo"));
+}
+
+pub fn test_login() {
+    Task::start(async {
+        let msg = UpMsg::Login {
+            email: "linda@linda".to_string(),
+            password: "oigiojgoie".to_string(),
+        };
+        if let Err(error) = connection().send_up_msg(msg).await {
+            let error = error.to_string();
+            // eprintln!("login request failed: {}", error);
+        }
+    })
+}
+
+
 // ------ front page content ------
 
 fn front_page() -> impl Element {
     Column::new()
         .s(Padding::new().top(50))
         .item(placeholder_text())
+        .item(Button::new()
+            .label("Get user")
+            .s(Background::new().color(GRAY_0))
+            .on_press(test_login))
+        .item(Text::with_signal(user().signal_cloned()))
+        .item(Button::new()
+            .label("Test text")
+            .on_press(set_user))
+
 }
 
 fn placeholder_text() -> impl Element {

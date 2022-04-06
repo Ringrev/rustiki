@@ -11,6 +11,7 @@ mod new_article_page;
 mod header;
 mod log_in_page;
 mod footer;
+mod connection;
 
 // ------ ------
 //     Start
