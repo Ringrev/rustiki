@@ -8,6 +8,14 @@ pub struct User {
     pub auth_token: String,
 }
 
+pub struct Article {
+    //pub id: String,
+    pub title: String,
+    pub content: String,
+    //pub contributor: String,
+    //pub tags: String,
+}
+
 // ------ UpMsg ------
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -24,6 +32,13 @@ pub enum UpMsg {
     // GetOrganizations,
     // AddOrganization(OrganizationId, String),
     // RemoveOrganization(OrganizationId),
+    //---- Article -----
+    GetArticles,
+    AddArticle(ArticleId, String),
+    RemoveArticle(ArticleId),
+
+
+
     // // ------ Mail ------
     // SendMail {
     //     from: String,
@@ -48,6 +63,10 @@ pub enum DownMsg {
     // Organizations(Vec<Organization>),
     // OrganizationAdded,
     // OrganizationRemoved,
+    //------Article-----
+    Articles(Vec<Articles>),
+    ArticleAdded,
+    ArticleRemoved,
     // // ------ Mail ------
     // MailSent,
     // // ------ Other ------
