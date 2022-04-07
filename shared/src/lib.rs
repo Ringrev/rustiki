@@ -8,6 +8,12 @@ pub struct User {
     pub auth_token: String,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(crate = "serde")]
+pub struct Article {
+    pub id: String,
+}
+
 // ------ UpMsg ------
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -19,6 +25,9 @@ pub enum UpMsg {
         email: String,
         password: String,
     },
+    Article {
+        id: String,
+    }
     // Logout,
     // // ------ Organization ------
     // GetOrganizations,
@@ -31,7 +40,7 @@ pub enum UpMsg {
     //     subject: String,
     //     content: String,
     // }
-}
+}//getarticle
 
 // ------ DownMsg ------
 
@@ -42,6 +51,7 @@ pub enum DownMsg {
     // // ------ Auth ------
     // LoginError(String),
     LoggedIn(User),
+    Articles(Vec<Article>)
     // LoggedOut,
     // AuthorizationError(String),
     // // ------ Organization ------

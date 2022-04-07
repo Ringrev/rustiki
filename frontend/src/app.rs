@@ -1,7 +1,7 @@
 use zoon::{format, *, Element};
 use zoon::*;
 use zoon::named_color::GRAY_0;
-use shared::{DownMsg, UpMsg, User};
+use shared::{Article, DownMsg, UpMsg, User};
 use crate::{new_article_page, registration_page, header::header, log_in_page, router::{previous_route, router, Route}};
 use crate::footer::footer;
 use crate::connection::connection;
@@ -31,6 +31,9 @@ pub fn root() -> impl Element {
 fn user() -> &'static Mutable<String> {
     Mutable::new("no user".to_string())
 }
+fn articles() -> &'static Mutable<Vec<Article>> {
+    Mutable::new("no article".to_string())
+}
 
 pub fn set_user(usr: User) {
     user().set(usr.email.to_string());
@@ -49,6 +52,22 @@ pub fn test_login() {
     })
 }
 
+pub fn set_article(rtcl: Article) {
+    article().set(rtcl.id.to_string());
+}
+
+pub fn test_get_article() {
+    Task::start(async {
+        let msg = UpMsg::Article {
+            id: "artikkel ID ".to_string(),
+        };
+        if let Err(error) = connection().send_up_msg(msg).await {
+            let error = error.to_string();
+            // eprintln!("login request failed: {}", error);
+        }
+    })
+}
+
 // ------ front page content ------
 
 fn front_page() -> impl Element {
@@ -59,6 +78,10 @@ fn front_page() -> impl Element {
             .label("Get user")
             .s(Background::new().color(GRAY_0))
             .on_press(test_login))
+        .item(Button::new()
+            .label("Get article")
+            .s(Background::new().color(GRAY_0))
+            .on_press(test_get_article())
         .item(Text::with_signal(user().signal_cloned()))
 }
 
