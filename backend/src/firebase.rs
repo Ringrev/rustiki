@@ -14,11 +14,3 @@ pub async fn init() -> FireAuth {
 //         Err(error) => { println!("{:?}", error); }
 //     }
 // }
-//
-// pub async fn login(email: &str, password: &str) {
-//     let auth = init().await;
-//     match auth.sign_in_email(email, password, true).await {
-//         Ok(response) => { println!("{:?}", response); }
-//         Err(error) => { println!("{}", error) }
-//     }
-// }

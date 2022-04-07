@@ -11,13 +11,13 @@ pub async fn handler(auth: FireAuth, email: String, password: String) -> DownMsg
     let (res, user) = login(auth, email, password)
         .await;
     if res.eq("Ok") {
-        DownMsg::LoggedIn(user.unwrap())
+        DownMsg::LoggedIn(user)
     } else {
         DownMsg::LoginError(res)
     }
 }
 
-pub async fn login(auth: FireAuth, email: String, password: String) -> (String, Option<User>) {
+pub async fn login(auth: FireAuth, email: String, password: String) -> (String, User) {
     let mut res: String = "".to_string();
     let mut user = User {
         id: "".to_string(),
@@ -38,26 +38,5 @@ pub async fn login(auth: FireAuth, email: String, password: String) -> (String, 
         res = error.clone().to_string(); }
     }
 
-    if res.eq("Ok") {
-        (res, Some(user))
-    } else {
-        (res, None)
-    }
+    (res, user)
 }
-
-
-// pub async fn sign_up(email: &str, password: &str) {
-//     let auth = init().await;
-//     match auth.sign_up_email(email, password, true).await {
-//         Ok(response) =>  { println!("{:?}", response) ; }
-//         Err(error) => { println!("{:?}", error); }
-//     }
-// }
-//
-// pub async fn login(email: &str, password: &str) {
-//     let auth = init().await;
-//     match auth.sign_in_email(email, password, true).await {
-//         Ok(response) => { println!("{:?}", response); }
-//         Err(error) => { println!("{}", error) }
-//     }
-// }
