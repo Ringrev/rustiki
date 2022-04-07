@@ -17,9 +17,7 @@ pub fn page() -> impl Element {
             .s(Padding::new().x(100).y(20))
             .item(Paragraph::new().content("Log in"))
             .item(user_name_panel())
-            .item(Text::with_signal(user_name_text().signal_cloned()))
             .item(password_panel())
-            .item(Text::with_signal(password_text().signal_cloned()))
         )
         .item(button_panel())
 }

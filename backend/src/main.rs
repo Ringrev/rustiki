@@ -1,6 +1,5 @@
 mod up_msg_handler;
 mod login;
-mod firebase;
 use shared::{DownMsg, UpMsg};
 
 use moon::*;
@@ -24,8 +23,8 @@ async fn up_msg_handler(req: UpMsgRequest<UpMsg>) {
     let (session_id, cor_id) = (req.session_id, req.cor_id);
 
     let down_msg = match up_msg_handler::handler(req).await {
-        Ok(ok) => { println!("Ok from up_msg_handler in main: {:?}", ok)}
-        Err(err) => { println!("Error from up_msg_handler in main.rs, {:?}", err)}
+        Ok(down_msg) | Err(Some(down_msg)) => down_msg,
+        _ => return,
     };
 
     if let Some(session) = sessions::by_session_id().wait_for(session_id).await {
@@ -37,5 +36,6 @@ async fn up_msg_handler(req: UpMsgRequest<UpMsg>) {
 
 #[moon::main]
 async fn main() -> std::io::Result<()> {
-    start(frontend, up_msg_handler, |_| {}).await
+    start(frontend, up_msg_handler, |_| {}).await?;
+    Ok(())
 }

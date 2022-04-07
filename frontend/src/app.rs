@@ -32,8 +32,8 @@ fn user() -> &'static Mutable<String> {
     Mutable::new("no user".to_string())
 }
 
-pub fn set_user() {
-    user().set(String::from("Hallo"));
+pub fn set_user(usr: User) {
+    user().set(usr.email.to_string());
 }
 
 pub fn test_login() {
@@ -49,7 +49,6 @@ pub fn test_login() {
     })
 }
 
-
 // ------ front page content ------
 
 fn front_page() -> impl Element {
@@ -61,10 +60,6 @@ fn front_page() -> impl Element {
             .s(Background::new().color(GRAY_0))
             .on_press(test_login))
         .item(Text::with_signal(user().signal_cloned()))
-        .item(Button::new()
-            .label("Test text")
-            .on_press(set_user))
-
 }
 
 fn placeholder_text() -> impl Element {
