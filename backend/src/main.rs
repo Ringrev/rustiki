@@ -1,4 +1,5 @@
 mod up_msg_handler;
+mod firebase;
 use shared::{DownMsg, UpMsg};
 
 use moon::*;
@@ -77,3 +78,5 @@ async fn main() -> std::io::Result<()> {
     start(frontend, up_msg_handler, |_| {}).await?;
     Ok(())
 }
+
+

@@ -2,6 +2,7 @@ use std::borrow::Cow;
 use crate::{app, router::Route};
 use zoon::{named_color::*, *};
 use zoon::dominator::routing::go_to_url;
+use shared::User;
 use crate::app::PageName;
 
 // ------ ------
@@ -18,6 +19,21 @@ pub fn header() -> impl Element {
         // .item(create_new_article())
         .item(search_box())
         .item(buttons_row())
+}
+
+#[static_ref]
+fn logged_in_user() -> &'static Mutable<String> {
+    Mutable::new("".to_string())
+}
+
+#[static_ref]
+fn auth_token() -> &'static Mutable<String> {
+    Mutable::new("".to_string())
+}
+
+pub fn set_logged_in_user_and_token(user: User) {
+    logged_in_user().set(user.email);
+    auth_token().set(user.auth_token);
 }
 
 // fn create_new_article() -> impl Element {
@@ -91,6 +107,7 @@ fn buttons_row() -> impl Element {
     Row::new()
         .s(Align::new().bottom().right())
         .s(Spacing::new(6))
+        .item(Text::with_signal(logged_in_user().signal_cloned()))
         .item(registration_button())
         .item(log_in_button())
         .item(new_article_button())

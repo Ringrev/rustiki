@@ -1,9 +1,11 @@
-use zoon::*;
+use zoon::{*, eprintln};
 use zoon::events::Input;
 use zoon::named_color::*;
 use zoon::Tag::Header;
-use zoon::text_input::InputTypeText;
+use zoon::text_input::{InputTypePassword, InputTypeText};
 use zoon::web_sys::HtmlTextAreaElement;
+use shared::UpMsg;
+use crate::{app, connection};
 
 
 pub fn page() -> impl Element {
@@ -18,8 +20,37 @@ pub fn page() -> impl Element {
             .item(Paragraph::new().content("Log in"))
             .item(user_name_panel())
             .item(password_panel())
+            .item(Text::with_signal(login_error().signal_cloned()))
         )
+
         .item(button_panel())
+}
+
+#[static_ref]
+fn login_error() -> &'static Mutable<String> {
+    Mutable::new("".to_string())
+}
+
+pub fn set_login_error(err: String) {
+    login_error().set(err);
+}
+
+// ----- login ------
+pub fn login() {
+    Task::start(async {
+        set_login_error("".to_string());
+        let msg = UpMsg::Login {
+            email: user_name_text().get_cloned(),
+            password: password_text().get_cloned(),
+        };
+        if let Err(error) = connection::connection().send_up_msg(msg).await {
+            let error = error.to_string();
+            set_login_error(error.clone());
+            eprintln!("login request failed: {}", error);
+            user_name_text().set("".to_string());
+            password_text().set("".to_string());
+        }
+    });
 }
 
 // ------ state of user_name
@@ -121,6 +152,8 @@ fn password_text_input(id: &str) -> impl Element {
         .on_change(set_password)
         .placeholder(Placeholder::new("Your password"))
         .text_signal(password_text().signal_cloned())
+        .input_type(InputTypePassword::default())
+        .on_key_down_event(|event| event.if_key(Key::Enter, login))
 }
 
 // Password end
@@ -145,8 +178,7 @@ fn log_in_button() -> impl Element {
         .s(Padding::new().y(10).x(15))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .label("Log in")
-
-    // .on_press()
+        .on_press(login)
 }
 
 fn cancel_button() -> impl Element {
