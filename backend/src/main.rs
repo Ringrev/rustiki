@@ -1,5 +1,4 @@
 mod up_msg_handler;
-mod login;
 use shared::{DownMsg, UpMsg};
 
 use moon::*;
