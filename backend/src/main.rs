@@ -2,6 +2,12 @@ mod up_msg_handler;
 use shared::{DownMsg, UpMsg};
 
 use moon::*;
+use aragog::query::{Comparison, Filter, QueryResult};
+use moon::actix_web::web::Data;
+use serde::de::Unexpected::Str;
+use std::borrow::Borrow;
+use aragog::DatabaseConnection;
+
 
 async fn frontend() -> Frontend {
     Frontend::new()
@@ -33,8 +39,41 @@ async fn up_msg_handler(req: UpMsgRequest<UpMsg>) {
     println!("Cannot find the session with id `{}`", session_id);
 }
 
+
+// ------### ArangoDb-Aragog ##### --------
+// Collections in Db: user, article
+
+
+
+
+//ArangoDb connection
+async fn aragog_connect() -> DatabaseConnection {
+    let db_connection = DatabaseConnection::builder()
+        .with_credentials("http://174.138.11.103:8529", "_system", "root", "ringrev")
+        .with_schema_path("backend/config/db/schema.yaml")
+        .apply_schema()
+        .build()
+        .await
+        .unwrap();
+    db_connection
+}
+// Returns all as query result from collection: user
+//async fn aragog_get_all_query_result(conn: &DatabaseConnection) -> QueryResult<user> {
+//    let query = user::query();
+//    let user_records = user::get(query, conn).await.unwrap();
+//    user_records
+//}
+
+
 #[moon::main]
 async fn main() -> std::io::Result<()> {
+    let connection = aragog_connect().await;
+
+    //Gets all entries as query result
+   // let records = aragog_get_all_query_result(&connection).await;
+   // println!("{:?}", records);
+
+
     start(frontend, up_msg_handler, |_| {}).await?;
     Ok(())
 }
