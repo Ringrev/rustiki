@@ -1,13 +1,13 @@
 use moon::*;
 use shared::{DownMsg, User};
 use anyhow::Result;
-use shared::DownMsg::LoginError;
+// use shared::DownMsg::LoginError;
 
 pub async fn handler(email: String, password: String) -> DownMsg {
     println!("login handler received: {}, {}", email, password);
-    login().map_or_else(|err| LoginError(format!("error: {:?}", err)), DownMsg::LoggedIn)
-    // let user = login();
-    // DownMsg::LoggedIn(user.unwrap())
+    // login().map_or_else(|err| LoginError(format!("error: {:?}", err)), DownMsg::LoggedIn)
+    let user = login();
+    DownMsg::LoggedIn(user.unwrap())
 }
 
 pub fn login() -> Result<User> {

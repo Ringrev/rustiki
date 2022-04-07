@@ -40,7 +40,7 @@ pub enum UpMsg {
 pub enum DownMsg {
 
     // // ------ Auth ------
-    LoginError(String),
+    // LoginError(String),
     LoggedIn(User),
     // LoggedOut,
     // AuthorizationError(String),
