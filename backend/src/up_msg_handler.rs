@@ -1,6 +1,6 @@
 use moon::*;
 use shared::{UpMsg, DownMsg};
-use crate::login;
+mod login;
 
 // What you receive from frontend and what you do with it
 pub async fn handler(req: UpMsgRequest<UpMsg>) -> Result<DownMsg, Option<DownMsg>> {
