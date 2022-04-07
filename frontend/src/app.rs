@@ -1,4 +1,4 @@
-use zoon::{format, *, Element};
+use zoon::{format, *, Element, eprintln};
 use zoon::*;
 use zoon::named_color::GRAY_0;
 use shared::{Article, DownMsg, UpMsg, User};

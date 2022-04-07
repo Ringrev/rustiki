@@ -49,7 +49,7 @@ pub enum UpMsg {
 pub enum DownMsg {
 
     // // ------ Auth ------
-    // LoginError(String),
+    LoginError(String),
     LoggedIn(User),
     Articles(Vec<Article>)
     // LoggedOut,
