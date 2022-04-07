@@ -1,4 +1,4 @@
-use zoon::{format, *, Element};
+use zoon::{format, *, Element, eprintln};
 use zoon::*;
 use zoon::named_color::GRAY_0;
 use shared::{DownMsg, UpMsg, User};
@@ -27,39 +27,12 @@ pub fn root() -> impl Element {
 
 }
 
-#[static_ref]
-fn user() -> &'static Mutable<String> {
-    Mutable::new("no user".to_string())
-}
-
-pub fn set_user(usr: User) {
-    user().set(usr.email.to_string());
-}
-
-pub fn test_login() {
-    Task::start(async {
-        let msg = UpMsg::Login {
-            email: "linda@linda".to_string(),
-            password: "oigiojgoie".to_string(),
-        };
-        if let Err(error) = connection().send_up_msg(msg).await {
-            let error = error.to_string();
-            // eprintln!("login request failed: {}", error);
-        }
-    })
-}
-
 // ------ front page content ------
 
 fn front_page() -> impl Element {
     Column::new()
         .s(Padding::new().top(50))
         .item(placeholder_text())
-        .item(Button::new()
-            .label("Get user")
-            .s(Background::new().color(GRAY_0))
-            .on_press(test_login))
-        .item(Text::with_signal(user().signal_cloned()))
 }
 
 fn placeholder_text() -> impl Element {
