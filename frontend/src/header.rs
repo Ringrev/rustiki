@@ -32,7 +32,7 @@ fn auth_token() -> &'static Mutable<String> {
 }
 
 pub fn set_logged_in_user_and_token(user: User) {
-    logged_in_user().set(user.email);
+    logged_in_user().set(user.username);
     auth_token().set(user.auth_token);
 }
 

@@ -2,9 +2,12 @@ use std::fmt::Debug;
 use moon::*;
 use shared::{DownMsg, User};
 use anyhow::Result;
+use aragog::{DatabaseConnection, Record};
+use aragog::query::{Comparison, Filter};
 use fireauth::FireAuth;
 use moon::futures::future::err;
 use shared::DownMsg::LoginError;
+use crate::up_msg_handler::registration::user;
 
 
 pub async fn handler(auth: FireAuth, email: String, password: String) -> DownMsg {
@@ -29,12 +32,11 @@ pub async fn login(auth: FireAuth, email: String, password: String) -> (String, 
             res = String::from("Ok");
             println!("{:?}", response);
             user = User {
-                id: response.local_id.to_string(),
+                id: response.local_id.to_string().clone(),
                 email: response.email.to_string(),
-                username: "".to_string(),
+                username: get_username(response.local_id.to_string()).await,
                 auth_token: response.id_token.to_string()
             }
-            // TODO: get current user from db to get their username
         }
         Err(error) => {  println!("Error from firebase: {:?}", error.clone());
         // res = error.clone().to_string();
@@ -42,4 +44,18 @@ pub async fn login(auth: FireAuth, email: String, password: String) -> (String, 
     }
 
     (res, user)
+}
+
+async fn get_username(id: String) -> String {
+    let conn = DatabaseConnection::builder()
+        .with_credentials("http://174.138.11.103:8529", "_system", "root", "ringrev")
+        .with_schema_path("backend/config/db/schema.yaml")
+        .apply_schema()
+        .build()
+        .await
+        .unwrap();
+    let query = user::query().filter(Filter::new(Comparison::field("id").equals_str(id.as_str())));
+    let user_record = user::get(query, &conn).await.unwrap().uniq().unwrap();
+    let res = user_record.username.to_string();
+    res
 }

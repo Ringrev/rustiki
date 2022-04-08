@@ -17,31 +17,16 @@ pub struct user {
     pub id: String,
     pub email: String,
     pub username: String,
-    pub auth_token: String,
 }
 
 pub async fn handler(auth: FireAuth, email: String, password: String, username: String) -> DownMsg {
-    let res = register(auth, email.clone(), password.clone()).await;
+    let (res, user) = register(auth, email.clone(), password.clone()).await;
     if res.eq("Ok") {
+        // Creates a User object in database
+        create_user_in_db(user.id, email.clone(), username).await;
         println!("User created: {:?}", res);
         let (result, user) = login(firebase::init().await, email.clone(), password).await;
         if result.eq("Ok") {
-            // TODO: create a User object in database
-            let conn = DatabaseConnection::builder()
-                .with_credentials("http://174.138.11.103:8529", "_system", "root", "ringrev")
-                .with_schema_path("backend/config/db/schema.yaml")
-                .apply_schema()
-                .build()
-                .await
-                .unwrap();
-            let db_user = user {
-                id: user.clone().id,
-                email: email.clone(),
-                username,
-                auth_token: user.clone().auth_token,
-            };
-            DatabaseRecord::create(db_user, &conn).await.unwrap();
-
             DownMsg::LoggedIn(user.clone())
         } else {
             DownMsg::LoginError(result)
@@ -51,11 +36,38 @@ pub async fn handler(auth: FireAuth, email: String, password: String, username: 
     }
 }
 
-pub async fn register(auth: FireAuth, email: String, password: String) -> String {
+pub async fn register(auth: FireAuth, email: String, password: String) -> (String, User) {
+    let mut user = User {
+        id: "".to_string(),
+        email: "".to_string(),
+        username: "".to_string(),
+        auth_token: "".to_string()
+    };
     let mut res: String = "".to_string();
     match auth.sign_up_email(&*email, &*password, true).await {
-        Ok(..) => { res = "Ok".to_string() }
+        Ok(response) => {
+            res = String::from("Ok");
+            println!("{:?}", response);
+            user = User {
+                id: response.local_id.to_string().clone(),
+                email: response.email.to_string(),
+                username: "".to_string(),
+                auth_token: response.id_token.to_string()
+            }
+        }
         Err(error) => { res = error.to_string() }
     }
-    res
+    (res, user)
+}
+
+async fn create_user_in_db(id: String, email: String, username: String) {
+    let conn = DatabaseConnection::builder()
+        .with_credentials("http://174.138.11.103:8529", "_system", "root", "ringrev")
+        .with_schema_path("backend/config/db/schema.yaml")
+        .apply_schema()
+        .build()
+        .await
+        .unwrap();
+    let db_user = user { id, email, username };
+    DatabaseRecord::create(db_user, &conn).await.unwrap();
 }
