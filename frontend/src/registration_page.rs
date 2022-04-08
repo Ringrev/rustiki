@@ -32,7 +32,7 @@ fn error_message() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
-fn set_error_msg(msg: String) {
+pub fn set_error_msg(msg: String) {
     error_message().set(msg);
 }
 

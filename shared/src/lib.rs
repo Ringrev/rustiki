@@ -47,6 +47,7 @@ pub enum DownMsg {
 
     // // ------ Auth ------
     LoginError(String),
+    RegistrationError(String),
     LoggedIn(User),
     // LoggedOut,
     // AuthorizationError(String),
