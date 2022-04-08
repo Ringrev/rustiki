@@ -11,18 +11,18 @@ pub async fn handler(id: String) -> DownMsg {
     DownMsg::Articles(articles.unwrap())
 }
 
-/*pub fn article() -> Vec<Article> {
+pub fn article() -> Vec<Article> {
     let article = Article {
         id: "test id artikkel".to_string(),
     };
 
     Ok(article)
-}*/
+}
 
-let result = aragog_get_all(&connection).await;
+/*let result = aragog_get_all(&connection).await;
 let mut records: Vec<test_collection> = vec![];
 for user in &result {
 println!("{:?}", &user.record);
 records.push(user.record.clone());
-}
+}*/
 
