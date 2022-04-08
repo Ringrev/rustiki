@@ -31,9 +31,9 @@ pub fn root() -> impl Element {
 fn user() -> &'static Mutable<String> {
     Mutable::new("no user".to_string())
 }
-fn articles() -> &'static Mutable<Vec<Article>> {
+/*fn articles() -> &'static Mutable<Vec<String>> {
     Mutable::new("no article".to_string())
-}
+}*/
 
 pub fn set_user(usr: User) {
     user().set(usr.email.to_string());
@@ -52,13 +52,13 @@ pub fn test_login() {
     })
 }
 
-pub fn set_article(rtcl: Article) {
+/*pub fn set_article(rtcl: Article) {
     article().set(rtcl.id.to_string());
-}
+}*/
 
-pub fn test_get_article() {
+pub fn test_get_articles() {
     Task::start(async {
-        let msg = UpMsg::Article {
+        let msg = UpMsg::GetArticles {
             id: "artikkel ID ".to_string(),
         };
         if let Err(error) = connection().send_up_msg(msg).await {
@@ -66,6 +66,14 @@ pub fn test_get_article() {
             // eprintln!("login request failed: {}", error);
         }
     })
+}
+
+pub fn set_articles(vec:Vec<String>){
+    articles().set(vec);
+}
+#[static_ref]
+fn articles() -> &'static Mutable<Vec<String>> {
+    Mutable::new(vec![])
 }
 
 // ------ front page content ------
@@ -78,11 +86,8 @@ fn front_page() -> impl Element {
             .label("Get user")
             .s(Background::new().color(GRAY_0))
             .on_press(test_login))
-        .item(Button::new()
-            .label("Get article")
-            .s(Background::new().color(GRAY_0))
-            .on_press(test_get_article())
-        .item(Text::with_signal(user().signal_cloned()))
+        .item(Button::new().label("Get articles").on_press(test_get_articles))
+        //.item(Paragraph::new().content(articles().get_cloned().first().unwrap().as_str()))
 }
 
 fn placeholder_text() -> impl Element {
