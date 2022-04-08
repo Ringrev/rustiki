@@ -21,10 +21,10 @@ pub enum PageName {
 
 pub fn root() -> impl Element {
     Column::new()
+        .s(Height::screen())
         .item(header())//navbar placeholder
         .item(page())
-        .item(footer())
-
+        .item(footer()).s(Align::bottom(Default::default()))
 }
 
 // ------ front page content ------
@@ -37,7 +37,7 @@ fn front_page() -> impl Element {
 
 fn placeholder_text() -> impl Element {
     El::new()
-        .s(Padding::top(Default::default(), 500))
+        // .s(Padding::top(Default::default(), 500))
         // .child("Rustiki!").s(Font::new().size(40).color(hsluv!(18,100,48,100)))
         .s(Align::new().center_x())
         .s(Align::new().center_y())
