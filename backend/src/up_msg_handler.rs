@@ -4,8 +4,6 @@ mod login;
 mod article;
 use fireauth;
 use crate::firebase::init;
-
-mod login;
 mod registration;
 
 // What you receive from frontend and what you do with it

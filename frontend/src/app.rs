@@ -87,8 +87,28 @@ fn front_page() -> impl Element {
             .s(Background::new().color(GRAY_0))
             .on_press(test_login))
         .item(Button::new().label("Get articles").on_press(test_get_articles))
-        //.item(Paragraph::new().content(articles().get_cloned().first().unwrap().as_str()))
+        .item(Button::new().label("Show articles").on_press(show_article))
+        .item(Text::with_signal(first_article().signal_cloned()))
 }
+
+#[static_ref]
+pub fn first_article() -> &'static Mutable<String> {
+    Mutable::new("placeholder for article".to_string())
+}
+
+pub fn show_article() {
+    let mut article = "".to_string();
+    for a in articles().get_cloned() {
+        article = a;
+    }
+    first_article().set(article);
+}
+
+/*fn unpack_article_vector(vektor nr ){
+    let v =
+
+    return v
+}*/
 
 fn placeholder_text() -> impl Element {
     El::new()
