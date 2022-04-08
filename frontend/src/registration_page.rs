@@ -7,6 +7,8 @@ use zoon::text_input::{InputTypePassword, InputTypeText};
 use zoon::web_sys::HtmlTextAreaElement;
 use shared::UpMsg;
 use crate::connection;
+use crate::router::{Route, router};
+
 
 
 pub fn page() -> impl Element {
@@ -56,6 +58,7 @@ fn register_user() {
                 let error = error.to_string();
                 set_error_msg(error.clone());
             }
+            router().go(Route::Root);
         });
     } else {
         set_error_msg(String::from("Passwords do not match. Please try again."));

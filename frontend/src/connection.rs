@@ -9,7 +9,7 @@ pub fn connection() -> &'static Connection<UpMsg, DownMsg> {
 
         match down_msg {
             // ------ Auth ------
-            DownMsg::LoggedIn(user) => header::set_logged_in_user_and_token(user),
+            DownMsg::LoggedIn(user) => app::set_logged_in_user_and_token(user),
             DownMsg::LoginError(string) => log_in_page::set_login_error(string),
             DownMsg::RegistrationError(string) => registration_page::set_error_msg(string),
         }

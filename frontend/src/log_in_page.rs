@@ -6,6 +6,7 @@ use zoon::text_input::{InputTypePassword, InputTypeText};
 use zoon::web_sys::HtmlTextAreaElement;
 use shared::UpMsg;
 use crate::{app, connection};
+use crate::router::{Route, router};
 
 
 pub fn page() -> impl Element {
@@ -48,6 +49,7 @@ pub fn login() {
             user_name_text().set("".to_string());
             password_text().set("".to_string());
         }
+        router().go(Route::Root);
     });
 }
 
@@ -77,7 +79,7 @@ fn user_name_text_label(id: &str) -> impl Element {
         .s(Font::new().color(hsluv!(0,0,0,100)))
         .s(Padding::all(0))
         .for_input(id)
-        .label("User:")
+        .label("Email address:")
 }
 
 fn set_user_name(user_name: String) {
@@ -97,7 +99,7 @@ fn user_name_text_input(id: &str) -> impl Element {
             .color(hsluv!(0,0,0,20))]))
         .id(id)
         .on_change(set_user_name)
-        .placeholder(Placeholder::new("Your user id "))
+        .placeholder(Placeholder::new("Your email address "))
         .text_signal(user_name_text().signal_cloned())
 }
 // Password start
@@ -176,7 +178,7 @@ fn log_in_button() -> impl Element {
         .s(Padding::new().y(10).x(15))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .label("Log in")
-        .on_press(login)
+        .on_click(login)
 }
 
 fn cancel_button() -> impl Element {

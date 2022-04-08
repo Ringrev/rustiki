@@ -2,11 +2,49 @@ use zoon::{format, *, Element, eprintln};
 use zoon::*;
 use zoon::named_color::GRAY_0;
 use shared::{DownMsg, UpMsg, User};
-use crate::{new_article_page, registration_page, header::header, log_in_page, router::{previous_route, router, Route}};
+use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}};
 use crate::footer::footer;
 use crate::connection::connection;
+use crate::header::{header};
+
+pub static USER_TOKEN: &str = "token";
 
 // ------ page names ------
+
+pub fn is_user_logged_signal() -> impl Signal<Item = bool> {
+    logged_user().signal_ref(Option::is_some)
+}
+
+pub fn is_user_logged() -> bool {
+    logged_user().map(Option::is_some)
+}
+
+#[static_ref]
+pub fn logged_user() -> &'static Mutable<Option<User>> {
+    Mutable::new(None)
+}
+
+#[static_ref]
+pub fn logged_user_name() -> &'static Mutable<String> {
+    Mutable::new("".to_string())
+}
+
+pub fn log_out() {
+    auth_token().set(None);
+    logged_user().set(None);
+    logged_user_name().set("".to_string());
+}
+
+#[static_ref]
+pub fn auth_token() -> &'static Mutable<Option<String>> {
+    Mutable::new(None)
+}
+
+pub fn set_logged_in_user_and_token(user: User) {
+    logged_user().set(Some(user.clone()));
+    logged_user_name().set(Some(user.clone()).unwrap().username);
+    auth_token().set(Some(user.clone().auth_token));
+}
 
 #[derive(Clone, Copy, PartialEq, PartialOrd)]
 pub enum PageName {
