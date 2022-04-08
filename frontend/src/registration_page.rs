@@ -15,10 +15,9 @@ pub fn page() -> impl Element {
             .s(Width::new(800))
             .s(Background::new().color(hsluv!(0,0,0,5)))
         .item(Column::new()
-            .s(Align::left(Default::default()))
             .s(Align::center())
             .s(Padding::new().x(100).y(20))
-            .item(Paragraph::new().content("Create user id: "))
+            .item(Paragraph::new().content("Create a user account").s(Font::new().size(20)).s(Padding::bottom(Default::default(), 20)))
             .item(email_panel())
             .item(user_name_panel())
             .item(password_panel())
@@ -268,6 +267,7 @@ fn retyped_password_text_input(id: &str) -> impl Element {
         .placeholder(Placeholder::new("Your password"))
         .text_signal(retyped_password_text().signal_cloned())
         .input_type(InputTypePassword::default())
+        .on_key_down_event(|event| event.if_key(Key::Enter, register_user))
 }
 
 // Retyped retyped_password end
@@ -277,10 +277,10 @@ fn retyped_password_text_input(id: &str) -> impl Element {
 
 fn button_panel() -> impl Element {
     Row::new()
-        .item(cancel_button())
+        // .item(cancel_button())
         .item(create_button())
         .s(Spacing::new(10))
-        .s(Align::right(Default::default()))
+        .s(Align::center())
 }
 
 fn create_button() -> impl Element {
@@ -291,7 +291,7 @@ fn create_button() -> impl Element {
             .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
         .s(Padding::new().y(10).x(15))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Create")
+        .label("Create user")
         .on_press(register_user)
 }
 

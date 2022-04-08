@@ -39,7 +39,7 @@ pub async fn login(auth: FireAuth, email: String, password: String) -> (String, 
             }
         }
         Err(error) => {  println!("Error from firebase: {:?}", error.clone());
-        // res = error.clone().to_string();
+            // res = error.clone().to_string();
         res = String::from("Incorrect input, please try again.")}
     }
 
