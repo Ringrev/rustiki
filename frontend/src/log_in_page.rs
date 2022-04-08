@@ -14,15 +14,13 @@ pub fn page() -> impl Element {
         .s(Width::new(800))
         .s(Background::new().color(hsluv!(0,0,0,5)))
         .item(Column::new()
-            .s(Align::left(Default::default()))
             .s(Align::center())
             .s(Padding::new().x(100).y(20))
-            .item(Paragraph::new().content("Log in"))
+            .item(Paragraph::new().content("Log in").s(Font::new().size(20)).s(Padding::bottom(Default::default(), 20)))
             .item(user_name_panel())
             .item(password_panel())
             .item(Text::with_signal(login_error().signal_cloned()))
         )
-
         .item(button_panel())
 }
 
@@ -162,7 +160,7 @@ fn password_text_input(id: &str) -> impl Element {
 
 fn button_panel() -> impl Element {
     Row::new()
-        .item(cancel_button())
+        // .item(cancel_button())
         .item(log_in_button())
         //.item(registration_button())
         .s(Spacing::new(10))
@@ -192,15 +190,3 @@ fn cancel_button() -> impl Element {
         .label("Cancel")
     // .on_press()
 }
-
-/*fn registration_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Button::new()
-        .s(Font::new().size(16).color(GRAY_0))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Padding::new().y(10).x(15))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Registration")
-    // .on_press()
-}*/
