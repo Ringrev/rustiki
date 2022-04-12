@@ -1,14 +1,64 @@
+use std::borrow::Borrow;
+use std::sync::Arc;
 use zoon::{format, *, Element, eprintln};
 use zoon::*;
 use zoon::named_color::GRAY_0;
-use shared::{DownMsg, UpMsg, User};
+use shared::{DownMsg, UpMsg, User, Article};
 use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}};
 use crate::footer::footer;
 use crate::connection::connection;
 use crate::header::{header};
 
+pub mod view;
+
 // Can be used for local storage of token later
 // pub static USER_TOKEN: &str = "token";
+
+////////////////////////////////////
+// ------ article stuff ------
+////////////////////////////////////
+
+fn filtered_articles() -> impl SignalVec<Item = Arc<Article>> {
+    articles()
+        .signal_vec_cloned()
+        .map(|todo|  todo.clone())
+}
+
+#[static_ref]
+fn articles() -> &'static MutableVec<Arc<Article>> {
+    MutableVec::new()
+}
+
+fn articles_count() -> impl Signal<Item = usize> {
+    articles().signal_vec_cloned().len()
+}
+
+fn articles_exist() -> impl Signal<Item = bool> {
+    articles_count().map(|count| count != 0).dedupe()
+}
+
+fn set_articles(vec: Vec<Arc<Article>>) {
+    articles().update_mut(|art| {
+        art.clear();
+        art.extend(vec);
+    })
+}
+
+fn test_set_articles() {
+    let article_1 = Article {
+        id: "This is an ID".to_string(),
+        name: "This is a NAME".to_string(),
+    };
+    let article_2 = Article {
+        id: "2nd ID".to_string(),
+        name: "2nd NAME".to_string(),
+    };
+    let article_list = vec![Arc::new(article_1), Arc::new(article_2)];
+    articles().update_mut(|art| {
+        art.clear();
+        art.extend(article_list);
+    });
+}
 
 ////////////////////////////////////
 // ------ logged in/out state ------
@@ -70,39 +120,14 @@ pub enum PageName {
     Unknown,
 }
 
-// ------ content visible on all pages ------
-
-pub fn root() -> impl Element {
-    Column::new()
-        .s(Height::screen())
-        .item(header())//navbar placeholder
-        .item(page())
-        .item(footer()).s(Align::bottom(Default::default()))
-}
-
-// ------ front page content ------
-
-fn front_page() -> impl Element {
-    Column::new()
-        .s(Padding::new().top(50))
-        .item(placeholder_text())
-}
-
-fn placeholder_text() -> impl Element {
-    El::new()
-        // .s(Padding::top(Default::default(), 500))
-        // .child("Rustiki!").s(Font::new().size(40).color(hsluv!(18,100,48,100)))
-        .s(Align::new().center_x())
-        .s(Align::new().center_y())
-}
-
 /////////////////////////////
 // ------ page routing ------
 /////////////////////////////
 
 fn page() -> impl Element {
+    test_set_articles();
     El::new().child_signal(page_name().signal().map(|page_name| match page_name {
-        PageName::Home => front_page().into_raw_element(),
+        PageName::Home => view::front_page().into_raw_element(),
         PageName::Unknown => El::new().child("404").into_raw_element(),
         PageName::NewArticle => new_article_page::page().into_raw_element(),
         PageName::Registration => registration_page::page().into_raw_element(),

@@ -20,5 +20,5 @@ mod connection;
 #[wasm_bindgen(start)]
 pub fn start() {
      router::router();
-     start_app("app", app::root);
+     start_app("app", app::view::root);
 }

@@ -63,9 +63,9 @@ pub enum DownMsg {
 
 // ------ Transfer objects ------
 
-// #[derive(Debug, Serialize, Deserialize)]
-// #[serde(crate = "serde")]
-// pub struct Article {
-//     pub id: String,
-//     pub name: String,
-// }
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(crate = "serde")]
+pub struct Article {
+    pub id: String,
+    pub name: String,
+}
