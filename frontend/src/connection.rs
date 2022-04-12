@@ -11,6 +11,9 @@ pub fn connection() -> &'static Connection<UpMsg, DownMsg> {
             // ------ Auth ------
             DownMsg::LoggedIn(user) => header::set_logged_in_user_and_token(user),
             DownMsg::LoginError(string) => log_in_page::set_login_error(string),
+
+            // ----- Article -------
+            DownMsg::ArticleAdded(text) => println!("Article added"),
         }
     })
 }

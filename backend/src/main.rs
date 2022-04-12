@@ -1,6 +1,7 @@
 mod up_msg_handler;
 mod firebase;
-use shared::{DownMsg, UpMsg};
+use shared::{Article, DownMsg, UpMsg};
+use up_msg_handler::add_article;
 
 use moon::*;
 use aragog::query::{Comparison, Filter, QueryResult};
@@ -8,6 +9,9 @@ use moon::actix_web::web::Data;
 use serde::de::Unexpected::Str;
 use std::borrow::Borrow;
 use aragog::DatabaseConnection;
+use UpMsg::AddArticle;
+use crate::add_article::create_article_in_db;
+use crate::up_msg_handler::handler;
 
 
 async fn frontend() -> Frontend {
@@ -73,6 +77,7 @@ async fn main() -> std::io::Result<()> {
     //Gets all entries as query result
    // let records = aragog_get_all_query_result(&connection).await;
    // println!("{:?}", records);
+
 
 
     start(frontend, up_msg_handler, |_| {}).await?;

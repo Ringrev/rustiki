@@ -1,5 +1,10 @@
 use moonlight::*;
 
+
+
+
+
+
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(crate = "serde")]
 pub struct User {
@@ -8,6 +13,8 @@ pub struct User {
     pub auth_token: String,
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(crate = "serde")]
 pub struct Article {
     //pub id: String,
     pub title: String,
@@ -33,9 +40,12 @@ pub enum UpMsg {
     // AddOrganization(OrganizationId, String),
     // RemoveOrganization(OrganizationId),
     //---- Article -----
-    GetArticles,
-    AddArticle(ArticleId, String),
-    RemoveArticle(ArticleId),
+    //GetArticles,
+    AddArticle {
+        title: String,
+        content: String,
+    },
+    //RemoveArticle(ArticleId),
 
 
 
@@ -64,9 +74,9 @@ pub enum DownMsg {
     // OrganizationAdded,
     // OrganizationRemoved,
     //------Article-----
-    Articles(Vec<Articles>),
-    ArticleAdded,
-    ArticleRemoved,
+   // Articles(Vec<Articles>),
+    ArticleAdded(String),
+   // ArticleRemoved,
     // // ------ Mail ------
     // MailSent,
     // // ------ Other ------
