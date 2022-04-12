@@ -1,6 +1,8 @@
 use zoon::{*, println, eprintln};
 use shared::{UpMsg, DownMsg};
 use crate::*;
+use router::router;
+use crate::router::Route;
 
 #[static_ref]
 pub fn connection() -> &'static Connection<UpMsg, DownMsg> {
@@ -13,7 +15,8 @@ pub fn connection() -> &'static Connection<UpMsg, DownMsg> {
             DownMsg::LoginError(string) => log_in_page::set_login_error(string),
 
             // ----- Article -------
-            DownMsg::ArticleAdded(text) => println!("Article added"),
+            DownMsg::ArticleAdded(text) => { println!("Article added");
+            router().go(Route::Root)},
             DownMsg::RegistrationError(string) => registration_page::set_error_msg(string),
         }
     })
