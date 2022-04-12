@@ -46,12 +46,12 @@ fn set_articles(vec: Vec<Arc<Article>>) {
 
 fn test_set_articles() {
     let article_1 = Article {
-        id: "This is an ID".to_string(),
-        name: "This is a NAME".to_string(),
+        title: "This is a title".to_string(),
+        content: "This is a NAME".to_string(),
     };
     let article_2 = Article {
-        id: "2nd ID".to_string(),
-        name: "2nd NAME".to_string(),
+        title: "2nd ID".to_string(),
+        content: "2nd NAME".to_string(),
     };
     let article_list = vec![Arc::new(article_1), Arc::new(article_2)];
     articles().update_mut(|art| {

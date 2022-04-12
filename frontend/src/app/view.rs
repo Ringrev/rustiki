@@ -47,8 +47,8 @@ fn card(article: Arc<Article>) -> impl Element {
         .s(Background::new().color(hsluv!(0, 0, 100)))
         .s(Spacing::new(5))
         .s(Font::new().size(24))
-        .item(Paragraph::new().content(article.name.clone()))
-        .item(Paragraph::new().content(article.id.clone()))
+        .item(Paragraph::new().content(article.title.clone()))
+        .item(Paragraph::new().content(article.content.clone()))
 }
 
 
