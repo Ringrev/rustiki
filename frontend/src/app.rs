@@ -44,6 +44,18 @@ fn set_articles(vec: Vec<Arc<Article>>) {
     })
 }
 
+pub fn test_get_articles() {
+    Task::start(async {
+        let msg = UpMsg::GetArticles {
+            id: "artikkel ID ".to_string(),
+        };
+        if let Err(error) = connection().send_up_msg(msg).await {
+            let error = error.to_string();
+            // eprintln!("login request failed: {}", error);
+        }
+    })
+}
+
 fn test_set_articles() {
     let article_1 = Article {
         title: "This is a title".to_string(),
@@ -134,8 +146,6 @@ fn page() -> impl Element {
         PageName::LogIn => log_in_page::page().into_raw_element(),
     }))
 }
-
-
 
 #[static_ref]
 fn page_name() -> &'static Mutable<PageName> {

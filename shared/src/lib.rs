@@ -35,6 +35,9 @@ pub enum UpMsg {
         password: String,
         username: String,
     },
+    GetArticles {
+        id: String,
+    }
     // Logout,
     // // ------ Organization ------
     // GetOrganizations,
@@ -69,6 +72,7 @@ pub enum DownMsg {
     LoginError(String),
     RegistrationError(String),
     LoggedIn(User),
+    GetArticles(Vec<String>)
     // LoggedOut,
     // AuthorizationError(String),
     // // ------ Organization ------
