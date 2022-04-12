@@ -4,6 +4,8 @@ use zoon::{named_color::*, *};
 use zoon::dominator::routing::go_to_url;
 use shared::User;
 use crate::app::{logged_user_name, PageName};
+use crate::router::Route::Root;
+use crate::router::router;
 
 // ------ ------
 //     View
@@ -18,20 +20,15 @@ pub fn header() -> impl Element {
         .item(logo())
         .item(search_box())
         .item(button_row())
-        // .item_signal(app::is_user_logged_signal().map_true(logged_in_button_row))
-        // .item_signal(app::is_user_logged_signal().map_false(logged_out_button_row))
 }
 
+/// If clicked, user is sent to front page. Gets all articles from database too.
 fn logo() -> impl Element {
-    // Image::new()
-    //     .url("https://www.catastrophicreations.com/wp-content/uploads/2021/02/IMG_7465-2glance.jpg%22")
-    //     .description("A cat")
-    //     .s(Width::new(200))
-
     Link::new()
-        .to(Route::Root)
         .s(Font::new().size(50).weight(FontWeight::Bold))
         .label("Rustiki")
+        .to(Route::Root)
+        .on_click(app::reset_articles)
 }
 
 fn link(label: &str, route: Route) -> impl Element {
@@ -50,6 +47,23 @@ fn search_box() -> impl Element {
 
 }
 
+pub fn search() {
+    app::articles().lock_mut().retain(|art| art.title.to_lowercase().contains(search_query().get_cloned().to_lowercase().as_str()));
+}
+
+#[static_ref]
+fn search_query() -> &'static Mutable<String> {
+    Mutable::new("".to_string())
+}
+
+/// Sets the search query and if there is no search query, gets complete list of articles
+pub fn set_search_query(query: String) {
+    search_query().set(query);
+    if search_query().get_cloned().eq("") {
+        app::reset_articles();
+    }
+}
+
 fn search_bar() -> impl Element {
     TextInput::new()
         .s(Align::new().center_x())
@@ -59,7 +73,7 @@ fn search_bar() -> impl Element {
         .s(Font::new().size(16))
         .s(RoundedCorners::new().right(25).left(25))
         .focus(true)
-       // .on_change(super::set_new_message_text)
+        .on_change(set_search_query)
         .label_hidden("New message text")
         .placeholder(Placeholder::new("Search for Wiki"))
 
@@ -67,7 +81,7 @@ fn search_bar() -> impl Element {
 
 fn search_button() -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Button::new()
+    Link::new()
         .s(Padding::all(20))
         .s(RoundedCorners::new().right(5))
         .s(Background::new().color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
@@ -76,7 +90,9 @@ fn search_button() -> impl Element {
         .s(RoundedCorners::new().right(25).left(25))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         //.on_press(super::send_message)
+        .on_click(search)
         .label("Search")
+        .to(Route::Root)
 }
 
 fn button_row() -> impl Element {

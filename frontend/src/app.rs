@@ -1,4 +1,5 @@
 use std::borrow::Borrow;
+use std::ops::Deref;
 use zoon::{format, *, Element, eprintln};
 use zoon::*;
 use zoon::named_color::GRAY_0;
@@ -6,7 +7,7 @@ use shared::{DownMsg, UpMsg, User, Article};
 use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}};
 use crate::footer::footer;
 use crate::connection::connection;
-use crate::header::{header};
+use crate::header::{header, search};
 
 pub mod view;
 
@@ -24,9 +25,19 @@ fn filtered_articles() -> impl SignalVec<Item = Article> {
 }
 
 #[static_ref]
-fn articles() -> &'static MutableVec<Article> {
+pub fn articles() -> &'static MutableVec<Article> {
     MutableVec::new()
 }
+
+#[static_ref]
+pub fn original_articles() -> &'static MutableVec<Article> {
+    MutableVec::new()
+}
+
+// #[static_ref]
+// pub fn original_articles() -> &'static Vec<Article> {
+//     Vec::new()
+// }
 
 fn articles_count() -> impl Signal<Item = usize> {
     articles().signal_vec_cloned().len()
@@ -39,8 +50,20 @@ fn articles_exist() -> impl Signal<Item = bool> {
 pub fn set_articles(vec: Vec<Article>) {
     articles().update_mut(|art| {
         art.clear();
-        art.extend(vec);
+        art.extend(vec.clone());
+    });
+    original_articles().update_mut(|art| {
+        art.clear();
+        art.extend(vec.clone());
     })
+}
+
+pub fn reset_articles() {
+    articles().update_mut(|art| {
+        art.clear();
+        art.extend(original_articles().lock_mut().to_vec());
+    });
+
 }
 
 pub fn test_get_articles() {
@@ -51,22 +74,6 @@ pub fn test_get_articles() {
             // eprintln!("login request failed: {}", error);
         }
     })
-}
-
-fn test_set_articles() {
-    let article_1 = Article {
-        title: "This is a title".to_string(),
-        content: "This is a NAME".to_string(),
-    };
-    let article_2 = Article {
-        title: "2nd ID".to_string(),
-        content: "2nd NAME".to_string(),
-    };
-    let article_list = vec![article_1,article_2];
-    articles().update_mut(|art| {
-        art.clear();
-        art.extend(article_list);
-    });
 }
 
 ////////////////////////////////////
@@ -127,6 +134,7 @@ pub enum PageName {
     NewArticle,
     LogIn,
     Unknown,
+    Search,
 }
 
 /////////////////////////////
@@ -134,11 +142,10 @@ pub enum PageName {
 /////////////////////////////
 
 fn page() -> impl Element {
-    // test_set_articles();
-    test_get_articles();
     El::new().child_signal(page_name().signal().map(|page_name| match page_name {
         PageName::Home => view::front_page().into_raw_element(),
         PageName::Unknown => El::new().child("404").into_raw_element(),
+        PageName::Search => view::front_page().into_raw_element(),
         PageName::NewArticle => new_article_page::page().into_raw_element(),
         PageName::Registration => registration_page::page().into_raw_element(),
         PageName::LogIn => log_in_page::page().into_raw_element(),
