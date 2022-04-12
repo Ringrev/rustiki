@@ -1,3 +1,4 @@
+use std::sync::Arc;
 use zoon::*;
 use zoon::events::Input;
 use zoon::named_color::*;
@@ -19,6 +20,8 @@ pub fn page() -> impl Element {
             .item(title_panel())
             .item(Text::with_signal(title_text().signal_cloned()))
             .item(main_text_panel())
+            .item(tag_panel())
+            .item(tags_view())
         )
         .item(button_panel())
 }
@@ -160,4 +163,119 @@ fn cancel_button() -> impl Element {
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .label("Cancel")
         // .on_press()
+}
+
+
+// ------ tag label and input combined
+
+fn tag_panel() -> impl Element {
+    let id = "tag_input";
+    Column::new()
+        .s(Spacing::new(15))
+        .item(tag_label(id))
+        .s(Spacing::new(0))
+        .item(tag_input(id))
+}
+
+// ------ tag label
+
+fn tag_label(id: &str) -> impl Element {
+    Label::new()
+        .s(Font::new().color(hsluv!(0,0,0,100)))
+        .s(Padding::all(0))
+        .for_input(id)
+        .label("Add a tag:")
+}
+
+fn set_tag_text(tag: String) {
+    new_tag().set(tag);
+}
+
+// ------ tag input
+
+
+fn tag_input(id: &str) -> impl Element {
+    TextInput::new()
+        .s(Width::new(300))
+        .s(Padding::new().x(10).y(6))
+        .s(Shadows::new(vec![Shadow::new()
+            .inner()
+            .y(1)
+            .blur(2)
+            .color(hsluv!(0,0,0,20))]))
+        .id(id)
+        .on_change(set_tag_text)
+        .placeholder(Placeholder::new("Tag..."))
+        .text_signal(new_tag().signal_cloned())
+        .on_key_down_event(|event| event.if_key(Key::Enter, add_tag))
+}
+
+#[static_ref]
+fn tags() -> &'static MutableVec<Arc<Tag>> {
+    MutableVec::new()
+}
+
+#[static_ref]
+fn new_tag() -> &'static Mutable<String> {
+    Mutable::new(String::new())
+}
+
+#[static_ref]
+fn tag_id() -> &'static Mutable<i32> {
+    Mutable::new(0)
+}
+
+fn add_tag() {
+    let mut new_tag = new_tag().lock_mut();
+    let tag = new_tag.trim();
+    if tag.is_empty() {
+        return;
+    }
+    let tag = Tag {
+        id: tag_id().to_owned().get_cloned()+1,
+        text: tag.to_string(),
+    };
+    tag_id().update(|id|id+1);
+    tags().lock_mut().push_cloned(Arc::new(tag));
+    new_tag.clear();
+}
+
+fn tags_view() -> impl Element {
+    Row::new()
+        .items_signal_vec(tags().signal_vec_cloned().map(tag))
+        .s(Spacing::new(10))
+}
+
+fn tag(tag: Arc<Tag>) -> impl Element {
+    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
+
+    Row::new()
+        .item(Label::new()
+            .for_input(tag.id)
+            .label(tag.text.to_string())
+            .element_on_right( remove_tag_button(&tag)))
+        .s(Padding::new().x(10))
+        .s(Background::new().color(GRAY_2))
+        .s(RoundedCorners::all(10))
+}
+
+fn remove_tag(id: i32) {
+    tags().lock_mut().retain(|tag| tag.id != id)
+}
+
+fn remove_tag_button(tag: &Tag) -> impl Element {
+    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
+    let id = tag.id;
+    Button::new()
+        .s(Font::new().size(20).color_signal(
+            hovered_signal.map_bool(|| GRAY_9, || GRAY_4),
+        ))
+        .on_hovered_change(move |is_hovered| hovered.set_neq(is_hovered))
+        .on_press(move || remove_tag(id))
+        .label("×")
+}
+
+struct Tag {
+    id: i32,
+    text: String,
 }
