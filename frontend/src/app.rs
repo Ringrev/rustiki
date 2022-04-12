@@ -54,6 +54,7 @@ pub fn set_logged_in_user_and_token(user: User) {
     logged_in_user().set(Some(user.clone()));
     logged_user_name().set(Some(user.clone()).unwrap().username);
     auth_token().set(Some(user.clone().auth_token));
+    router().go(Route::Root);
 }
 
 /////////////////////////////

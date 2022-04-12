@@ -1,3 +1,4 @@
+use std::{thread, time};
 use zoon::{*, eprintln};
 use zoon::events::Input;
 use zoon::named_color::*;
@@ -10,6 +11,8 @@ use crate::router::{Route, router};
 
 
 pub fn page() -> impl Element {
+    user_name_text().set("".to_string());
+    password_text().set("".to_string());
     Column::new()
         .s(Align::center())
         .s(Width::new(800))
@@ -45,11 +48,8 @@ pub fn login() {
         if let Err(error) = connection::connection().send_up_msg(msg).await {
             let error = error.to_string();
             set_login_error(error.clone());
-            eprintln!("login request failed: {}", error);
-            user_name_text().set("".to_string());
-            password_text().set("".to_string());
+            eprintln!("Login request failed: {}", error);
         }
-        router().go(Route::Root);
     });
 }
 

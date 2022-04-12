@@ -1,4 +1,8 @@
+use std::ops::Deref;
+use std::{thread, time};
+use std::thread::Thread;
 use zoon::*;
+use zoon::console::error;
 use zoon::events::Input;
 use zoon::future::err;
 use zoon::named_color::*;
@@ -9,9 +13,11 @@ use shared::UpMsg;
 use crate::connection;
 use crate::router::{Route, router};
 
-
-
 pub fn page() -> impl Element {
+    email_text().set("".to_string());
+    user_name_text().set("".to_string());
+    password_text().set("".to_string());
+    retyped_password_text().set("".to_string());
         Column::new()
             .s(Align::center())
             .s(Width::new(800))
@@ -49,6 +55,7 @@ fn passwords_match() -> bool {
 fn register_user() {
     if passwords_match() {
         Task::start(async {
+            error_message().set("".to_string());
             let msg = UpMsg::Register {
                 email: email_text().get_cloned(),
                 username: user_name_text().get_cloned(),
@@ -58,7 +65,6 @@ fn register_user() {
                 let error = error.to_string();
                 set_error_msg(error.clone());
             }
-            router().go(Route::Root);
         });
     } else {
         set_error_msg(String::from("Passwords do not match. Please try again."));
@@ -141,7 +147,7 @@ fn user_name_text_label(id: &str) -> impl Element {
         .s(Font::new().color(hsluv!(0,0,0,100)))
         .s(Padding::all(0))
         .for_input(id)
-        .label("User:")
+        .label("Username:")
 }
 
 fn set_user_name(user_name: String) {

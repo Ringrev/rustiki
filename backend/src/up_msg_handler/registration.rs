@@ -22,7 +22,7 @@ pub struct user {
 
 pub async fn handler(auth: FireAuth, email: String, password: String, username: String) -> DownMsg {
     if !check_username_unique(username.clone()).await {
-        return DownMsg::RegistrationError("Username not available".to_string());
+        return DownMsg::RegistrationError("Invalid username".to_string());
     }
     let (res, user) = register(auth, email.clone(), password.clone()).await;
     if res.eq("Ok") {
