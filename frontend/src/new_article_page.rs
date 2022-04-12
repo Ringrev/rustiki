@@ -5,6 +5,9 @@ use zoon::named_color::*;
 use zoon::Tag::Header;
 use zoon::text_input::InputTypeText;
 use zoon::web_sys::HtmlTextAreaElement;
+use shared::UpMsg;
+use shared::UpMsg::AddArticle;
+use crate::connection;
 
 
 pub fn page() -> impl Element {
@@ -24,6 +27,32 @@ pub fn page() -> impl Element {
             .item(tags_view())
         )
         .item(button_panel())
+}
+
+
+//------ Add Article -------
+#[static_ref]
+fn error_message() -> &'static Mutable<String> {
+    Mutable::new("".to_string())
+}
+
+pub fn set_error_msg(msg: String) {
+    error_message().set(msg);
+}
+
+//TODO Add error handlers and response to user on article added Ok.
+pub fn add_article() {
+    Task::start(async {
+        let msg = UpMsg::AddArticle {
+            title: title_text().get_cloned(),
+            //TODO change content when implemented in frontend with js quill.
+            content: main_text().get_cloned(),
+        };
+        if let Err(error) = connection::connection().send_up_msg(msg).await {
+            let error = error.to_string();
+            //set_error.msg(error.clone());
+        }
+    });
 }
 
 // ------ state of title
@@ -150,7 +179,7 @@ fn publish_button() -> impl Element {
         .s(Padding::new().y(10).x(15))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .label("Publish")
-        // .on_press()
+        .on_press(add_article)
 }
 
 fn cancel_button() -> impl Element {
