@@ -1,3 +1,4 @@
+use std::sync::Arc;
 use moonlight::*;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -35,9 +36,7 @@ pub enum UpMsg {
         password: String,
         username: String,
     },
-    GetArticles {
-        id: String,
-    }
+    GetArticles,
     // Logout,
     // // ------ Organization ------
     // GetOrganizations,
@@ -72,7 +71,7 @@ pub enum DownMsg {
     LoginError(String),
     RegistrationError(String),
     LoggedIn(User),
-    GetArticles(Vec<String>)
+    Articles(Vec<Article>),
     // LoggedOut,
     // AuthorizationError(String),
     // // ------ Organization ------
