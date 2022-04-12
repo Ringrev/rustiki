@@ -1,5 +1,4 @@
 use std::borrow::Borrow;
-use std::sync::Arc;
 use zoon::{format, *, Element, eprintln};
 use zoon::*;
 use zoon::named_color::GRAY_0;
@@ -18,14 +17,14 @@ pub mod view;
 // ------ article stuff ------
 ////////////////////////////////////
 
-fn filtered_articles() -> impl SignalVec<Item = Arc<Article>> {
+fn filtered_articles() -> impl SignalVec<Item = Article> {
     articles()
         .signal_vec_cloned()
         .map(|todo|  todo.clone())
 }
 
 #[static_ref]
-fn articles() -> &'static MutableVec<Arc<Article>> {
+fn articles() -> &'static MutableVec<Article> {
     MutableVec::new()
 }
 
@@ -37,10 +36,20 @@ fn articles_exist() -> impl Signal<Item = bool> {
     articles_count().map(|count| count != 0).dedupe()
 }
 
-fn set_articles(vec: Vec<Arc<Article>>) {
+pub fn set_articles(vec: Vec<Article>) {
     articles().update_mut(|art| {
         art.clear();
         art.extend(vec);
+    })
+}
+
+pub fn test_get_articles() {
+    Task::start(async {
+        let msg = UpMsg::GetArticles;
+        if let Err(error) = connection().send_up_msg(msg).await {
+            let error = error.to_string();
+            // eprintln!("login request failed: {}", error);
+        }
     })
 }
 
@@ -53,7 +62,7 @@ fn test_set_articles() {
         title: "2nd ID".to_string(),
         content: "2nd NAME".to_string(),
     };
-    let article_list = vec![Arc::new(article_1), Arc::new(article_2)];
+    let article_list = vec![article_1,article_2];
     articles().update_mut(|art| {
         art.clear();
         art.extend(article_list);
@@ -126,7 +135,8 @@ pub enum PageName {
 /////////////////////////////
 
 fn page() -> impl Element {
-    test_set_articles();
+    // test_set_articles();
+    test_get_articles();
     El::new().child_signal(page_name().signal().map(|page_name| match page_name {
         PageName::Home => view::front_page().into_raw_element(),
         PageName::Unknown => El::new().child("404").into_raw_element(),
@@ -136,8 +146,6 @@ fn page() -> impl Element {
         PageName::ViewArticle => view_article_page::page().into_raw_element(),
     }))
 }
-
-
 
 #[static_ref]
 fn page_name() -> &'static Mutable<PageName> {
