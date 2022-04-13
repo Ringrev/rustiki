@@ -35,6 +35,8 @@ pub fn page() -> impl Element {
         .item(button_panel())
 }
 
+
+
 #[static_ref]
 fn error_message() -> &'static Mutable<String> {
     Mutable::new("".to_string())
@@ -46,6 +48,16 @@ pub fn set_error_msg(msg: String) {
 
 fn passwords_match() -> bool {
     if !password_text().get_cloned().eq(&retyped_password_text().get_cloned()) {
+        set_error_msg(String::from("Passwords do not match. Please try again."));
+        false
+    } else {
+        true
+    }
+}
+
+fn check_password() -> bool {
+    if !password_text().get_cloned().len()>5 {
+        set_error_msg(String::from("Password must be at least 6 characters long. Please try again."));
         false
     } else {
         true
@@ -53,7 +65,7 @@ fn passwords_match() -> bool {
 }
 
 fn register_user() {
-    if passwords_match() {
+    if passwords_match()&&check_password() {
         Task::start(async {
             error_message().set("".to_string());
             let msg = UpMsg::Register {
@@ -66,8 +78,6 @@ fn register_user() {
                 set_error_msg(error.clone());
             }
         });
-    } else {
-        set_error_msg(String::from("Passwords do not match. Please try again."));
     }
 }
 

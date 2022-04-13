@@ -116,10 +116,6 @@ fn title_text_input(id: &str) -> impl Element {
         .text_signal(title_text().signal_cloned())
 }
 
-
-////////////////////////////////////////////////////////////
-
-
 // ------ state: main text
 #[static_ref]
 fn main_text() -> &'static Mutable<String> {
