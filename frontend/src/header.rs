@@ -3,7 +3,7 @@ use crate::{app, router::Route};
 use zoon::{named_color::*, *};
 use zoon::dominator::routing::go_to_url;
 use shared::User;
-use crate::app::{logged_user_name, PageName};
+use crate::app::{logged_user_name, PageName, reset_articles};
 use crate::router::Route::Root;
 use crate::router::router;
 
@@ -22,7 +22,7 @@ pub fn header() -> impl Element {
         .item(button_row())
 }
 
-/// If clicked, user is sent to front page. Gets all articles from database too.
+/// If clicked, user is sent to front page. Resets articles to original list too.
 fn logo() -> impl Element {
     Link::new()
         .s(Font::new().size(50).weight(FontWeight::Bold))
@@ -48,6 +48,7 @@ fn search_box() -> impl Element {
 }
 
 pub fn search() {
+    app::reset_articles();
     app::articles().lock_mut().retain(|art| art.title.to_lowercase().contains(search_query().get_cloned().to_lowercase().as_str()));
 }
 
@@ -62,6 +63,7 @@ pub fn set_search_query(query: String) {
     if search_query().get_cloned().eq("") {
         app::reset_articles();
     }
+    router().go(Route::Root);
 }
 
 fn search_bar() -> impl Element {
