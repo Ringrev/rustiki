@@ -1,4 +1,5 @@
 use std::borrow::Borrow;
+use std::collections::VecDeque;
 use std::ops::Deref;
 use zoon::{format, *, Element, eprintln};
 use zoon::*;
@@ -52,7 +53,11 @@ fn articles_exist() -> impl Signal<Item = bool> {
     articles_count().map(|count| count != 0).dedupe()
 }
 
-pub fn set_articles(vec: Vec<Article>) {
+pub fn set_articles(vector: Vec<Article>) {
+    let mut vec= VecDeque::new();
+    for article in vector {
+        vec.push_front(article);
+    }
     articles().update_mut(|art| {
         art.clear();
         art.extend(vec.clone());
