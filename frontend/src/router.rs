@@ -50,8 +50,8 @@ pub fn router() -> &'static Router<Route> {
             Route::LogIn => {
                 app::set_page_name(PageName::LogIn);
             }
-            Route::Search => {
-                app::set_page_name(PageName::Search)
+            Route::EditArticle => {
+                app::set_page_name(PageName::EditArticle)
             }
         }
     })
@@ -74,6 +74,6 @@ pub enum Route {
     #[route()]
     Root,
 
-    #[route()]
-    Search,
+    #[route("edit_article")]
+    EditArticle,
 }

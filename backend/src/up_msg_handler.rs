@@ -6,6 +6,7 @@ use fireauth;
 use crate::firebase::init;
 pub(crate) mod add_article;
 mod registration;
+mod edit_article;
 
 // What you receive from frontend and what you do with it
 pub async fn handler(req: UpMsgRequest<UpMsg>) -> Result<DownMsg, Option<DownMsg>> {
@@ -18,5 +19,6 @@ pub async fn handler(req: UpMsgRequest<UpMsg>) -> Result<DownMsg, Option<DownMsg
             title,
             content,
         ).await,
+        UpMsg::EditArticle { org_title, new_title, new_content} => edit_article::handler(org_title, new_title, new_content).await,
     })
 }
