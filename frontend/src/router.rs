@@ -53,6 +53,9 @@ pub fn router() -> &'static Router<Route> {
             Route::ViewArticle => {
                 app::set_page_name(PageName::ViewArticle);
             }
+            Route::Search => {
+                app::set_page_name(PageName::Search)
+            }
         }
     })
 }
@@ -72,8 +75,12 @@ pub enum Route {
     ViewArticle,
 
     #[route("log_in")]
+    #[route("login")]
     LogIn,
 
     #[route()]
     Root,
+
+    #[route()]
+    Search,
 }

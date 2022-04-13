@@ -9,23 +9,6 @@ use crate::footer::footer;
 use crate::connection::connection;
 use crate::header::{header};
 
-// fn articles() -> impl Element {
-//     // for article in super::articles().to_owned() {
-//     //
-//     // }
-//     Column::new()
-//         .items(super::articles())
-// }
-//
-// fn card(article: Article) -> impl Element {
-//     Column::new()
-//         .item(Image::new().url(article.name.clone()).description(article.name.clone()))
-//         .item(Paragraph::new().s(Font::new().size(16).weight(FontWeight::Bold)).content(article.name))
-//         .item(Paragraph::new().s(Font::new().size(12)).content(article.id))
-// }
-
-
-
 fn articles() -> impl Element {
     Column::new()
         .items_signal_vec(super::filtered_articles().map(card))
@@ -53,14 +36,6 @@ fn card(article: Article) -> impl Element {
         .item(Paragraph::new().content(article.content.clone()))
 }
 
-// fn card_holder(art: Article) -> impl Element {
-//     Row::new()
-//         .item(card(art))
-// }
-
-
-
-
 // ------ content visible on all pages ------
 
 pub fn root() -> impl Element {
@@ -74,10 +49,10 @@ pub fn root() -> impl Element {
 // ------ front page content ------
 
 pub(crate) fn front_page() -> impl Element {
+    super::test_get_articles();
     Column::new()
         .s(Padding::new().top(50))
         .item(placeholder_text())
-        // .item(articles())
         .item(panel())
 }
 
