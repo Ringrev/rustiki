@@ -74,7 +74,6 @@ pub enum Route {
     #[route("view_article")]
     ViewArticle,
 
-    #[route("log_in")]
     #[route("login")]
     LogIn,
 

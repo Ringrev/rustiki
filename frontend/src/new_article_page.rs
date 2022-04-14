@@ -10,6 +10,7 @@ use shared::UpMsg::AddArticle;
 use crate::connection;
 
 
+
 pub fn page() -> impl Element {
     Column::new()
         .s(Align::center())
