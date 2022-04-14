@@ -6,9 +6,9 @@ use aragog::{DatabaseConnection, Record};
 use aragog::query::{Comparison, Filter, QueryResult};
 
 
-pub async fn handler(org_title: String, new_title: String, new_content: String) -> DownMsg {
-    update_in_db(org_title, new_title, new_content).await;
-    DownMsg::ArticleUpdated
+pub async fn handler(title: String) -> DownMsg {
+    remove_from_db(title).await;
+    DownMsg::ArticleRemoved
     // if res.eq("Ok") {
     //     DownMsg::LoggedIn(user)
     // } else {
@@ -16,7 +16,7 @@ pub async fn handler(org_title: String, new_title: String, new_content: String) 
     // }
 }
 
-async fn update_in_db(title: String, new_title: String, new_content: String) {
+async fn remove_from_db(title: String) {
     let conn = DatabaseConnection::builder()
         .with_credentials("http://174.138.11.103:8529", "_system", "root", "ringrev")
         .with_schema_path("backend/config/db/schema.yaml")
@@ -31,9 +31,7 @@ async fn update_in_db(title: String, new_title: String, new_content: String) {
         .unwrap()
         .uniq()
         .unwrap();
-    art.title = new_title;
-    art.content = new_content;
-    let result = art.save(&conn).await.unwrap();
+    let result = art.delete(&conn).await.unwrap();
     println!("Result from updating db after save: {:?}", result);
 }
 

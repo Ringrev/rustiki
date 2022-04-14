@@ -24,6 +24,10 @@ pub fn connection() -> &'static Connection<UpMsg, DownMsg> {
                 println!("Article updated");
                 router().go(Route::Root)
             },
+            DownMsg::ArticleRemoved => {
+                println!("Article removed");
+                router().go(Route::Root)
+            }
         }
     })
 }

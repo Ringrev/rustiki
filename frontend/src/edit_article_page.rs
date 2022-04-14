@@ -8,6 +8,7 @@ use zoon::web_sys::HtmlTextAreaElement;
 use shared::{Article, UpMsg};
 use shared::UpMsg::AddArticle;
 use crate::connection;
+use crate::router::{Route, router};
 
 pub fn page() -> impl Element {
     Column::new()
@@ -27,7 +28,6 @@ pub fn page() -> impl Element {
         .item(button_panel())
 }
 
-
 //------ Editing Article -------
 #[static_ref]
 fn edit_article() -> &'static Mutable<Article> {
@@ -36,7 +36,6 @@ fn edit_article() -> &'static Mutable<Article> {
         content: "".to_string(),
     })
 }
-
 
 // Should be replaced with article ID later
 #[static_ref]
@@ -55,6 +54,7 @@ pub fn set_edit_article(art: Article) {
 pub fn update_article() {
     Task::start(async {
         let msg = UpMsg::EditArticle {
+            // org_title must be replace with ID when that gets implemented for Article object
             org_title: original_title().lock_mut().to_string(),
             new_title: title_text().lock_mut().to_string(),
             new_content: main_text().lock_mut().to_string(),
@@ -62,6 +62,23 @@ pub fn update_article() {
         if let Err(error) = connection::connection().send_up_msg(msg).await {
             let error = error.to_string();
             //set_error.msg(error.clone());
+        }
+    });
+}
+
+pub fn delete_article() {
+    Task::start(async {
+        if delete_dialog() {
+            let msg = UpMsg::RemoveArticle {
+                // Must be replaced with ID when that gets implemented for Article object
+                title: original_title().lock_mut().to_string(),
+            };
+            if let Err(error) = connection::connection().send_up_msg(msg).await {
+                let error = error.to_string();
+                //set_error.msg(error.clone());
+            }
+        } else {
+            return;
         }
     });
 }
@@ -171,10 +188,33 @@ fn main_text_input(id: &str) -> impl Element {
 
 fn button_panel() -> impl Element {
     Row::new()
+        .item(delete_button())
         .item(cancel_button())
         .item(publish_button())
         .s(Spacing::new(10))
         .s(Align::right(Default::default()))
+}
+
+fn delete_dialog() -> bool {
+    let res = window().confirm_with_message("This will permanently delete the article. Are you sure you want to delete it?");
+    res.unwrap()
+}
+
+fn cancel_dialog() -> bool {
+    let res = window().confirm_with_message("Your changes will not be saved. Are you sure you want to leave the page?");
+    res.unwrap()
+}
+
+fn delete_button() -> impl Element {
+    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
+    Button::new()
+        .s(Font::new().size(16).color(GRAY_0))
+        .s(Background::new()
+            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
+        .s(Padding::new().y(10).x(15))
+        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
+        .label("Delete article")
+        .on_press(delete_article)
 }
 
 fn publish_button() -> impl Element {
@@ -185,7 +225,7 @@ fn publish_button() -> impl Element {
             .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
         .s(Padding::new().y(10).x(15))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Publis changes")
+        .label("Publish changes")
         .on_press(update_article)
 }
 
@@ -198,9 +238,16 @@ fn cancel_button() -> impl Element {
         .s(Padding::new().y(10).x(15))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .label("Cancel")
-    // .on_press()
+        .on_press(cancel)
 }
 
+fn cancel() {
+    if cancel_dialog() {
+        router().go(Route::Root);
+    } else {
+        return;
+    }
+}
 
 // ------ tag label and input combined
 

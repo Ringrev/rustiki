@@ -40,7 +40,7 @@ pub async fn handler(title: String, content: String) -> DownMsg {
             title: "".to_string(),
             content: "".to_string(),
         };
-        (article)
+        article
     }
 
 

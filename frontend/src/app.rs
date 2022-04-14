@@ -40,11 +40,6 @@ pub fn original_articles() -> &'static MutableVec<Article> {
     MutableVec::new()
 }
 
-// #[static_ref]
-// pub fn original_articles() -> &'static Vec<Article> {
-//     Vec::new()
-// }
-
 fn articles_count() -> impl Signal<Item = usize> {
     articles().signal_vec_cloned().len()
 }

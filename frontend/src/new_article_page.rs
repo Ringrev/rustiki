@@ -8,6 +8,7 @@ use zoon::web_sys::HtmlTextAreaElement;
 use shared::UpMsg;
 use shared::UpMsg::AddArticle;
 use crate::connection;
+use crate::router::{Route, router};
 
 
 pub fn page() -> impl Element {
@@ -190,7 +191,7 @@ fn cancel_button() -> impl Element {
         .s(Padding::new().y(10).x(15))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .label("Cancel")
-        // .on_press()
+        .on_press(cancel)
 }
 
 
@@ -306,4 +307,17 @@ fn remove_tag_button(tag: &Tag) -> impl Element {
 struct Tag {
     id: i32,
     text: String,
+}
+
+fn cancel_dialog() -> bool {
+    let res = window().confirm_with_message("Your article will not be saved. Are you sure you want to leave the page?");
+    res.unwrap()
+}
+
+fn cancel() {
+    if cancel_dialog() {
+        router().go(Route::Root);
+    } else {
+        return;
+    }
 }

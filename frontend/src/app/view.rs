@@ -10,7 +10,8 @@ use crate::connection::connection;
 use crate::header::{header};
 
 fn articles() -> impl Element {
-    Column::new()
+    Row::new()
+        .multiline()
         .items_signal_vec(super::filtered_articles().map(card))
         .s(Spacing::new(50))
 }

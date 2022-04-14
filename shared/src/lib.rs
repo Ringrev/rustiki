@@ -26,7 +26,7 @@ pub struct Article {
 #[serde(crate = "serde")]
 pub enum UpMsg {
 
-    // // ------ Auth ------
+    // ------ Auth ------
     Login {
         email: String,
         password: String,
@@ -44,12 +44,16 @@ pub enum UpMsg {
         title: String,
         content: String,
     },
+    // org_title input needs to be replaced with ID when the Article object is expanded to include ID
     EditArticle {
         org_title: String,
         new_title: String,
         new_content: String,
     },
-    //RemoveArticle(ArticleId),
+    // This input needs to be replaced with ID when the Article object is expanded to include ID
+    RemoveArticle {
+        title: String,
+    },
 }
 
 // ------ DownMsg ------
@@ -62,10 +66,10 @@ pub enum DownMsg {
     LoginError(String),
     RegistrationError(String),
     LoggedIn(User),
-    Articles(Vec<Article>),
     // LoggedOut,
     // ------Article-----
+    Articles(Vec<Article>),
     ArticleAdded(String),
     ArticleUpdated,
-   // ArticleRemoved,
+    ArticleRemoved,
 }
