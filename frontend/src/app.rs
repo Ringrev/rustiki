@@ -5,7 +5,7 @@ use zoon::{format, *, Element, eprintln};
 use zoon::*;
 use zoon::named_color::GRAY_0;
 use shared::{DownMsg, UpMsg, User, Article};
-use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}, edit_article_page};
+use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}, edit_article_page, router};
 use crate::footer::footer;
 use crate::connection::connection;
 use crate::header::{header, search};
@@ -20,14 +20,17 @@ pub mod view;
 ////////////////////////////////////
 
 pub fn edit_article(article: Article) {
+    eprintln!("Something");
     edit_article_page::set_edit_article(article);
-    router().go(Route::EditArticle);
+    // edit_article_page::set_edit_article(article);
+    router::router().go(Route::EditArticle);
+    // router().go(Route::EditArticle);
 }
 
 fn filtered_articles() -> impl SignalVec<Item = Article> {
     articles()
         .signal_vec_cloned()
-        .map(|todo|  todo.clone())
+        .map(|article|  article.clone())
 }
 
 #[static_ref]

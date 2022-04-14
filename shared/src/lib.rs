@@ -1,5 +1,6 @@
 use std::sync::Arc;
 use moonlight::*;
+use std::time::SystemTime;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(crate = "serde")]
@@ -10,14 +11,25 @@ pub struct User {
     pub auth_token: String,
 }
 
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(crate = "serde")]
 pub struct Article {
-    //pub id: String,
+    pub id: u32,
     pub title: String,
     pub content: String,
-    //pub contributor: String,
-    //pub tags: String,
+    pub contributors: Vec<User>,
+    pub author: User,
+    pub tags: Vec<Tag>,
+    pub created_time: SystemTime,
+    pub updated_time: SystemTime,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(crate = "serde")]
+pub struct Tag {
+    pub id: u32,
+    pub text: String,
 }
 
 // ------ UpMsg ------
@@ -43,16 +55,21 @@ pub enum UpMsg {
     AddArticle {
         title: String,
         content: String,
+        author: User,
+        tags: Vec<Tag>,
     },
     // org_title input needs to be replaced with ID when the Article object is expanded to include ID
     EditArticle {
-        org_title: String,
+        id: u32,
         new_title: String,
         new_content: String,
+        new_contributors: Vec<User>,
+        new_tags: Vec<Tag>,
+        updated_time: SystemTime,
     },
     // This input needs to be replaced with ID when the Article object is expanded to include ID
     RemoveArticle {
-        title: String,
+        id: u32,
     },
 }
 

@@ -1,8 +1,11 @@
+use std::time::SystemTime;
 use moon::*;
-use shared::{Article, DownMsg};
+use shared::{Article, DownMsg, Tag, User};
 use anyhow::Result;
 use shared::UpMsg::{GetArticles}; // is this supposed to be here?
 use aragog::*;
+use moon::serde_json::from_str;
+use std::u32;
 // use shared::DownMsg::LoginError;
 
 pub async fn handler() -> DownMsg {
@@ -13,11 +16,14 @@ pub async fn handler() -> DownMsg {
 #[derive(Debug, Serialize, Deserialize, Clone, Record)]
 #[serde(crate = "serde")]
 pub struct article {
-    //pub id: String,
-    //pub user: String,
-    //pub tags: String
+    pub id: u32,
     pub title: String,
     pub content: String,
+    pub contributors: Vec<User>,
+    pub author: User,
+    pub tags: Vec<Tag>,
+    pub created_time: SystemTime,
+    pub updated_time: SystemTime,
 }
 
 pub async fn articles() -> Vec<Article> {
@@ -32,9 +38,21 @@ pub async fn articles() -> Vec<Article> {
     let result = aragog_get_all(&conn).await;
     let mut records: Vec<Article> = vec![];
     for a in &result {
+        let id: String = a.id.to_string();
         let art = Article {
+            id: id.parse::<u32>().unwrap(),
             title: a.title.clone(),
             content: a.content.clone(),
+            contributors: a.contributors.clone(),
+            author: User {
+                id: a.author.id.clone(),
+                email: a.author.email.clone(),
+                username: a.author.username.clone(),
+                auth_token: a.author.auth_token.clone()
+            },
+            tags: a.tags.clone(),
+            created_time: a.created_time,
+            updated_time: a.updated_time,
         };
         records.push(art);
     }

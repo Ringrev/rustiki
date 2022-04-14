@@ -7,7 +7,8 @@ use zoon::text_input::InputTypeText;
 use zoon::web_sys::HtmlTextAreaElement;
 use shared::UpMsg;
 use shared::UpMsg::AddArticle;
-use crate::connection;
+use shared::Tag;
+use crate::{app, connection};
 use crate::router::{Route, router};
 
 
@@ -22,7 +23,7 @@ pub fn page() -> impl Element {
             .s(Padding::new().x(100).y(20))
             .item(Paragraph::new().content("Create new article"))
             .item(title_panel())
-            .item(main_text_panel())
+            .item(content_text_panel())
             .item(tag_panel())
             .item(tags_view())
         )
@@ -45,8 +46,10 @@ pub fn add_article() {
     Task::start(async {
         let msg = UpMsg::AddArticle {
             title: title_text().get_cloned(),
-            //TODO change content when implemented in frontend with js quill.
-            content: main_text().get_cloned(),
+            // TODO: change content when implemented in frontend with js quill.
+            content: content_text().get_cloned(),
+            author: app::logged_in_user().get_cloned().unwrap(),
+            tags: tags().lock_mut().to_vec(),
         };
         if let Err(error) = connection::connection().send_up_msg(msg).await {
             let error = error.to_string();
@@ -109,27 +112,27 @@ fn title_text_input(id: &str) -> impl Element {
 ////////////////////////////////////////////////////////////
 
 
-// ------ state: main text
+// ------ state: content text
 #[static_ref]
-fn main_text() -> &'static Mutable<String> {
+fn content_text() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
 // ------ title label and input combined
 
-fn main_text_panel() -> impl Element {
-    let id = "main_input";
+fn content_text_panel() -> impl Element {
+    let id = "content_input";
     Column::new()
         .s(Spacing::new(15))
-        .item(main_text_label(id))
+        .item(content_text_label(id))
         .s(Spacing::new(0))
-        .item(main_text_input(id))
+        .item(content_text_input(id))
     // .s(Padding::all(0))
 }
 
 // ------ title label
 
-fn main_text_label(id: &str) -> impl Element {
+fn content_text_label(id: &str) -> impl Element {
     Label::new()
         .s(Font::new().color(hsluv!(0,0,0,100)))
         .s(Padding::all(0))
@@ -137,14 +140,14 @@ fn main_text_label(id: &str) -> impl Element {
         .label("Article text:")
 }
 
-fn set_main_text(main: String) {
-    main_text().set(main);
+fn set_content_text(content: String) {
+    content_text().set(content);
 }
 
 // ------ title text input
 
 
-fn main_text_input(id: &str) -> impl Element {
+fn content_text_input(id: &str) -> impl Element {
     TextArea::new()
         .s(Width::new(600))
         .s(Height::new(400))
@@ -155,9 +158,9 @@ fn main_text_input(id: &str) -> impl Element {
             .blur(2)
             .color(hsluv!(0,0,0,20))]))
         .id(id)
-        .on_change(set_main_text)
-        .placeholder(Placeholder::new("Main text of your article"))
-        .text_signal(main_text().signal_cloned())
+        .on_change(set_content_text)
+        .placeholder(Placeholder::new("content text of your article"))
+        .text_signal(content_text().signal_cloned())
 }
 
 // ------
@@ -240,7 +243,7 @@ fn tag_input(id: &str) -> impl Element {
 }
 
 #[static_ref]
-fn tags() -> &'static MutableVec<Arc<Tag>> {
+fn tags() -> &'static MutableVec<Tag> {
     MutableVec::new()
 }
 
@@ -250,7 +253,7 @@ fn new_tag() -> &'static Mutable<String> {
 }
 
 #[static_ref]
-fn tag_id() -> &'static Mutable<i32> {
+fn tag_id() -> &'static Mutable<u32> {
     Mutable::new(0)
 }
 
@@ -265,7 +268,7 @@ fn add_tag() {
         text: tag.to_string(),
     };
     tag_id().update(|id|id+1);
-    tags().lock_mut().push_cloned(Arc::new(tag));
+    tags().lock_mut().push_cloned(tag);
     new_tag.clear();
 }
 
@@ -275,7 +278,7 @@ fn tags_view() -> impl Element {
         .s(Spacing::new(10))
 }
 
-fn tag(tag: Arc<Tag>) -> impl Element {
+fn tag(tag: Tag) -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
 
     Row::new()
@@ -288,7 +291,7 @@ fn tag(tag: Arc<Tag>) -> impl Element {
         .s(RoundedCorners::all(10))
 }
 
-fn remove_tag(id: i32) {
+fn remove_tag(id: u32) {
     tags().lock_mut().retain(|tag| tag.id != id)
 }
 
@@ -302,11 +305,6 @@ fn remove_tag_button(tag: &Tag) -> impl Element {
         .on_hovered_change(move |is_hovered| hovered.set_neq(is_hovered))
         .on_press(move || remove_tag(id))
         .label("×")
-}
-
-struct Tag {
-    id: i32,
-    text: String,
 }
 
 fn cancel_dialog() -> bool {
