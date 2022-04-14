@@ -20,6 +20,10 @@ pub fn connection() -> &'static Connection<UpMsg, DownMsg> {
                 println!("Article added");
                 router().go(Route::Root)},
             DownMsg::RegistrationError(string) => registration_page::set_error_msg(string),
+            DownMsg::ArticleUpdated => {
+                println!("Article updated");
+                router().go(Route::Root)
+            },
         }
     })
 }

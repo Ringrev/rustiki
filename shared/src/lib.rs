@@ -36,29 +36,20 @@ pub enum UpMsg {
         password: String,
         username: String,
     },
-    GetArticles,
     // Logout,
-    // // ------ Organization ------
-    // GetOrganizations,
-    // AddOrganization(OrganizationId, String),
-    // RemoveOrganization(OrganizationId),
+
     //---- Article -----
-    //GetArticles,
+    GetArticles,
     AddArticle {
         title: String,
         content: String,
     },
+    EditArticle {
+        org_title: String,
+        new_title: String,
+        new_content: String,
+    },
     //RemoveArticle(ArticleId),
-
-
-
-    // // ------ Mail ------
-    // SendMail {
-    //     from: String,
-    //     to: String,
-    //     subject: String,
-    //     content: String,
-    // }
 }
 
 // ------ DownMsg ------
@@ -67,32 +58,14 @@ pub enum UpMsg {
 #[serde(crate = "serde")]
 pub enum DownMsg {
 
-    // // ------ Auth ------
+    // ------ Auth ------
     LoginError(String),
     RegistrationError(String),
     LoggedIn(User),
     Articles(Vec<Article>),
     // LoggedOut,
-    // AuthorizationError(String),
-    // // ------ Organization ------
-    // Organizations(Vec<Organization>),
-    // OrganizationAdded,
-    // OrganizationRemoved,
-    //------Article-----
-   // Articles(Vec<Articles>),
+    // ------Article-----
     ArticleAdded(String),
+    ArticleUpdated,
    // ArticleRemoved,
-    // // ------ Mail ------
-    // MailSent,
-    // // ------ Other ------
-    // ServerError(String),
 }
-
-// ------ Transfer objects ------
-
-// #[derive(Debug, Serialize, Deserialize)]
-// #[serde(crate = "serde")]
-// pub struct Article {
-//     pub id: String,
-//     pub name: String,
-// }

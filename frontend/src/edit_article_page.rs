@@ -5,11 +5,9 @@ use zoon::named_color::*;
 use zoon::Tag::Header;
 use zoon::text_input::InputTypeText;
 use zoon::web_sys::HtmlTextAreaElement;
-use shared::UpMsg;
+use shared::{Article, UpMsg};
 use shared::UpMsg::AddArticle;
 use crate::connection;
-
-
 
 pub fn page() -> impl Element {
     Column::new()
@@ -20,7 +18,7 @@ pub fn page() -> impl Element {
             .s(Align::left(Default::default()))
             .s(Align::center())
             .s(Padding::new().x(100).y(20))
-            .item(Paragraph::new().content("Create new article"))
+            .item(Paragraph::new().content("Edit article"))
             .item(title_panel())
             .item(main_text_panel())
             .item(tag_panel())
@@ -30,23 +28,36 @@ pub fn page() -> impl Element {
 }
 
 
-//------ Add Article -------
+//------ Editing Article -------
 #[static_ref]
-fn error_message() -> &'static Mutable<String> {
+fn edit_article() -> &'static Mutable<Article> {
+    Mutable::new(Article {
+        title: "".to_string(),
+        content: "".to_string(),
+    })
+}
+
+
+// Should be replaced with article ID later
+#[static_ref]
+fn original_title() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
-pub fn set_error_msg(msg: String) {
-    error_message().set(msg);
+pub fn set_edit_article(art: Article) {
+    edit_article().set(art.clone());
+    original_title().set(art.title.clone());
+    title_text().set(art.title);
+    main_text().set(art.content);
 }
 
 //TODO Add error handlers and response to user on article added Ok.
-pub fn add_article() {
+pub fn update_article() {
     Task::start(async {
-        let msg = UpMsg::AddArticle {
-            title: title_text().get_cloned(),
-            //TODO change content when implemented in frontend with js quill.
-            content: main_text().get_cloned(),
+        let msg = UpMsg::EditArticle {
+            org_title: original_title().lock_mut().to_string(),
+            new_title: title_text().lock_mut().to_string(),
+            new_content: main_text().lock_mut().to_string(),
         };
         if let Err(error) = connection::connection().send_up_msg(msg).await {
             let error = error.to_string();
@@ -71,7 +82,7 @@ fn title_panel() -> impl Element {
         .item(title_text_label(id))
         .s(Spacing::new(0))
         .item(title_text_input(id))
-        // .s(Padding::all(0))
+    // .s(Padding::all(0))
 }
 
 // ------ title label
@@ -104,10 +115,6 @@ fn title_text_input(id: &str) -> impl Element {
         .placeholder(Placeholder::new("Title of your article"))
         .text_signal(title_text().signal_cloned())
 }
-
-
-////////////////////////////////////////////////////////////
-
 
 // ------ state: main text
 #[static_ref]
@@ -178,8 +185,8 @@ fn publish_button() -> impl Element {
             .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
         .s(Padding::new().y(10).x(15))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Publish")
-        .on_press(add_article)
+        .label("Publis changes")
+        .on_press(update_article)
 }
 
 fn cancel_button() -> impl Element {
@@ -191,7 +198,7 @@ fn cancel_button() -> impl Element {
         .s(Padding::new().y(10).x(15))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .label("Cancel")
-        // .on_press()
+    // .on_press()
 }
 
 

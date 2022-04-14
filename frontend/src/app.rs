@@ -1,9 +1,11 @@
 use std::borrow::Borrow;
+use std::collections::VecDeque;
 use std::ops::Deref;
 use zoon::{format, *, Element, eprintln};
 use zoon::*;
 use zoon::named_color::GRAY_0;
 use shared::{DownMsg, UpMsg, User, Article};
+use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}, edit_article_page};
 use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}, view_article_page};
 use crate::footer::footer;
 use crate::connection::connection;
@@ -17,6 +19,11 @@ pub mod view;
 ////////////////////////////////////
 // ------ article stuff ------
 ////////////////////////////////////
+
+pub fn edit_article(article: Article) {
+    edit_article_page::set_edit_article(article);
+    router().go(Route::EditArticle);
+}
 
 fn filtered_articles() -> impl SignalVec<Item = Article> {
     articles()
@@ -47,7 +54,11 @@ fn articles_exist() -> impl Signal<Item = bool> {
     articles_count().map(|count| count != 0).dedupe()
 }
 
-pub fn set_articles(vec: Vec<Article>) {
+pub fn set_articles(vector: Vec<Article>) {
+    let mut vec= VecDeque::new();
+    for article in vector {
+        vec.push_front(article);
+    }
     articles().update_mut(|art| {
         art.clear();
         art.extend(vec.clone());
@@ -134,6 +145,7 @@ pub enum PageName {
     NewArticle,
     LogIn,
     Unknown,
+    EditArticle,
     Search,
     ViewArticle,
 }
@@ -146,7 +158,7 @@ fn page() -> impl Element {
     El::new().child_signal(page_name().signal().map(|page_name| match page_name {
         PageName::Home => view::front_page().into_raw_element(),
         PageName::Unknown => El::new().child("404").into_raw_element(),
-        PageName::Search => view::front_page().into_raw_element(),
+        PageName::EditArticle => edit_article_page::page().into_raw_element(),
         PageName::NewArticle => new_article_page::page().into_raw_element(),
         PageName::Registration => registration_page::page().into_raw_element(),
         PageName::LogIn => log_in_page::page().into_raw_element(),
