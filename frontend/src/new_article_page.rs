@@ -198,7 +198,6 @@ fn cancel_button() -> impl Element {
         .on_press(cancel)
 }
 
-
 // ------ tag label and input combined
 
 fn tag_panel() -> impl Element {
@@ -207,7 +206,10 @@ fn tag_panel() -> impl Element {
         .s(Spacing::new(15))
         .item(tag_label(id))
         .s(Spacing::new(0))
-        .item(tag_input(id))
+        .item(Row::new()
+            .s(Spacing::new(5))
+            .item(tag_input(id))
+            .item(add_tag_button()))
 }
 
 // ------ tag label
@@ -241,6 +243,18 @@ fn tag_input(id: &str) -> impl Element {
         .placeholder(Placeholder::new("Tag..."))
         .text_signal(new_tag().signal_cloned())
         .on_key_down_event(|event| event.if_key(Key::Enter, add_tag))
+}
+
+fn add_tag_button() -> impl Element {
+    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
+    Button::new()
+        .s(Font::new().size(16).color(GRAY_0))
+        .s(Background::new()
+            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
+        .s(Padding::new().y(6).x(15))
+        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
+        .label("Add")
+        .on_press(add_tag)
 }
 
 #[static_ref]

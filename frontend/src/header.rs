@@ -78,7 +78,7 @@ fn search_bar() -> impl Element {
         .on_change(set_search_query)
         .label_hidden("New message text")
         .placeholder(Placeholder::new("Search for Wiki"))
-
+        .on_key_down_event(|event| event.if_key(Key::Enter, search))
 }
 
 fn search_button() -> impl Element {
@@ -91,7 +91,6 @@ fn search_button() -> impl Element {
         .s(Align::new().left())
         .s(RoundedCorners::new().right(25).left(25))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        //.on_press(super::send_message)
         .on_click(search)
         .label("Search")
         .to(Route::Root)
