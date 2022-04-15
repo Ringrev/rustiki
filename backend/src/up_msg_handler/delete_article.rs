@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 use std::time::SystemTime;
 use moon::*;
-use shared::{DownMsg, Tag, User};
+use shared::{DownMsg, User};
 use anyhow::Result;
 use aragog::{DatabaseConnection, Record};
 use aragog::query::{Comparison, Filter, QueryResult};
@@ -45,7 +45,7 @@ pub struct article {
     pub content: String,
     pub contributors: Vec<User>,
     pub author: User,
-    pub tags: Vec<Tag>,
+    pub tags: Vec<String>,
     pub created_time: String,
     pub updated_time: String,
 }

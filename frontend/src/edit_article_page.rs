@@ -3,7 +3,7 @@ use zoon::events::Input;
 use zoon::named_color::*;
 use zoon::text_input::InputTypeText;
 use zoon::web_sys::HtmlTextAreaElement;
-use shared::{Article, UpMsg, User, Tag};
+use shared::{Article, UpMsg, User};
 use shared::UpMsg::AddArticle;
 use crate::{app, connection};
 use crate::app::dialog;
@@ -31,21 +31,14 @@ pub fn page() -> impl Element {
 //------ Editing Article -------
 #[static_ref]
 fn edit_article() -> &'static Mutable<Article> {
-    let mut user = User { id: "".to_string(), username: "".to_string(), email: "".to_string(), auth_token: "".to_string() };
-    let mut cont = vec![user.clone(), user.clone()];
-    let tag = Tag {
-        id: 5,
-        text: "Hei".to_string(),
-    };
-    let tags = vec![tag.clone(), tag.clone()];
     Mutable::new(
         Article {
             id: 5,
             title: "Hei".to_string(),
             content: "hallo".to_string(),
-            author: user.clone(),
-            contributors: cont,
-            tags: tags,
+            author: User { id: "".to_string(), username: "".to_string(), email: "".to_string(), auth_token: "".to_string() },
+            contributors: vec![],
+            tags: vec![],
             created_time: "".to_string(),
             updated_time: "".to_string()
         }
@@ -312,7 +305,7 @@ fn tag_input(id: &str) -> impl Element {
 
 
 #[static_ref]
-fn tags() -> &'static MutableVec<Tag> {
+fn tags() -> &'static MutableVec<String> {
     MutableVec::new()
 }
 
@@ -330,7 +323,7 @@ fn check_tag_unique(new_tag: String) -> bool {
     let mut unique = true;
     if tags().lock_mut().to_vec().len()>0 {
         for existing_tag in tags().lock_mut().to_vec() {
-            if existing_tag.text.eq(&new_tag) {
+            if existing_tag.eq(&new_tag) {
                 unique = false;
                 break;
             }
@@ -346,12 +339,8 @@ fn add_tag() {
         return;
     }
     if check_tag_unique(tag.clone().to_string()) {
-        let tag = Tag {
-            id: tag_id().to_owned().get_cloned()+1,
-            text: tag.to_string(),
-        };
         tag_id().update(|id|id+1);
-        tags().lock_mut().push_cloned(tag);
+        tags().lock_mut().push_cloned(tag.clone().to_string());
         new_tag.clear();
     } else {
         window().alert_with_message("Tag already exists");
@@ -365,31 +354,30 @@ fn tags_view() -> impl Element {
         .s(Spacing::new(10))
 }
 
-fn tag(tag: Tag) -> impl Element {
+fn tag(tag: String) -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
 
     Row::new()
         .item(Label::new()
-            .for_input(tag.id)
-            .label(tag.text.to_string())
-            .element_on_right( remove_tag_button(&tag)))
+            // .for_input(tag.clone())
+            .label(tag.clone().to_string())
+            .element_on_right( remove_tag_button(tag.clone())))
         .s(Padding::new().x(10))
         .s(Background::new().color(GRAY_2))
         .s(RoundedCorners::all(10))
 }
 
-fn remove_tag(id: u32) {
-    tags().lock_mut().retain(|tag| tag.id != id)
+fn remove_tag(text: String) {
+    tags().lock_mut().retain(|tag| !tag.eq(text.as_str()))
 }
 
-fn remove_tag_button(tag: &Tag) -> impl Element {
+fn remove_tag_button(tag: String) -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    let id = tag.id;
     Button::new()
         .s(Font::new().size(20).color_signal(
             hovered_signal.map_bool(|| GRAY_9, || GRAY_4),
         ))
         .on_hovered_change(move |is_hovered| hovered.set_neq(is_hovered))
-        .on_press(move || remove_tag(id))
+        .on_press(move || remove_tag(tag.clone().to_string()))
         .label("×")
 }

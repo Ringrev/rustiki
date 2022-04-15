@@ -2,7 +2,7 @@ use std::fmt::Debug;
 use std::future::Future;
 use moon::*;
 use moon::*;
-use shared::{DownMsg, Article, User, Tag};
+use shared::{DownMsg, Article, User};
 use anyhow::Result;
 use aragog::{DatabaseConnection, DatabaseRecord, Record};
 use aragog::query::{Comparison, Filter};
@@ -18,12 +18,12 @@ pub struct article {
     pub content: String,
     pub contributors: Vec<User>,
     pub author: User,
-    pub tags: Vec<Tag>,
+    pub tags: Vec<String>,
     pub created_time: String,
     pub updated_time: String,
 }
 
-pub async fn handler(title: String, content: String,  author: User, tags: Vec<Tag>) -> DownMsg {
+pub async fn handler(title: String, content: String,  author: User, tags: Vec<String>) -> DownMsg {
     let article = create_object(title, content, author, tags).await;
     //if article.eq("Ok") {
     //Creates an article in the Db
@@ -31,7 +31,7 @@ pub async fn handler(title: String, content: String,  author: User, tags: Vec<Ta
     DownMsg::ArticleAdded("".to_string())
 }
 
-pub async fn create_object(title: String, content: String,  author: User, tags: Vec<Tag>) -> Article {
+pub async fn create_object(title: String, content: String,  author: User, tags: Vec<String>) -> Article {
     Article {
         id: generate_id().await,
         title,

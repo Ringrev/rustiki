@@ -33,9 +33,6 @@ fn card(article: Article) -> impl Element {
         .on_click(move || super::go_edit_article(article))
 }
 
-
-
-
 // ------ content visible on all pages ------
 
 pub fn root() -> impl Element {

@@ -19,16 +19,9 @@ pub struct Article {
     pub content: String,
     pub contributors: Vec<User>,
     pub author: User,
-    pub tags: Vec<Tag>,
+    pub tags: Vec<String>,
     pub created_time: String,
     pub updated_time: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-#[serde(crate = "serde")]
-pub struct Tag {
-    pub id: u32,
-    pub text: String,
 }
 
 // ------ UpMsg ------
@@ -55,7 +48,7 @@ pub enum UpMsg {
         title: String,
         content: String,
         author: User,
-        tags: Vec<Tag>,
+        tags: Vec<String>,
     },
     // org_title input needs to be replaced with ID when the Article object is expanded to include ID
     EditArticle {
@@ -63,7 +56,7 @@ pub enum UpMsg {
         new_title: String,
         new_content: String,
         new_contributors: Vec<User>,
-        new_tags: Vec<Tag>,
+        new_tags: Vec<String>,
     },
     // This input needs to be replaced with ID when the Article object is expanded to include ID
     RemoveArticle {

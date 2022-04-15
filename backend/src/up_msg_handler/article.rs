@@ -1,6 +1,6 @@
 use std::time::SystemTime;
 use moon::*;
-use shared::{Article, DownMsg, Tag, User};
+use shared::{Article, DownMsg, User};
 use anyhow::Result;
 use shared::UpMsg::{GetArticles}; // is this supposed to be here?
 use aragog::*;
@@ -21,7 +21,7 @@ pub struct article {
     pub content: String,
     pub contributors: Vec<User>,
     pub author: User,
-    pub tags: Vec<Tag>,
+    pub tags: Vec<String>,
     pub created_time: String,
     pub updated_time: String,
 }
