@@ -6,6 +6,7 @@ use zoon::web_sys::HtmlTextAreaElement;
 use shared::{Article, UpMsg, User, Tag};
 use shared::UpMsg::AddArticle;
 use crate::{app, connection};
+use crate::app::dialog;
 use crate::router::{Route, router};
 
 pub fn page() -> impl Element {
@@ -325,19 +326,37 @@ fn tag_id() -> &'static Mutable<u32> {
     Mutable::new(0)
 }
 
+fn check_tag_unique(new_tag: String) -> bool {
+    let mut unique = true;
+    if tags().lock_mut().to_vec().len()>0 {
+        for existing_tag in tags().lock_mut().to_vec() {
+            if existing_tag.text.eq(&new_tag) {
+                unique = false;
+                break;
+            }
+        }
+    }
+    unique
+}
+
 fn add_tag() {
     let mut new_tag = new_tag().lock_mut();
     let tag = new_tag.trim();
     if tag.is_empty() {
         return;
     }
-    let tag = Tag {
-        id: tag_id().to_owned().get_cloned()+1,
-        text: tag.to_string(),
-    };
-    tag_id().update(|id|id+1);
-    tags().lock_mut().push_cloned(tag);
-    new_tag.clear();
+    if check_tag_unique(tag.clone().to_string()) {
+        let tag = Tag {
+            id: tag_id().to_owned().get_cloned()+1,
+            text: tag.to_string(),
+        };
+        tag_id().update(|id|id+1);
+        tags().lock_mut().push_cloned(tag);
+        new_tag.clear();
+    } else {
+        window().alert_with_message("Tag already exists");
+        new_tag.clear();
+    }
 }
 
 fn tags_view() -> impl Element {
