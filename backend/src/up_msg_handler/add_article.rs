@@ -16,14 +16,14 @@ pub struct article {
     pub id: u32,
     pub title: String,
     pub content: String,
-    pub contributors: Vec<User>,
-    pub author: User,
+    pub contributors: Vec<String>,
+    pub author: String,
     pub tags: Vec<String>,
     pub created_time: String,
     pub updated_time: String,
 }
 
-pub async fn handler(title: String, content: String,  author: User, tags: Vec<String>) -> DownMsg {
+pub async fn handler(title: String, content: String,  author: String, tags: Vec<String>) -> DownMsg {
     let article = create_object(title, content, author, tags).await;
     //if article.eq("Ok") {
     //Creates an article in the Db
@@ -31,7 +31,7 @@ pub async fn handler(title: String, content: String,  author: User, tags: Vec<St
     DownMsg::ArticleAdded("".to_string())
 }
 
-pub async fn create_object(title: String, content: String,  author: User, tags: Vec<String>) -> Article {
+pub async fn create_object(title: String, content: String,  author: String, tags: Vec<String>) -> Article {
     Article {
         id: generate_id().await,
         title,

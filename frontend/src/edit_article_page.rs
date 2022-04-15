@@ -36,7 +36,7 @@ fn edit_article() -> &'static Mutable<Article> {
             id: 5,
             title: "Hei".to_string(),
             content: "hallo".to_string(),
-            author: User { id: "".to_string(), username: "".to_string(), email: "".to_string(), auth_token: "".to_string() },
+            author: "".to_string(),
             contributors: vec![],
             tags: vec![],
             created_time: "".to_string(),

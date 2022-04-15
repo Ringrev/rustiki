@@ -8,7 +8,7 @@ use aragog::query::{Comparison, Filter, QueryResult};
 use moon::actix_web::web::get;
 
 
-pub async fn handler(id: u32, new_title: String, new_content: String, new_contributors: Vec<User>, new_tags: Vec<String>) -> DownMsg {
+pub async fn handler(id: u32, new_title: String, new_content: String, new_contributors: Vec<String>, new_tags: Vec<String>) -> DownMsg {
     update_in_db(id, new_title, new_content, new_contributors, new_tags).await;
     DownMsg::ArticleUpdated
     // if res.eq("Ok") {
@@ -18,7 +18,7 @@ pub async fn handler(id: u32, new_title: String, new_content: String, new_contri
     // }
 }
 
-async fn update_in_db(id: u32, new_title: String, new_content: String, new_contributors: Vec<User>, new_tags: Vec<String>) {
+async fn update_in_db(id: u32, new_title: String, new_content: String, new_contributors: Vec<String>, new_tags: Vec<String>) {
     let conn = DatabaseConnection::builder()
         .with_credentials("http://174.138.11.103:8529", "_system", "root", "ringrev")
         .with_schema_path("backend/config/db/schema.yaml")
@@ -54,8 +54,8 @@ pub struct article {
     pub id: u32,
     pub title: String,
     pub content: String,
-    pub contributors: Vec<User>,
-    pub author: User,
+    pub contributors: Vec<String>,
+    pub author: String,
     pub tags: Vec<String>,
     pub created_time: String,
     pub updated_time: String,

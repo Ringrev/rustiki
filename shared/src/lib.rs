@@ -17,8 +17,8 @@ pub struct Article {
     pub id: u32,
     pub title: String,
     pub content: String,
-    pub contributors: Vec<User>,
-    pub author: User,
+    pub contributors: Vec<String>,
+    pub author: String,
     pub tags: Vec<String>,
     pub created_time: String,
     pub updated_time: String,
@@ -47,7 +47,7 @@ pub enum UpMsg {
     AddArticle {
         title: String,
         content: String,
-        author: User,
+        author: String,
         tags: Vec<String>,
     },
     // org_title input needs to be replaced with ID when the Article object is expanded to include ID
@@ -55,7 +55,7 @@ pub enum UpMsg {
         id: u32,
         new_title: String,
         new_content: String,
-        new_contributors: Vec<User>,
+        new_contributors: Vec<String>,
         new_tags: Vec<String>,
     },
     // This input needs to be replaced with ID when the Article object is expanded to include ID

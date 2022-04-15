@@ -50,7 +50,7 @@ pub fn add_article() {
             title: title_text().get_cloned(),
             // TODO: change content when implemented in frontend with js quill.
             content: content_text().get_cloned(),
-            author: app::logged_in_user().get_cloned().unwrap(),
+            author: app::logged_in_user().get_cloned().unwrap().username,
             tags: tags().lock_mut().to_vec(),
         };
         if let Err(error) = connection::connection().send_up_msg(msg).await {
