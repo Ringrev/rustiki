@@ -24,10 +24,10 @@ pub fn page() -> impl Element {
             // .item(content_text_panel())
             // .item(tag_panel())
             // .item(tags_view())
+
         )
-        .item(edit_button())
-        .item(delete_button())
-        // .item(button_panel())
+
+        .item(button_panel())
 }
 
 fn edit_button() -> impl Element {
@@ -76,7 +76,6 @@ fn view_article() -> &'static Mutable<Article> {
     )
 }
 
-// Should be replaced with article ID later
 #[static_ref]
 fn article_id() -> &'static Mutable<u32> {
     Mutable::new(0)
@@ -107,20 +106,24 @@ pub fn set_view_article(art: Article) {
 // }
 //
 pub fn delete_article() {
-    Task::start(async {
-        if delete_dialog() {
-            let msg = UpMsg::RemoveArticle {
-                // Must be replaced with ID when that gets implemented for Article object
-                id: article_id().get_cloned(),
-            };
-            if let Err(error) = connection::connection().send_up_msg(msg).await {
-                let error = error.to_string();
-                //set_error.msg(error.clone());
+    if app::logged_user_name().get_cloned().eq(view_article().get_cloned().author.as_str()) {
+        Task::start(async {
+            if delete_dialog() {
+                let msg = UpMsg::RemoveArticle {
+                    // Must be replaced with ID when that gets implemented for Article object
+                    id: article_id().get_cloned(),
+                };
+                if let Err(error) = connection::connection().send_up_msg(msg).await {
+                    let error = error.to_string();
+                    //set_error.msg(error.clone());
+                }
+            } else {
+                return;
             }
-        } else {
-            return;
-        }
-    });
+        });
+    } else {
+        dialog("Only the author can delete an article".to_string());
+    }
 }
 //
 // // ------ state of title
@@ -226,14 +229,13 @@ pub fn delete_article() {
 //
 // // ------
 //
-// fn button_panel() -> impl Element {
-//     Row::new()
-//         .item(delete_button())
-//         .item(cancel_button())
-//         .item(publish_button())
-//         .s(Spacing::new(10))
-//         .s(Align::right(Default::default()))
-// }
+fn button_panel() -> impl Element {
+    Row::new()
+        .item_signal(app::is_user_logged_signal().map_true(edit_button))
+        .item_signal(app::is_user_logged_signal().map_true(delete_button))
+        .s(Spacing::new(10))
+        .s(Align::right(Default::default()))
+}
 //
 fn delete_dialog() -> bool {
     let res = window().confirm_with_message("This will permanently delete the article. Are you sure you want to delete it?");
