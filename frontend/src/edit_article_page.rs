@@ -1,13 +1,11 @@
-use std::time::SystemTime;
 use zoon::{*, println};
 use zoon::events::Input;
 use zoon::named_color::*;
-use zoon::Tag::Header;
 use zoon::text_input::InputTypeText;
 use zoon::web_sys::HtmlTextAreaElement;
 use shared::{Article, UpMsg, User, Tag};
 use shared::UpMsg::AddArticle;
-use crate::connection;
+use crate::{app, connection};
 use crate::router::{Route, router};
 
 pub fn page() -> impl Element {
@@ -28,24 +26,29 @@ pub fn page() -> impl Element {
         .item(button_panel())
 }
 
+
 //------ Editing Article -------
 #[static_ref]
 fn edit_article() -> &'static Mutable<Article> {
-    Mutable::new(Article {
-        id: 3,
-        title: "".to_string(),
-        content: "".to_string(),
-        contributors: vec![],
-        author: User {
-            id: "".to_string(),
-            email: "".to_string(),
-            username: "".to_string(),
-            auth_token: "".to_string()
-        },
-        tags: vec![],
-        created_time: SystemTime::now(),
-        updated_time: SystemTime::now()
-    })
+    let mut user = User { id: "".to_string(), username: "".to_string(), email: "".to_string(), auth_token: "".to_string() };
+    let mut cont = vec![user.clone(), user.clone()];
+    let tag = Tag {
+        id: 5,
+        text: "Hei".to_string(),
+    };
+    let tags = vec![tag.clone(), tag.clone()];
+    Mutable::new(
+        Article {
+            id: 5,
+            title: "Hei".to_string(),
+            content: "hallo".to_string(),
+            author: user.clone(),
+            contributors: cont,
+            tags: tags,
+            created_time: "".to_string(),
+            updated_time: "".to_string()
+        }
+    )
 }
 
 // Should be replaced with article ID later
@@ -55,10 +58,10 @@ fn article_id() -> &'static Mutable<u32> {
 }
 
 pub fn set_edit_article(art: Article) {
-    edit_article().set(art.clone());
-    article_id().set(art.id.clone());
+    edit_article().set(art.clone().to_owned());
     title_text().set(art.title.clone());
     content_text().set(art.content.clone());
+    tags().lock_mut().replace_cloned(art.tags.clone());
 }
 
 //TODO Add error handlers and response to user on article added Ok.
@@ -71,7 +74,6 @@ pub fn update_article() {
             new_content: content_text().lock_mut().to_string(),
             new_contributors: vec![],
             new_tags: tags().lock_mut().to_vec(),
-            updated_time: SystemTime::now(),
         };
         if let Err(error) = connection::connection().send_up_msg(msg).await {
             let error = error.to_string();
@@ -306,6 +308,7 @@ fn tag_input(id: &str) -> impl Element {
         .text_signal(new_tag().signal_cloned())
         .on_key_down_event(|event| event.if_key(Key::Enter, add_tag))
 }
+
 
 #[static_ref]
 fn tags() -> &'static MutableVec<Tag> {

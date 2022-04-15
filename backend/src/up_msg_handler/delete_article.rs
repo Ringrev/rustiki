@@ -46,6 +46,6 @@ pub struct article {
     pub contributors: Vec<User>,
     pub author: User,
     pub tags: Vec<Tag>,
-    pub created_time: SystemTime,
-    pub updated_time: SystemTime,
+    pub created_time: String,
+    pub updated_time: String,
 }

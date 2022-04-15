@@ -19,8 +19,8 @@ pub struct article {
     pub contributors: Vec<User>,
     pub author: User,
     pub tags: Vec<Tag>,
-    pub created_time: SystemTime,
-    pub updated_time: SystemTime,
+    pub created_time: String,
+    pub updated_time: String,
 }
 
 pub async fn handler(title: String, content: String,  author: User, tags: Vec<Tag>) -> DownMsg {
@@ -39,9 +39,15 @@ pub async fn create_object(title: String, content: String,  author: User, tags: 
         contributors: vec![],
         author,
         tags,
-        created_time: SystemTime::now(),
-        updated_time: SystemTime::now(),
+        created_time: get_time(),
+        updated_time: get_time(),
     }
+}
+
+fn get_time() -> String {
+    let system_time = SystemTime::now();
+    let datetime: DateTime<Local> = system_time.into();
+    datetime.format("%d.%m.%Y %T").to_string()
 }
 
 async fn check_id_unique(id: u32) -> bool {

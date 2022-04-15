@@ -22,8 +22,8 @@ pub struct article {
     pub contributors: Vec<User>,
     pub author: User,
     pub tags: Vec<Tag>,
-    pub created_time: SystemTime,
-    pub updated_time: SystemTime,
+    pub created_time: String,
+    pub updated_time: String,
 }
 
 pub async fn articles() -> Vec<Article> {
@@ -51,8 +51,8 @@ pub async fn articles() -> Vec<Article> {
                 auth_token: a.author.auth_token.clone()
             },
             tags: a.tags.clone(),
-            created_time: a.created_time,
-            updated_time: a.updated_time,
+            created_time: a.created_time.to_string(),
+            updated_time: a.updated_time.to_string(),
         };
         records.push(art);
     }

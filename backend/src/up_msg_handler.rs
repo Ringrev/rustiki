@@ -16,7 +16,7 @@ pub async fn handler(req: UpMsgRequest<UpMsg>) -> Result<DownMsg, Option<DownMsg
         UpMsg::Login { email, password } => login::handler(init().await, email, password).await,
         UpMsg::Register { email, password, username } => registration::handler(init().await, email, password, username).await,
         UpMsg::AddArticle { title, content, author, tags } => add_article::handler(title, content, author, tags).await,
-        UpMsg::EditArticle { id, new_title, new_content, new_contributors, new_tags, updated_time} => edit_article::handler(id, new_title, new_content, new_contributors, new_tags, updated_time).await,
+        UpMsg::EditArticle { id, new_title, new_content, new_contributors, new_tags} => edit_article::handler(id, new_title, new_content, new_contributors, new_tags).await,
         UpMsg::RemoveArticle { id } => delete_article::handler(id).await,
     })
 }

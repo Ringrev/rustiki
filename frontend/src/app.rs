@@ -19,12 +19,14 @@ pub mod view;
 // ------ article stuff ------
 ////////////////////////////////////
 
-pub fn edit_article(article: Article) {
-    eprintln!("Something");
+// Just for testing
+pub fn dialog(text: String) {
+    window().confirm_with_message(text.as_str());
+}
+
+pub fn go_edit_article(article: Article) {
     edit_article_page::set_edit_article(article);
-    // edit_article_page::set_edit_article(article);
-    router::router().go(Route::EditArticle);
-    // router().go(Route::EditArticle);
+    router().go(Route::EditArticle);
 }
 
 fn filtered_articles() -> impl SignalVec<Item = Article> {
