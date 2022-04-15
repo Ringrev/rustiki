@@ -55,6 +55,7 @@ pub fn set_edit_article(art: Article) {
     edit_article().set(art.clone().to_owned());
     title_text().set(art.title.clone());
     content_text().set(art.content.clone());
+    article_id().set(art.id.to_owned());
     tags().lock_mut().replace_cloned(art.tags.clone());
 }
 
@@ -63,7 +64,7 @@ pub fn update_article() {
     Task::start(async {
         let msg = UpMsg::EditArticle {
             // org_title must be replace with ID when that gets implemented for Article object
-            id: edit_article().lock_mut().id,
+            id: article_id().get_cloned(),
             new_title: title_text().lock_mut().to_string(),
             new_content: content_text().lock_mut().to_string(),
             new_contributors: vec![],

@@ -27,7 +27,7 @@ async fn update_in_db(id: u32, new_title: String, new_content: String, new_contr
         .await
         .unwrap();
 
-    let query = article::query().filter(Filter::new(Comparison::field("id").equals_str(id)));
+    let query = article::query().filter(Filter::new(Comparison::field("id").equals(id)));
     let mut art = article::get(query, &conn)
         .await
         .unwrap()
