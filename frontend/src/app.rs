@@ -5,8 +5,8 @@ use zoon::{format, *, Element, eprintln};
 use zoon::*;
 use zoon::named_color::GRAY_0;
 use shared::{DownMsg, UpMsg, User, Article};
-use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}, edit_article_page};
-use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}, view_article_page};
+use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}, edit_article_page, view_article_page};
+
 use crate::footer::footer;
 use crate::connection::connection;
 use crate::header::{header, search};
@@ -19,6 +19,11 @@ pub mod view;
 ////////////////////////////////////
 // ------ article stuff ------
 ////////////////////////////////////
+
+pub fn view_article(article: Article) {
+    view_article_page::page();
+    router().go(Route::ViewArticle);
+}
 
 pub fn edit_article(article: Article) {
     edit_article_page::set_edit_article(article);
@@ -146,7 +151,6 @@ pub enum PageName {
     LogIn,
     Unknown,
     EditArticle,
-    Search,
     ViewArticle,
 }
 

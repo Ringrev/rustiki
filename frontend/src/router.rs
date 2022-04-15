@@ -53,8 +53,7 @@ pub fn router() -> &'static Router<Route> {
             Route::ViewArticle => {
                 app::set_page_name(PageName::ViewArticle);
             }
-            Route::Search => {
-                app::set_page_name(PageName::Search)
+
             Route::EditArticle => {
                 app::set_page_name(PageName::EditArticle)
             }
