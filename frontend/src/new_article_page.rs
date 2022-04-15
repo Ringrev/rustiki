@@ -11,6 +11,7 @@ use crate::{app, connection};
 use crate::router::{Route, router};
 
 
+
 pub fn page() -> impl Element {
     title_text().set("".to_string());
     content_text().set("".to_string());

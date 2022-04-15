@@ -12,6 +12,7 @@ mod header;
 mod log_in_page;
 mod footer;
 mod connection;
+mod view_article_page;
 mod edit_article_page;
 
 // ------ ------

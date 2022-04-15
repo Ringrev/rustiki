@@ -3,7 +3,7 @@ use zoon::{format, *, Element, eprintln};
 use zoon::*;
 use zoon::named_color::GRAY_0;
 use shared::{DownMsg, UpMsg, User, Article};
-use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}, app};
+use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}};
 use crate::app::{articles_count, articles_exist};
 use crate::footer::footer;
 use crate::connection::connection;
@@ -26,8 +26,7 @@ fn card(article: Article) -> impl Element {
         .s(Background::new().color(hsluv!(0, 0, 100)))
         .s(Spacing::new(5))
         .s(Font::new().size(24))
-        .item(Image::new().url("https://i.guim.co.uk/img/media/3d7d923db999d53074642f9e8051812a186c765a/0_0_2048_1463/master/2048.jpg?width=700&quality=85&auto=format&fit=max&s=2227033b1ae471edf46f7559ab517d1f")
-            .description("Placeholder picture").s(Width::max(Default::default(), 200)))
+        .item(Image::new().url("https://i.guim.co.uk/img/media/3d7d923db999d53074642f9e8051812a186c765a/0_0_2048_1463/master/2048.jpg?width=700&quality=85&auto=format&fit=max&s=2227033b1ae471edf46f7559ab517d1f").description("Placeholder picture").s(Width::max(Default::default(), 200)))
         .item(Paragraph::new().content(article.title.clone()))
         // .item(Paragraph::new().content(article.content.clone()))
         .on_click(move || super::go_edit_article(article))

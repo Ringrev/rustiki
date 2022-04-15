@@ -5,7 +5,8 @@ use zoon::{format, *, Element, eprintln};
 use zoon::*;
 use zoon::named_color::GRAY_0;
 use shared::{DownMsg, UpMsg, User, Article};
-use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}, edit_article_page, router};
+use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}, edit_article_page, view_article_page};
+
 use crate::footer::footer;
 use crate::connection::connection;
 use crate::header::{header, search};
@@ -145,6 +146,7 @@ pub enum PageName {
     LogIn,
     Unknown,
     EditArticle,
+    ViewArticle,
 }
 
 /////////////////////////////
@@ -159,6 +161,7 @@ fn page() -> impl Element {
         PageName::NewArticle => new_article_page::page().into_raw_element(),
         PageName::Registration => registration_page::page().into_raw_element(),
         PageName::LogIn => log_in_page::page().into_raw_element(),
+        PageName::ViewArticle => view_article_page::page().into_raw_element(),
     }))
 }
 
