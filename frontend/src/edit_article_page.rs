@@ -6,7 +6,7 @@ use zoon::web_sys::HtmlTextAreaElement;
 use shared::{Article, UpMsg, User};
 use shared::UpMsg::AddArticle;
 use crate::{app, connection};
-use crate::app::dialog;
+use crate::app::{dialog, logged_user_name, view_article};
 use crate::router::{Route, router};
 
 pub fn page() -> impl Element {
@@ -45,10 +45,14 @@ fn edit_article() -> &'static Mutable<Article> {
     )
 }
 
-// Should be replaced with article ID later
 #[static_ref]
 fn article_id() -> &'static Mutable<u32> {
     Mutable::new(0)
+}
+
+#[static_ref]
+fn contributors() -> &'static MutableVec<String> {
+    MutableVec::new()
 }
 
 pub fn set_edit_article(art: Article) {
@@ -57,17 +61,19 @@ pub fn set_edit_article(art: Article) {
     content_text().set(art.content.clone());
     article_id().set(art.id.to_owned());
     tags().lock_mut().replace_cloned(art.tags.clone());
+    contributors().lock_mut().replace_cloned(art.contributors.clone());
 }
 
 //TODO Add error handlers and response to user on article added Ok.
 pub fn update_article() {
+    add_contributor();
     Task::start(async {
         let msg = UpMsg::EditArticle {
             // org_title must be replace with ID when that gets implemented for Article object
             id: article_id().get_cloned(),
             new_title: title_text().lock_mut().to_string(),
             new_content: content_text().lock_mut().to_string(),
-            new_contributors: vec![],
+            new_contributors: contributors().lock_mut().to_vec(),
             new_tags: tags().lock_mut().to_vec(),
         };
         if let Err(error) = connection::connection().send_up_msg(msg).await {
@@ -77,21 +83,34 @@ pub fn update_article() {
     });
 }
 
-pub fn delete_article() {
-    Task::start(async {
-        if delete_dialog() {
-            let msg = UpMsg::RemoveArticle {
-                // Must be replaced with ID when that gets implemented for Article object
-                id: article_id().get_cloned(),
-            };
-            if let Err(error) = connection::connection().send_up_msg(msg).await {
-                let error = error.to_string();
-                //set_error.msg(error.clone());
-            }
-        } else {
-            return;
+fn add_contributor() {
+    let logged_in_user = logged_user_name().get_cloned().to_string();
+    if !edit_article().get_cloned().author.to_string().eq(logged_in_user.clone().as_str()) {
+        if !contributors().lock_mut().contains(&logged_in_user.clone()) {
+            contributors().lock_mut().push_cloned(logged_in_user.clone());
         }
-    });
+    }
+}
+
+pub fn delete_article() {
+    if app::logged_user_name().get_cloned().eq(edit_article().get_cloned().author.as_str()) {
+        Task::start(async {
+            if delete_dialog() {
+                let msg = UpMsg::RemoveArticle {
+                    // Must be replaced with ID when that gets implemented for Article object
+                    id: article_id().get_cloned(),
+                };
+                if let Err(error) = connection::connection().send_up_msg(msg).await {
+                    let error = error.to_string();
+                    //set_error.msg(error.clone());
+                }
+            } else {
+                return;
+            }
+        });
+    } else {
+        dialog("Only the author can delete an article".to_string());
+    }
 }
 
 // ------ state of title
