@@ -9,19 +9,7 @@ use aragog::query::{Comparison, Filter};
 use shared::UpMsg::AddArticle;
 use rand::Rng;
 use std::time::SystemTime;
-
-#[derive(Debug, Serialize, Deserialize, Clone, Record)]
-#[serde(crate = "serde")]
-pub struct article {
-    pub id: u32,
-    pub title: String,
-    pub content: String,
-    pub contributors: Vec<String>,
-    pub author: String,
-    pub tags: Vec<String>,
-    pub created_time: String,
-    pub updated_time: String,
-}
+use crate::article;
 
 pub async fn handler(title: String, content: String,  author: String, tags: Vec<String>) -> DownMsg {
     let article = create_object(title, content, author, tags).await;
@@ -103,43 +91,3 @@ async fn generate_id() -> u32 {
     }
     id.clone()
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ----Old not working ----
-//pub async fn handler(
-//    //db: &DatabaseConnection,
-//    title: String,
-//    content: String,
-//) -> Result<DownMsg, Option<DownMsg>> {
-//   async fn aragog_create_article (conn: &DatabaseConnection) {
-//       let mut article = Article {
-//           //TODO:change from when object is defined in frontend!
-//           title: String::from("bacon ipsum"),
-//           content: String::from("lorem ipsum delor"),
-//       };
-//      // let mut article_record = DatabaseRecord::create(article, conn).await.unwrap();
-//}
-//   Ok(DownMsg::ArticleAdded)
-//}

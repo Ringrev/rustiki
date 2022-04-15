@@ -8,7 +8,7 @@ use aragog::query::{Comparison, Filter, QueryResult};
 use moon::actix_web::web::Data;
 use serde::de::Unexpected::Str;
 use std::borrow::Borrow;
-use aragog::DatabaseConnection;
+use aragog::{DatabaseConnection, Record};
 use UpMsg::AddArticle;
 use crate::add_article::create_article_in_db;
 use crate::up_msg_handler::handler;
@@ -44,12 +44,13 @@ async fn up_msg_handler(req: UpMsgRequest<UpMsg>) {
     println!("Cannot find the session with id `{}`", session_id);
 }
 
+#[moon::main]
+async fn main() -> std::io::Result<()> {
+    // let connection = aragog_connect().await;
 
-// ------### ArangoDb-Aragog ##### --------
-// Collections in Db: user, article
-
-
-
+    start(frontend, up_msg_handler, |_| {}).await?;
+    Ok(())
+}
 
 //ArangoDb connection
 async fn aragog_connect() -> DatabaseConnection {
@@ -62,26 +63,20 @@ async fn aragog_connect() -> DatabaseConnection {
         .unwrap();
     db_connection
 }
-// Returns all as query result from collection: user
-//async fn aragog_get_all_query_result(conn: &DatabaseConnection) -> QueryResult<user> {
-//    let query = user::query();
-//    let user_records = user::get(query, conn).await.unwrap();
-//    user_records
-//}
 
-
-#[moon::main]
-async fn main() -> std::io::Result<()> {
-    let connection = aragog_connect().await;
-
-    //Gets all entries as query result
-   // let records = aragog_get_all_query_result(&connection).await;
-   // println!("{:?}", records);
-
-
-
-    start(frontend, up_msg_handler, |_| {}).await?;
-    Ok(())
+///! This struct must be used instead of Article struct in shared folder
+/// because of an issue implementing Record for structs in shared folder.
+/// Starts with a lowercase a because that is the name of the collection in the database,
+/// which has to match the name of the struct.
+#[derive(Debug, Serialize, Deserialize, Clone, Record)]
+#[serde(crate = "serde")]
+pub struct article {
+    pub id: u32,
+    pub title: String,
+    pub content: String,
+    pub contributors: Vec<String>,
+    pub author: String,
+    pub tags: Vec<String>,
+    pub created_time: String,
+    pub updated_time: String,
 }
-
-

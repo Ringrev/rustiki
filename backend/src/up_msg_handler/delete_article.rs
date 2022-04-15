@@ -5,7 +5,7 @@ use shared::{DownMsg, User};
 use anyhow::Result;
 use aragog::{DatabaseConnection, Record};
 use aragog::query::{Comparison, Filter, QueryResult};
-
+use crate::article;
 
 pub async fn handler(id: u32) -> DownMsg {
     remove_from_db(id).await;
@@ -34,18 +34,4 @@ async fn remove_from_db(id: u32) {
         .unwrap();
     let result = art.delete(&conn).await.unwrap();
     println!("Result from updating db after save: {:?}", result);
-}
-
-
-#[derive(Debug, Serialize, Deserialize, Clone, Record)]
-#[serde(crate = "serde")]
-pub struct article {
-    pub id: u32,
-    pub title: String,
-    pub content: String,
-    pub contributors: Vec<String>,
-    pub author: String,
-    pub tags: Vec<String>,
-    pub created_time: String,
-    pub updated_time: String,
 }

@@ -7,23 +7,11 @@ use aragog::*;
 use moon::serde_json::from_str;
 use std::u32;
 // use shared::DownMsg::LoginError;
+use crate::article;
 
 pub async fn handler() -> DownMsg {
     let art = articles().await;
     DownMsg::Articles(art)
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone, Record)]
-#[serde(crate = "serde")]
-pub struct article {
-    pub id: u32,
-    pub title: String,
-    pub content: String,
-    pub contributors: Vec<String>,
-    pub author: String,
-    pub tags: Vec<String>,
-    pub created_time: String,
-    pub updated_time: String,
 }
 
 pub async fn articles() -> Vec<Article> {
@@ -60,6 +48,8 @@ async fn aragog_get_all(conn: &DatabaseConnection) -> Vec<DatabaseRecord<article
     let records: Vec<DatabaseRecord<article>> = article_records.to_vec();
     records
 }
+
+
 
 
 

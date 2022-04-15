@@ -6,7 +6,7 @@ use anyhow::Result;
 use aragog::{DatabaseConnection, Record};
 use aragog::query::{Comparison, Filter, QueryResult};
 use moon::actix_web::web::get;
-
+use crate::article;
 
 pub async fn handler(id: u32, new_title: String, new_content: String, new_contributors: Vec<String>, new_tags: Vec<String>) -> DownMsg {
     update_in_db(id, new_title, new_content, new_contributors, new_tags).await;
@@ -46,17 +46,4 @@ fn get_time() -> String {
     let system_time = SystemTime::now();
     let datetime: DateTime<Local> = system_time.into();
     datetime.format("%d.%m.%Y %T").to_string()
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone, Record)]
-#[serde(crate = "serde")]
-pub struct article {
-    pub id: u32,
-    pub title: String,
-    pub content: String,
-    pub contributors: Vec<String>,
-    pub author: String,
-    pub tags: Vec<String>,
-    pub created_time: String,
-    pub updated_time: String,
 }
