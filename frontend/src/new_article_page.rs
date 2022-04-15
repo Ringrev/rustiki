@@ -10,8 +10,6 @@ use shared::UpMsg::AddArticle;
 use crate::{app, connection};
 use crate::router::{Route, router};
 
-
-
 pub fn page() -> impl Element {
     title_text().set("".to_string());
     content_text().set("".to_string());
@@ -24,7 +22,7 @@ pub fn page() -> impl Element {
             .s(Align::left(Default::default()))
             .s(Align::center())
             .s(Padding::new().x(100).y(20))
-            .item(Paragraph::new().content("Create new article"))
+            .item(Paragraph::new().content("Create new article").s(Font::new().size(20)).s(Padding::bottom(Default::default(), 20)))
             .item(title_panel())
             .item(content_text_panel())
             .item(tag_panel())

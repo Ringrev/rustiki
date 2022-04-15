@@ -29,7 +29,7 @@ fn card(article: Article) -> impl Element {
         .item(Image::new().url("https://i.guim.co.uk/img/media/3d7d923db999d53074642f9e8051812a186c765a/0_0_2048_1463/master/2048.jpg?width=700&quality=85&auto=format&fit=max&s=2227033b1ae471edf46f7559ab517d1f").description("Placeholder picture").s(Width::max(Default::default(), 200)))
         .item(Paragraph::new().content(article.title.clone()))
         // .item(Paragraph::new().content(article.content.clone()))
-        .on_click(move || super::go_edit_article(article))
+        .on_click(move || super::view_article(article))
 }
 
 // ------ content visible on all pages ------

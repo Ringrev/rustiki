@@ -13,7 +13,6 @@ use UpMsg::AddArticle;
 use crate::add_article::create_article_in_db;
 use crate::up_msg_handler::handler;
 
-
 async fn frontend() -> Frontend {
     Frontend::new()
         .title("Rustiki")

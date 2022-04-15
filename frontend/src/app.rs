@@ -25,9 +25,9 @@ pub fn dialog(text: String) {
     window().confirm_with_message(text.as_str());
 }
 
-pub fn go_edit_article(article: Article) {
-    edit_article_page::set_edit_article(article);
-    router().go(Route::EditArticle);
+pub fn view_article(article: Article) {
+    view_article_page::set_view_article(article);
+    router().go(Route::ViewArticle);
 }
 
 fn filtered_articles() -> impl SignalVec<Item = Article> {
