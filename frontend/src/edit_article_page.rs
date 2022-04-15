@@ -64,7 +64,6 @@ pub fn set_edit_article(art: Article) {
     contributors().lock_mut().replace_cloned(art.contributors.clone());
 }
 
-//TODO Add error handlers and response to user on article added Ok.
 pub fn update_article() {
     add_contributor();
     Task::start(async {

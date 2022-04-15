@@ -18,10 +18,20 @@ pub fn page() -> impl Element {
             .s(Align::left(Default::default()))
             .s(Align::center())
             .s(Padding::new().x(100).y(20))
-                  .item(contributors_view())
-            .item(Paragraph::new().content(view_article().get_cloned().title).s(Font::new().size(20)).s(Padding::bottom(Default::default(), 20)))
-            .item(Paragraph::new().content(view_article().get_cloned().content))
-                  .item(tags_view())
+                  .item(Row::new()
+                      .item(Paragraph::new().content("Author: ").s(Font::new().size(12)))
+                      .item(author_view()))
+                  .item(Row::new()
+                            .item(Paragraph::new().content("Contributors: ").s(Font::new().size(12)))
+                      .item(contributors_view()))
+            .item(Paragraph::new().content(view_article().get_cloned().title).s(Font::new().size(20))
+                .s(Padding::new().top(20)))
+            .item(Paragraph::new().content(view_article().get_cloned().content)
+                .s(Padding::new().bottom(20).top(10)))
+                  .item(Row::new()
+                      .item(Paragraph::new().content("Tags: ").s(Font::new().size(12)))
+                      .item(tags_view()))
+                  .item(time_view())
             // .item(content_text_panel())
             // .item(tag_panel())
             // .item(tags_view())
@@ -132,6 +142,7 @@ fn tags_view() -> impl Element {
     Row::new()
         .items_signal_vec(tags().signal_vec_cloned().map(tag))
         .s(Spacing::new(10))
+        .s(Padding::new().y(5))
 }
 
 fn tag(tag: String) -> impl Element {
@@ -141,6 +152,7 @@ fn tag(tag: String) -> impl Element {
         .item(Label::new()
             .label(tag.clone().to_string())
         .s(Padding::new().x(10))
+            .s(Font::new().size(12))
         .s(Background::new().color(GRAY_2))
         .s(RoundedCorners::all(10)))
 }
@@ -152,6 +164,8 @@ fn contributors() -> &'static MutableVec<String> {
 
 fn contributors_view() -> impl Element {
     Row::new()
+        .multiline()
+        // .s(Background::new().color(GRAY_0))
         .items_signal_vec(contributors().signal_vec_cloned().map(contributor))
         .s(Spacing::new(10))
 }
@@ -160,7 +174,30 @@ fn contributor(cont: String) -> impl Element {
     Row::new()
         .item(Label::new()
             .label(cont.clone().to_string())
+            .s(Font::new().size(12))
             .s(Padding::new().x(10))
             .s(Background::new().color(GRAY_2))
             .s(RoundedCorners::all(10)))
+}
+
+fn author_view() -> impl Element {
+    Row::new()
+        .item(Label::new()
+            .label(view_article().get_cloned().author)
+            .s(Font::new().size(12))
+            .s(Padding::new().x(10))
+            .s(Background::new().color(GRAY_2))
+            .s(RoundedCorners::all(10))
+        )
+        .s(Padding::new().bottom(5))
+}
+
+fn time_view() -> impl Element {
+    Column::new()
+        .item(Paragraph::new()
+            .content("Last updated: ".to_string() + view_article().get_cloned().updated_time.as_str())
+            .s(Font::new().size(12)))
+        .s(Padding::new().bottom(5))
+        .item(Paragraph::new().content("Created: ".to_string() + view_article().get_cloned().created_time.as_str()).s(Font::new().size(12)))
+        .s(Align::left(Default::default()))
 }

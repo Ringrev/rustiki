@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use zoon::{format, *, Element, eprintln};
 use zoon::*;
-use zoon::named_color::GRAY_0;
+use zoon::named_color::{GRAY_0, GRAY_1, GRAY_2};
 use shared::{DownMsg, UpMsg, User, Article};
 use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}};
 use crate::app::{articles_count, articles_exist};
@@ -22,12 +22,16 @@ fn panel() -> impl Element {
 }
 
 fn card(article: Article) -> impl Element {
+    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
     Column::new()
-        .s(Background::new().color(hsluv!(0, 0, 100)))
+        .s(Padding::new().x(10).y(20))
         .s(Spacing::new(5))
         .s(Font::new().size(24))
+        .s(Background::new()
+            .color_signal(hovered_signal.map_bool(|| GRAY_2, || hsluv!(0, 0, 100))))
         .item(Image::new().url("https://i.guim.co.uk/img/media/3d7d923db999d53074642f9e8051812a186c765a/0_0_2048_1463/master/2048.jpg?width=700&quality=85&auto=format&fit=max&s=2227033b1ae471edf46f7559ab517d1f").description("Placeholder picture").s(Width::max(Default::default(), 200)))
         .item(Paragraph::new().content(article.title.clone()))
+        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         // .item(Paragraph::new().content(article.content.clone()))
         .on_click(move || super::view_article(article))
 }
