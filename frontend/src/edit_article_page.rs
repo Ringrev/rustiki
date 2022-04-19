@@ -397,7 +397,7 @@ fn tag(tag: String) -> impl Element {
             // .for_input(tag.clone())
             .label(tag.clone().to_string())
             .element_on_right( remove_tag_button(tag.clone())))
-        .s(Padding::new().x(10))
+        .s(Padding::new().left(10).right(20))
         .s(Background::new().color(GRAY_2))
         .s(RoundedCorners::all(10))
 }
@@ -410,9 +410,11 @@ fn remove_tag_button(tag: String) -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
     Button::new()
         .s(Font::new().size(20).color_signal(
-            hovered_signal.map_bool(|| GRAY_9, || GRAY_4),
+            hovered_signal.map_bool(|| RED_5, || GRAY_4),
         ))
         .on_hovered_change(move |is_hovered| hovered.set_neq(is_hovered))
         .on_press(move || remove_tag(tag.clone().to_string()))
-        .label("×")
+        .label(Paragraph::new().content("x").s(Font::new().size(15)).s(Align::new().center_y()))
+        .s(Height::new(20))
+        .s(Padding::new().left(5))
 }
