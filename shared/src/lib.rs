@@ -2,17 +2,16 @@ use moonlight::*;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(crate = "serde")]
-pub struct User {
+pub struct LocalUser {
     pub id: String,
     pub email: String,
     pub username: String,
     pub auth_token: String,
 }
 
-
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(crate = "serde")]
-pub struct Article {
+pub struct LocalArticle {
     pub id: u32,
     pub title: String,
     pub content: String,
@@ -72,10 +71,10 @@ pub enum DownMsg {
     // ------ Auth ------
     LoginError(String),
     RegistrationError(String),
-    LoggedIn(User),
+    LoggedIn(LocalUser),
     // LoggedOut,
     // ------Article-----
-    Articles(Vec<Article>),
+    Articles(Vec<LocalArticle>),
     ArticleAdded(String),
     ArticleUpdated,
     ArticleRemoved,

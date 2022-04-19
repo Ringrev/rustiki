@@ -2,7 +2,7 @@ use std::borrow::{Borrow, Cow};
 use crate::{app, router::Route};
 use zoon::{named_color::*, *};
 use zoon::dominator::routing::go_to_url;
-use shared::User;
+use shared::LocalUser;
 use crate::app::{logged_user_name, PageName, reset_articles};
 use crate::router::Route::Root;
 use crate::router::router;

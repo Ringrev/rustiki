@@ -1,6 +1,6 @@
 mod up_msg_handler;
 mod firebase;
-use shared::{Article, DownMsg, UpMsg};
+use shared::{LocalArticle, DownMsg, UpMsg};
 use up_msg_handler::add_article;
 
 use moon::*;
@@ -59,11 +59,10 @@ async fn init_db() -> DatabaseConnection {
 
 ///! This struct must be used instead of Article struct in shared folder
 /// because of an issue implementing Record for structs in shared folder.
-/// Starts with a lowercase a because that is the name of the collection in the database,
-/// which has to match the name of the struct.
+/// Name of struct has to match name of collection in DB. Case sensitive.
 #[derive(Debug, Serialize, Deserialize, Clone, Record)]
 #[serde(crate = "serde")]
-pub struct article {
+pub struct Article {
     pub id: u32,
     pub title: String,
     pub content: String,
@@ -72,4 +71,12 @@ pub struct article {
     pub tags: Vec<String>,
     pub created_time: String,
     pub updated_time: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Record)]
+#[serde(crate = "serde")]
+pub struct User {
+    pub id: String,
+    pub email: String,
+    pub username: String,
 }

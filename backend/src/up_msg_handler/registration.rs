@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 use std::future::Future;
 use moon::*;
-use shared::{DownMsg, User};
+use shared::{DownMsg, LocalUser};
 use anyhow::Result;
 use aragog::{DatabaseConnection, DatabaseRecord, Record};
 use aragog::query::{Comparison, Filter};
@@ -10,17 +10,7 @@ use moon::futures::future::err;
 use shared::DownMsg::LoginError;
 use crate::up_msg_handler::login;
 use crate::up_msg_handler::login::login;
-use crate::{firebase, init_db};
-
-// Rename with serde
-// Look here https://github.com/Ringrev/foxy_box/blob/main/server/src/init.rs
-#[derive(Debug, Serialize, Deserialize, Clone, Record)]
-#[serde(crate = "serde")]
-pub struct user {
-    pub id: String,
-    pub email: String,
-    pub username: String,
-}
+use crate::{firebase, init_db, User};
 
 pub async fn handler(auth: FireAuth, email: String, password: String, username: String) -> DownMsg {
     if !check_username_unique(username.clone()).await {
@@ -42,8 +32,8 @@ pub async fn handler(auth: FireAuth, email: String, password: String, username: 
     }
 }
 
-pub async fn register(auth: FireAuth, email: String, password: String) -> (String, User) {
-    let mut user = User {
+pub async fn register(auth: FireAuth, email: String, password: String) -> (String, LocalUser) {
+    let mut user = LocalUser {
         id: "".to_string(),
         email: "".to_string(),
         username: "".to_string(),
@@ -54,7 +44,7 @@ pub async fn register(auth: FireAuth, email: String, password: String) -> (Strin
         Ok(response) => {
             res = String::from("Ok");
             println!("{:?}", response);
-            user = User {
+            user = LocalUser {
                 id: response.local_id.to_string().clone(),
                 email: response.email.to_string(),
                 username: "".to_string(),
@@ -68,14 +58,14 @@ pub async fn register(auth: FireAuth, email: String, password: String) -> (Strin
 
 async fn create_user_in_db(id: String, email: String, username: String) {
     let conn = crate::init_db().await;
-    let db_user = user { id, email, username };
+    let db_user = User { id, email, username };
     DatabaseRecord::create(db_user, &conn).await.unwrap();
 }
 
 async fn check_username_unique(username: String) -> bool {
     let conn = init_db().await;
-    let query = user::query().filter(Filter::new(Comparison::field("username").equals_str(username.as_str())));
-    let user_record = user::get(query, &conn).await.unwrap();
+    let query = User::query().filter(Filter::new(Comparison::field("username").equals_str(username.as_str())));
+    let user_record = User::get(query, &conn).await.unwrap();
     if user_record.is_empty() {
         true
     } else {

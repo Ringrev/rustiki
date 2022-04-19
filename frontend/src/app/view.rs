@@ -2,7 +2,7 @@ use std::sync::Arc;
 use zoon::{format, *, Element, eprintln};
 use zoon::*;
 use zoon::named_color::{GRAY_0, GRAY_1, GRAY_2, GRAY_3, GRAY_4};
-use shared::{DownMsg, UpMsg, User, Article};
+use shared::{DownMsg, UpMsg, LocalUser, LocalArticle};
 use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}};
 use crate::app::{articles_count, articles_exist};
 use crate::footer::footer;
@@ -23,7 +23,7 @@ fn panel() -> impl Element {
         .s(Align::new().center_x())
 }
 
-fn card(article: Article) -> impl Element {
+fn card(article: LocalArticle) -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
     Column::new()
         .s(Padding::new().x(10).y(20))

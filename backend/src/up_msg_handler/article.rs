@@ -1,27 +1,27 @@
 use std::time::SystemTime;
 use moon::*;
-use shared::{Article, DownMsg, User};
+use shared::{LocalArticle, DownMsg, LocalUser};
 use anyhow::Result;
 use shared::UpMsg::{GetArticles}; // is this supposed to be here?
 use aragog::*;
 use moon::serde_json::from_str;
 use std::u32;
 // use shared::DownMsg::LoginError;
-use crate::article;
+use crate::Article;
 
 pub async fn handler() -> DownMsg {
     let art = articles().await;
     DownMsg::Articles(art)
 }
 
-pub async fn articles() -> Vec<Article> {
+pub async fn articles() -> Vec<LocalArticle> {
     let conn = crate::init_db().await;
 
     let result = aragog_get_all(&conn).await;
-    let mut records: Vec<Article> = vec![];
+    let mut records: Vec<LocalArticle> = vec![];
     for a in &result {
         let id: String = a.id.to_string();
-        let art = Article {
+        let art = LocalArticle {
             id: id.parse::<u32>().unwrap(),
             title: a.title.clone(),
             content: a.content.clone(),
@@ -36,10 +36,10 @@ pub async fn articles() -> Vec<Article> {
     records
 }
 
-async fn aragog_get_all(conn: &DatabaseConnection) -> Vec<DatabaseRecord<article>> {
-    let query = article::query();
-    let article_records = article::get(query, conn).await.unwrap();
-    let records: Vec<DatabaseRecord<article>> = article_records.to_vec();
+async fn aragog_get_all(conn: &DatabaseConnection) -> Vec<DatabaseRecord<Article>> {
+    let query = Article::query();
+    let article_records = Article::get(query, conn).await.unwrap();
+    let records: Vec<DatabaseRecord<Article>> = article_records.to_vec();
     records
 }
 

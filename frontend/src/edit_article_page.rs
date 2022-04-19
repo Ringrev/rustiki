@@ -3,7 +3,7 @@ use zoon::events::Input;
 use zoon::named_color::*;
 use zoon::text_input::InputTypeText;
 use zoon::web_sys::HtmlTextAreaElement;
-use shared::{Article, UpMsg, User};
+use shared::{LocalArticle, UpMsg, LocalUser};
 use shared::UpMsg::AddArticle;
 use crate::{app, connection};
 use crate::app::{dialog, logged_user_name, view_article};
@@ -30,9 +30,9 @@ pub fn page() -> impl Element {
 
 //------ Editing Article -------
 #[static_ref]
-fn edit_article() -> &'static Mutable<Article> {
+fn edit_article() -> &'static Mutable<LocalArticle> {
     Mutable::new(
-        Article {
+        LocalArticle {
             id: 5,
             title: "Hei".to_string(),
             content: "hallo".to_string(),
@@ -55,7 +55,7 @@ fn contributors() -> &'static MutableVec<String> {
     MutableVec::new()
 }
 
-pub fn set_edit_article(art: Article) {
+pub fn set_edit_article(art: LocalArticle) {
     edit_article().set(art.clone().to_owned());
     title_text().set(art.title.clone());
     content_text().set(art.content.clone());

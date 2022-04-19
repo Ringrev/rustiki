@@ -2,14 +2,14 @@ use std::fmt::Debug;
 use std::future::Future;
 use moon::*;
 use moon::*;
-use shared::{DownMsg, Article, User};
+use shared::{DownMsg, LocalUser, LocalArticle};
 use anyhow::Result;
 use aragog::{DatabaseConnection, DatabaseRecord, Record};
 use aragog::query::{Comparison, Filter};
 use shared::UpMsg::AddArticle;
 use rand::Rng;
 use std::time::SystemTime;
-use crate::article;
+use crate::Article;
 
 pub async fn handler(title: String, content: String,  author: String, tags: Vec<String>) -> DownMsg {
     let article = create_object(title, content, author, tags).await;
@@ -19,8 +19,8 @@ pub async fn handler(title: String, content: String,  author: String, tags: Vec<
     DownMsg::ArticleAdded("".to_string())
 }
 
-pub async fn create_object(title: String, content: String,  author: String, tags: Vec<String>) -> Article {
-    Article {
+pub async fn create_object(title: String, content: String,  author: String, tags: Vec<String>) -> LocalArticle {
+    LocalArticle {
         id: generate_id().await,
         title,
         content,
@@ -41,8 +41,8 @@ fn get_time() -> String {
 async fn check_id_unique(id: u32) -> bool {
     let conn = crate::init_db().await;
 
-    let query = article::query().filter(Filter::new(Comparison::field("id").equals(id)));
-    let art = article::get(query, &conn)
+    let query = Article::query().filter(Filter::new(Comparison::field("id").equals(id)));
+    let art = Article::get(query, &conn)
         .await
         .unwrap();
     if art.is_empty() {
@@ -52,9 +52,9 @@ async fn check_id_unique(id: u32) -> bool {
     }
 }
 
-pub async fn create_article_in_db(art: Article) {
+pub async fn create_article_in_db(art: LocalArticle) {
     let conn = crate::init_db().await;
-    let db_article = article {
+    let db_article = Article {
         id: art.id,
         title: art.title,
         content: art.content,

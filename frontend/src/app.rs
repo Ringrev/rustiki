@@ -4,7 +4,7 @@ use std::ops::Deref;
 use zoon::{format, *, Element, eprintln};
 use zoon::*;
 use zoon::named_color::GRAY_0;
-use shared::{DownMsg, UpMsg, User, Article};
+use shared::{DownMsg, UpMsg, LocalUser, LocalArticle};
 use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}, edit_article_page, view_article_page};
 
 use crate::footer::footer;
@@ -25,24 +25,24 @@ pub fn dialog(text: String) {
     window().confirm_with_message(text.as_str());
 }
 
-pub fn view_article(article: Article) {
+pub fn view_article(article: LocalArticle) {
     view_article_page::set_view_article(article);
     router().go(Route::ViewArticle);
 }
 
-fn filtered_articles() -> impl SignalVec<Item = Article> {
+fn filtered_articles() -> impl SignalVec<Item = LocalArticle> {
     articles()
         .signal_vec_cloned()
         .map(|article|  article.clone())
 }
 
 #[static_ref]
-pub fn articles() -> &'static MutableVec<Article> {
+pub fn articles() -> &'static MutableVec<LocalArticle> {
     MutableVec::new()
 }
 
 #[static_ref]
-pub fn original_articles() -> &'static MutableVec<Article> {
+pub fn original_articles() -> &'static MutableVec<LocalArticle> {
     MutableVec::new()
 }
 
@@ -54,7 +54,7 @@ fn articles_exist() -> impl Signal<Item = bool> {
     articles_count().map(|count| count != 0).dedupe()
 }
 
-pub fn set_articles(vector: Vec<Article>) {
+pub fn set_articles(vector: Vec<LocalArticle>) {
     let mut vec= VecDeque::new();
     for article in vector {
         vec.push_front(article);
@@ -103,7 +103,7 @@ pub fn is_user_logged() -> bool {
 
 /// State of logged in user
 #[static_ref]
-pub fn logged_in_user() -> &'static Mutable<Option<User>> {
+pub fn logged_in_user() -> &'static Mutable<Option<LocalUser>> {
     Mutable::new(None)
 }
 
@@ -127,7 +127,7 @@ pub fn auth_token() -> &'static Mutable<Option<String>> {
 }
 
 /// Sets user info and token when user logs in. Called from connection.rs
-pub fn set_logged_in_user_and_token(user: User) {
+pub fn set_logged_in_user_and_token(user: LocalUser) {
     logged_in_user().set(Some(user.clone()));
     logged_user_name().set(Some(user.clone()).unwrap().username);
     auth_token().set(Some(user.clone().auth_token));

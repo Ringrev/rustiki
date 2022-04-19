@@ -3,7 +3,7 @@ use zoon::events::Input;
 use zoon::named_color::*;
 use zoon::text_input::InputTypeText;
 use zoon::web_sys::HtmlTextAreaElement;
-use shared::{Article, UpMsg, User};
+use shared::{LocalArticle, UpMsg, LocalUser};
 use shared::UpMsg::AddArticle;
 use crate::{app, connection, edit_article_page};
 use crate::app::dialog;
@@ -65,16 +65,16 @@ fn delete_button() -> impl Element {
         .on_press(delete_article)
 }
 
-pub fn edit_article(article: Article) {
+pub fn edit_article(article: LocalArticle) {
     edit_article_page::set_edit_article(article.clone());
     router().go(Route::EditArticle);
 }
 
 //------ View Article -------
 #[static_ref]
-fn view_article() -> &'static Mutable<Article> {
+fn view_article() -> &'static Mutable<LocalArticle> {
     Mutable::new(
-        Article {
+        LocalArticle {
             id: 5,
             title: "Hei".to_string(),
             content: "hallo".to_string(),
@@ -92,7 +92,7 @@ fn article_id() -> &'static Mutable<u32> {
     Mutable::new(0)
 }
 
-pub fn set_view_article(art: Article) {
+pub fn set_view_article(art: LocalArticle) {
     tags().lock_mut().replace_cloned(art.tags.to_vec());
     view_article().set(art.clone().to_owned());
     article_id().set(art.clone().id);

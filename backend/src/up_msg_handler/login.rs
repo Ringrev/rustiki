@@ -1,13 +1,13 @@
 use std::fmt::Debug;
 use moon::*;
-use shared::{DownMsg, User};
+use shared::{DownMsg, LocalUser};
 use anyhow::Result;
 use aragog::{DatabaseConnection, Record};
 use aragog::query::{Comparison, Filter};
 use fireauth::FireAuth;
 use moon::futures::future::err;
 use shared::DownMsg::LoginError;
-use crate::up_msg_handler::registration::user;
+use crate::User;
 
 
 pub async fn handler(auth: FireAuth, email: String, password: String) -> DownMsg {
@@ -19,9 +19,9 @@ pub async fn handler(auth: FireAuth, email: String, password: String) -> DownMsg
     }
 }
 
-pub async fn login(auth: FireAuth, email: String, password: String) -> (String, User) {
+pub async fn login(auth: FireAuth, email: String, password: String) -> (String, LocalUser) {
     let mut res: String = "".to_string();
-    let mut user = User {
+    let mut user = LocalUser {
         id: "".to_string(),
         email: "".to_string(),
         username: "".to_string(),
@@ -31,7 +31,7 @@ pub async fn login(auth: FireAuth, email: String, password: String) -> (String, 
         Ok(response) => {
             res = String::from("Ok");
             println!("{:?}", response);
-            user = User {
+            user = LocalUser {
                 id: response.local_id.to_string().clone(),
                 email: response.email.to_string(),
                 username: get_username(response.local_id.to_string()).await,
@@ -48,8 +48,8 @@ pub async fn login(auth: FireAuth, email: String, password: String) -> (String, 
 
 async fn get_username(id: String) -> String {
     let conn = crate::init_db().await;
-    let query = user::query().filter(Filter::new(Comparison::field("id").equals_str(id.as_str())));
-    let user_record = user::get(query, &conn).await.unwrap().uniq().unwrap();
+    let query = User::query().filter(Filter::new(Comparison::field("id").equals_str(id.as_str())));
+    let user_record = User::get(query, &conn).await.unwrap().uniq().unwrap();
     let res = user_record.username.to_string();
     res
 }

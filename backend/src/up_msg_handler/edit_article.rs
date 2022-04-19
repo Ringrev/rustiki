@@ -1,12 +1,12 @@
 use std::fmt::Debug;
 use std::time::SystemTime;
 use moon::*;
-use shared::{DownMsg, User};
+use shared::{DownMsg, LocalUser};
 use anyhow::Result;
 use aragog::{DatabaseConnection, Record};
 use aragog::query::{Comparison, Filter, QueryResult};
 use moon::actix_web::web::get;
-use crate::article;
+use crate::Article;
 
 pub async fn handler(id: u32, new_title: String, new_content: String, new_contributors: Vec<String>, new_tags: Vec<String>) -> DownMsg {
     update_in_db(id, new_title, new_content, new_contributors, new_tags).await;
@@ -21,8 +21,8 @@ pub async fn handler(id: u32, new_title: String, new_content: String, new_contri
 async fn update_in_db(id: u32, new_title: String, new_content: String, new_contributors: Vec<String>, new_tags: Vec<String>) {
     let conn = crate::init_db().await;
 
-    let query = article::query().filter(Filter::new(Comparison::field("id").equals(id)));
-    let mut art = article::get(query, &conn)
+    let query = Article::query().filter(Filter::new(Comparison::field("id").equals(id)));
+    let mut art = Article::get(query, &conn)
         .await
         .unwrap()
         .uniq()
