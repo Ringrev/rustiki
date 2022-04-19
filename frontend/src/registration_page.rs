@@ -55,9 +55,13 @@ fn passwords_match() -> bool {
     }
 }
 
+
 fn check_password() -> bool {
-    if !password_text().get_cloned().len()>5 {
-        set_error_msg(String::from("Password must be at least 6 characters long. Please try again."));
+    // Doesn't work:
+    // if !password_text().get_cloned().len()>5 {
+    // Works:
+    if !(password_text().get_cloned().len()>5) {
+        set_error_msg(String::from("Password must be at least 6 characters long."));
         false
     } else {
         true
