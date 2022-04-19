@@ -10,8 +10,10 @@ use moon::futures::future::err;
 use shared::DownMsg::LoginError;
 use crate::up_msg_handler::login;
 use crate::up_msg_handler::login::login;
-use crate::firebase;
+use crate::{firebase, init_db};
 
+// Rename with serde
+// Look here https://github.com/Ringrev/foxy_box/blob/main/server/src/init.rs
 #[derive(Debug, Serialize, Deserialize, Clone, Record)]
 #[serde(crate = "serde")]
 pub struct user {
@@ -65,25 +67,13 @@ pub async fn register(auth: FireAuth, email: String, password: String) -> (Strin
 }
 
 async fn create_user_in_db(id: String, email: String, username: String) {
-    let conn = DatabaseConnection::builder()
-        .with_credentials("http://174.138.11.103:8529", "_system", "root", "ringrev")
-        .with_schema_path("backend/config/db/schema.yaml")
-        .apply_schema()
-        .build()
-        .await
-        .unwrap();
+    let conn = crate::init_db().await;
     let db_user = user { id, email, username };
     DatabaseRecord::create(db_user, &conn).await.unwrap();
 }
 
 async fn check_username_unique(username: String) -> bool {
-    let conn = DatabaseConnection::builder()
-        .with_credentials("http://174.138.11.103:8529", "_system", "root", "ringrev")
-        .with_schema_path("backend/config/db/schema.yaml")
-        .apply_schema()
-        .build()
-        .await
-        .unwrap();
+    let conn = init_db().await;
     let query = user::query().filter(Filter::new(Comparison::field("username").equals_str(username.as_str())));
     let user_record = user::get(query, &conn).await.unwrap();
     if user_record.is_empty() {

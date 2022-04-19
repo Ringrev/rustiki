@@ -47,13 +47,7 @@ pub async fn login(auth: FireAuth, email: String, password: String) -> (String, 
 }
 
 async fn get_username(id: String) -> String {
-    let conn = DatabaseConnection::builder()
-        .with_credentials("http://174.138.11.103:8529", "_system", "root", "ringrev")
-        .with_schema_path("backend/config/db/schema.yaml")
-        .apply_schema()
-        .build()
-        .await
-        .unwrap();
+    let conn = crate::init_db().await;
     let query = user::query().filter(Filter::new(Comparison::field("id").equals_str(id.as_str())));
     let user_record = user::get(query, &conn).await.unwrap().uniq().unwrap();
     let res = user_record.username.to_string();

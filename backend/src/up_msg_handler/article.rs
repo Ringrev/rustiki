@@ -15,13 +15,7 @@ pub async fn handler() -> DownMsg {
 }
 
 pub async fn articles() -> Vec<Article> {
-    let conn = DatabaseConnection::builder()
-        .with_credentials("http://174.138.11.103:8529/", "_system", "root", "ringrev")
-        .with_schema_path("backend/config/db/schema.yaml")
-        .apply_schema()
-        .build()
-        .await
-        .unwrap();
+    let conn = crate::init_db().await;
 
     let result = aragog_get_all(&conn).await;
     let mut records: Vec<Article> = vec![];

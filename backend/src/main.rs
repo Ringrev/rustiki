@@ -45,22 +45,16 @@ async fn up_msg_handler(req: UpMsgRequest<UpMsg>) {
 
 #[moon::main]
 async fn main() -> std::io::Result<()> {
-    // let connection = aragog_connect().await;
-
     start(frontend, up_msg_handler, |_| {}).await?;
     Ok(())
 }
 
 //ArangoDb connection
-async fn aragog_connect() -> DatabaseConnection {
-    let db_connection = DatabaseConnection::builder()
-        .with_credentials("http://174.138.11.103:8529", "_system", "root", "ringrev")
-        .with_schema_path("backend/config/db/schema.yaml")
-        .apply_schema()
+async fn init_db() -> DatabaseConnection {
+    DatabaseConnection::builder()
         .build()
         .await
-        .unwrap();
-    db_connection
+        .unwrap()
 }
 
 ///! This struct must be used instead of Article struct in shared folder

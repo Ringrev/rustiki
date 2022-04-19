@@ -19,13 +19,7 @@ pub async fn handler(id: u32, new_title: String, new_content: String, new_contri
 }
 
 async fn update_in_db(id: u32, new_title: String, new_content: String, new_contributors: Vec<String>, new_tags: Vec<String>) {
-    let conn = DatabaseConnection::builder()
-        .with_credentials("http://174.138.11.103:8529", "_system", "root", "ringrev")
-        .with_schema_path("backend/config/db/schema.yaml")
-        .apply_schema()
-        .build()
-        .await
-        .unwrap();
+    let conn = crate::init_db().await;
 
     let query = article::query().filter(Filter::new(Comparison::field("id").equals(id)));
     let mut art = article::get(query, &conn)
