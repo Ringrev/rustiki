@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use zoon::{format, *, Element, eprintln};
 use zoon::*;
-use zoon::named_color::{GRAY_0, GRAY_1, GRAY_2};
+use zoon::named_color::{GRAY_0, GRAY_1, GRAY_2, GRAY_3, GRAY_4};
 use shared::{DownMsg, UpMsg, User, Article};
 use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}};
 use crate::app::{articles_count, articles_exist};
@@ -14,11 +14,13 @@ fn articles() -> impl Element {
         .items_signal_vec(super::filtered_articles().map(card))
         .s(Spacing::new(50))
         .multiline()
+        .s(Width::new(1300))
 }
 
 fn panel() -> impl Element {
     Column::new()
         .item_signal(super::articles_exist().map_true(articles))
+        .s(Align::new().center_x())
 }
 
 fn card(article: Article) -> impl Element {
@@ -29,7 +31,10 @@ fn card(article: Article) -> impl Element {
         .s(Font::new().size(24))
         .s(Background::new()
             .color_signal(hovered_signal.map_bool(|| GRAY_2, || hsluv!(0, 0, 100))))
-        .item(Image::new().url("https://i.guim.co.uk/img/media/3d7d923db999d53074642f9e8051812a186c765a/0_0_2048_1463/master/2048.jpg?width=700&quality=85&auto=format&fit=max&s=2227033b1ae471edf46f7559ab517d1f").description("Placeholder picture").s(Width::max(Default::default(), 200)))
+        .item(Image::new().url("https://rustacean.net/assets/rustacean-flat-happy.png")
+            .description("Placeholder picture")
+            .s(Width::max(Default::default(), 200))
+            .s(Background::new().color(GRAY_3)))
         .item(Paragraph::new().content(article.title.clone()))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         // .item(Paragraph::new().content(article.content.clone()))
@@ -39,8 +44,18 @@ fn card(article: Article) -> impl Element {
 // ------ content visible on all pages ------
 
 pub fn root() -> impl Element {
+    // Stack::new()
+    //     .s(Height::screen())
+    //     .layer(Column::new()
+    //         .item(page())
+    //         .item(footer()).s(Align::bottom(Default::default()))
+    //         .s(Padding::top(Default::default(), 100))
+    //         .s(Height::fill()))
+    //     .layer(header())
+
     Column::new()
         .s(Height::screen())
+        .s(Width::fill())
         .item(header()).s(Align::top(Default::default())) //navbar placeholder
         .item(super::page())
         .item(footer()).s(Align::bottom(Default::default()))
@@ -52,7 +67,7 @@ pub(crate) fn front_page() -> impl Element {
     super::test_get_articles();
     Column::new()
         .s(Padding::new().top(50))
-        .item(placeholder_text())
+        .s(Width::fill())
         .item(panel())
 }
 

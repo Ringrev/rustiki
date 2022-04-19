@@ -13,6 +13,7 @@ use crate::router::router;
 
 pub fn header() -> impl Element {
     Row::new()
+        .s(Height::new(100))
         .s(Background::new().color(GRAY_4))
         .s(Spacing::new(10))
         .s(Padding::all(20))
@@ -28,7 +29,12 @@ fn logo() -> impl Element {
         .s(Font::new().size(50).weight(FontWeight::Bold))
         .label("Rustiki")
         .to(Route::Root)
-        .on_click(app::reset_articles)
+        .on_click(on_logo_click)
+}
+
+fn on_logo_click() {
+    set_search_query("".to_string());
+    app::reset_articles();
 }
 
 fn link(label: &str, route: Route) -> impl Element {
@@ -49,7 +55,7 @@ fn search_box() -> impl Element {
 
 pub fn search() {
     app::reset_articles();
-    app::articles().lock_mut().retain(|art| art.title.to_lowercase().contains(search_query().get_cloned().to_lowercase().as_str()));
+    app::articles().lock_mut().retain(|art| art.title.to_lowercase().contains(search_query().get_cloned().to_lowercase().as_str())||art.tags.contains(&search_query().get_cloned().to_lowercase()));
 }
 
 #[static_ref]
@@ -79,6 +85,7 @@ fn search_bar() -> impl Element {
         .label_hidden("New message text")
         .placeholder(Placeholder::new("Search for Wiki"))
         .on_key_down_event(|event| event.if_key(Key::Enter, search))
+        .text_signal(search_query().signal_cloned())
 }
 
 fn search_button() -> impl Element {
