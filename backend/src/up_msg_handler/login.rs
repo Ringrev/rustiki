@@ -21,22 +21,15 @@ pub async fn handler(auth: FireAuth, email: String, password: String) -> DownMsg
 
 pub async fn login(auth: FireAuth, email: String, password: String) -> (String, LocalUser) {
     let mut res: String = "".to_string();
-    let mut user = LocalUser {
-        id: "".to_string(),
-        email: "".to_string(),
-        username: "".to_string(),
-        auth_token: "".to_string()
-    };
+    let mut user = LocalUser::new_empty();
     match auth.sign_in_email(&*email, &*password, true).await {
         Ok(response) => {
             res = String::from("Ok");
             println!("{:?}", response);
-            user = LocalUser {
-                id: response.local_id.to_string().clone(),
-                email: response.email.to_string(),
-                username: get_username(response.local_id.to_string()).await,
-                auth_token: response.id_token.to_string()
-            }
+            user.id = response.local_id.to_string();
+            user.email = response.email.to_string();
+            user.username = get_username(user.id.clone()).await;
+            user.auth_token = response.id_token.to_string();
         }
         Err(error) => {  println!("Error from firebase: {:?}", error.clone());
             // res = error.clone().to_string();

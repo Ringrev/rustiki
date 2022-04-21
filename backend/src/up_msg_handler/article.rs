@@ -20,17 +20,15 @@ pub async fn articles() -> Vec<LocalArticle> {
     let result = aragog_get_all(&conn).await;
     let mut records: Vec<LocalArticle> = vec![];
     for a in &result {
-        let id: String = a.id.to_string();
-        let art = LocalArticle {
-            id: id.parse::<u32>().unwrap(),
-            title: a.title.clone(),
-            content: a.content.clone(),
-            contributors: a.contributors.clone(),
-            author: a.author.clone(),
-            tags: a.tags.clone(),
-            created_time: a.created_time.to_string(),
-            updated_time: a.updated_time.to_string(),
-        };
+        let art = LocalArticle::new(
+                                    a.id.to_string().parse::<u32>().unwrap(),
+                                    a.title.clone(),
+                                    a.content.clone(),
+                                    a.contributors.clone(),
+                                    a.author.clone(),
+                                    a.tags.clone(),
+                                    a.created_time.to_string(),
+                                    a.updated_time.to_string());
         records.push(art);
     }
     records

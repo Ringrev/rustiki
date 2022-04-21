@@ -20,16 +20,7 @@ pub async fn handler(title: String, content: String,  author: String, tags: Vec<
 }
 
 pub async fn create_object(title: String, content: String,  author: String, tags: Vec<String>) -> LocalArticle {
-    LocalArticle {
-        id: generate_id().await,
-        title,
-        content,
-        contributors: vec![],
-        author,
-        tags,
-        created_time: get_time(),
-        updated_time: get_time(),
-    }
+    LocalArticle::new(generate_id().await, title, content, vec![], author, tags, get_time(), get_time())
 }
 
 fn get_time() -> String {
@@ -54,16 +45,7 @@ async fn check_id_unique(id: u32) -> bool {
 
 pub async fn create_article_in_db(art: LocalArticle) {
     let conn = crate::init_db().await;
-    let db_article = Article {
-        id: art.id,
-        title: art.title,
-        content: art.content,
-        contributors: art.contributors,
-        author: art.author,
-        tags: art.tags,
-        created_time: art.created_time,
-        updated_time: art.updated_time,
-    };
+    let db_article = Article::new(art.id, art.title, art.content, art.contributors, art.author, art.tags, art.created_time, art.updated_time);
     DatabaseRecord::create(db_article, &conn).await.unwrap();
 }
 

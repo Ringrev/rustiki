@@ -74,16 +74,7 @@ pub fn edit_article(article: LocalArticle) {
 #[static_ref]
 fn view_article() -> &'static Mutable<LocalArticle> {
     Mutable::new(
-        LocalArticle {
-            id: 5,
-            title: "Hei".to_string(),
-            content: "hallo".to_string(),
-            author: "".to_string(),
-            contributors: vec![],
-            tags: vec![],
-            created_time: "".to_string(),
-            updated_time: "".to_string()
-        }
+        LocalArticle::new_empty()
     )
 }
 

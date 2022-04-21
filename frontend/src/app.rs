@@ -13,9 +13,6 @@ use crate::header::{header, search};
 
 pub mod view;
 
-// Can be used for local storage of token later
-// pub static USER_TOKEN: &str = "token";
-
 ////////////////////////////////////
 // ------ article stuff ------
 ////////////////////////////////////

@@ -33,23 +33,16 @@ pub async fn handler(auth: FireAuth, email: String, password: String, username: 
 }
 
 pub async fn register(auth: FireAuth, email: String, password: String) -> (String, LocalUser) {
-    let mut user = LocalUser {
-        id: "".to_string(),
-        email: "".to_string(),
-        username: "".to_string(),
-        auth_token: "".to_string()
-    };
+    let mut user = LocalUser::new_empty();
     let mut res: String = "".to_string();
     match auth.sign_up_email(&*email, &*password, true).await {
         Ok(response) => {
             res = String::from("Ok");
             println!("{:?}", response);
-            user = LocalUser {
-                id: response.local_id.to_string().clone(),
-                email: response.email.to_string(),
-                username: "".to_string(),
-                auth_token: response.id_token.to_string()
-            }
+
+            user.id = response.local_id.to_string().clone();
+            user.email = response.email.to_string();
+            user.auth_token = response.id_token.to_string();
         }
         Err(error) => { res = "Invalid email".to_string() }
     }

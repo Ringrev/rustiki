@@ -32,16 +32,7 @@ pub fn page() -> impl Element {
 #[static_ref]
 fn edit_article() -> &'static Mutable<LocalArticle> {
     Mutable::new(
-        LocalArticle {
-            id: 5,
-            title: "Hei".to_string(),
-            content: "hallo".to_string(),
-            author: "".to_string(),
-            contributors: vec![],
-            tags: vec![],
-            created_time: "".to_string(),
-            updated_time: "".to_string()
-        }
+        LocalArticle::new_empty()
     )
 }
 

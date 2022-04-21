@@ -57,7 +57,7 @@ async fn init_db() -> DatabaseConnection {
         .unwrap()
 }
 
-///! This struct must be used instead of Article struct in shared folder
+/// This struct must be used instead of LocalArticle struct in shared folder
 /// because of an issue implementing Record for structs in shared folder.
 /// Name of struct has to match name of collection in DB. Case sensitive.
 #[derive(Debug, Serialize, Deserialize, Clone, Record)]
@@ -73,10 +73,65 @@ pub struct Article {
     pub updated_time: String,
 }
 
+impl Article {
+    pub fn new(id: u32,
+               title: String,
+               content: String,
+               contributors: Vec<String>,
+               author: String, tags: Vec<String>,
+               created_time: String,
+               updated_time: String) -> Self {
+        Self {
+            id,
+            title,
+            content,
+            contributors,
+            author,
+            tags,
+            created_time,
+            updated_time
+        }
+    }
+
+    pub fn new_empty() -> Self {
+        Self {
+            id: 0,
+            title: "".to_string(),
+            content: "".to_string(),
+            contributors: vec![],
+            author: "".to_string(),
+            tags: vec![],
+            created_time: "".to_string(),
+            updated_time: "".to_string()
+        }
+    }
+}
+
+/// This struct must be used instead of LocalUser struct in shared folder
+/// because of an issue implementing Record for structs in shared folder.
+/// Name of struct has to match name of collection in DB. Case sensitive.
 #[derive(Debug, Serialize, Deserialize, Clone, Record)]
 #[serde(crate = "serde")]
 pub struct User {
     pub id: String,
     pub email: String,
     pub username: String,
+}
+
+impl User {
+    pub fn new(id: String, email: String, username: String) -> Self {
+        Self {
+            id,
+            email,
+            username
+        }
+    }
+
+    pub fn new_empty() -> Self {
+        Self {
+            id: "".to_string(),
+            email: "".to_string(),
+            username: "".to_string()
+        }
+    }
 }
