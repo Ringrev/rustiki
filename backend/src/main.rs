@@ -1,15 +1,8 @@
 mod up_msg_handler;
 mod firebase;
-use shared::{LocalArticle, DownMsg, UpMsg};
-
+use shared::UpMsg;
 use moon::*;
-use aragog::query::{Comparison, Filter, QueryResult};
-use moon::actix_web::web::Data;
-use serde::de::Unexpected::Str;
-use std::borrow::Borrow;
 use aragog::{DatabaseConnection, Record};
-use UpMsg::AddArticle;
-use crate::up_msg_handler::handler;
 
 async fn frontend() -> Frontend {
     Frontend::new()

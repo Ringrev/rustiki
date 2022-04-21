@@ -1,10 +1,6 @@
-use std::fmt::Debug;
-use std::time::SystemTime;
-use moon::*;
-use shared::{DownMsg, LocalUser};
-use anyhow::Result;
-use aragog::{DatabaseConnection, Record};
-use aragog::query::{Comparison, Filter, QueryResult};
+use shared::{DownMsg};
+use aragog::{Record};
+use aragog::query::{Comparison, Filter};
 use crate::Article;
 
 pub async fn handler(id: u32) -> DownMsg {

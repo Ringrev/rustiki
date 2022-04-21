@@ -1,12 +1,7 @@
-use std::fmt::Debug;
-use moon::*;
 use shared::{DownMsg, LocalUser};
-use anyhow::Result;
-use aragog::{DatabaseConnection, Record};
+use aragog::Record;
 use aragog::query::{Comparison, Filter};
 use fireauth::FireAuth;
-use moon::futures::future::err;
-use shared::DownMsg::LoginError;
 use crate::User;
 
 

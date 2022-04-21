@@ -1,1 +1,4 @@
-pub(crate) mod dialogs;
+pub mod dialogs;
+pub mod tags;
+pub mod header;
+pub mod footer;

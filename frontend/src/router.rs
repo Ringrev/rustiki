@@ -2,12 +2,9 @@ use std::collections::VecDeque;
 use zoon::*;
 use crate::{app::{self, PageName}};
 
-// ------ Route history ------
-
-#[static_ref]
-fn route_history() -> &'static Mutable<VecDeque<Route>> {
-    Mutable::new(VecDeque::new())
-}
+// ------ ------
+//    Commands
+// ------ ------
 
 fn push_to_route_history(route: Route) {
     let mut history = route_history().lock_mut();
@@ -17,7 +14,14 @@ fn push_to_route_history(route: Route) {
     history.push_front(route);
 }
 
-// ------ router ------
+// ------ ------
+//    States
+// ------ ------
+
+#[static_ref]
+fn route_history() -> &'static Mutable<VecDeque<Route>> {
+    Mutable::new(VecDeque::new())
+}
 
 #[static_ref]
 pub fn router() -> &'static Router<Route> {
@@ -34,7 +38,7 @@ pub fn router() -> &'static Router<Route> {
         };
 
         match route {
-            Route::Root => {
+            Route::Home => {
                 app::set_page_name(PageName::Home);
             }
             Route::Registration => {
@@ -46,10 +50,12 @@ pub fn router() -> &'static Router<Route> {
             Route::LogIn => {
                 app::set_page_name(PageName::LogIn);
             }
-            Route::ViewArticle => {
+            Route::ViewArticle {
+                article_id,
+            } => {
+                // view_article_page::set_expression();
                 app::set_page_name(PageName::ViewArticle);
             }
-
             Route::EditArticle => {
                 app::set_page_name(PageName::EditArticle)
             }
@@ -57,7 +63,9 @@ pub fn router() -> &'static Router<Route> {
     })
 }
 
-// ------ Route ------
+// ------ ------
+//    Types
+// ------ ------
 
 #[route]
 #[derive(Clone)]
@@ -68,14 +76,16 @@ pub enum Route {
     #[route("new_article")]
     NewArticle,
 
-    #[route("view_article")]
-    ViewArticle,
+    #[route("article", article_id)]
+    ViewArticle {
+        article_id: String,
+    },
 
     #[route("login")]
     LogIn,
 
     #[route()]
-    Root,
+    Home,
 
     #[route("edit_article")]
     EditArticle,

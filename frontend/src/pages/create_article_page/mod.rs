@@ -1,12 +1,16 @@
 use zoon::*;
 use zoon::named_color::*;
-use shared::{LocalArticle, UpMsg};
+use shared::UpMsg;
 use crate::{app, connection};
-use crate::app::{logged_user_name};
+use crate::elements::dialogs::{confirm_dialog, message_dialog};
 use crate::router::{Route, router};
-use crate::elements::dialogs::*;
+
+mod view;
 
 pub fn page() -> impl Element {
+    title_text().set("".to_string());
+    content_text().set("".to_string());
+    tags().lock_mut().clear();
     Column::new()
         .s(Align::center())
         .s(Width::new(800))
@@ -15,7 +19,7 @@ pub fn page() -> impl Element {
             .s(Align::left(Default::default()))
             .s(Align::center())
             .s(Padding::new().x(100).y(20))
-            .item(Paragraph::new().content("Edit article"))
+            .item(Paragraph::new().content("Create new article").s(Font::new().size(20)).s(Padding::bottom(Default::default(), 20)))
             .item(title_panel())
             .item(content_text_panel())
             .item(tag_panel())
@@ -25,76 +29,29 @@ pub fn page() -> impl Element {
 }
 
 
-//------ Editing Article -------
+//------ Add Article -------
 #[static_ref]
-fn edit_article() -> &'static Mutable<LocalArticle> {
-    Mutable::new(
-        LocalArticle::new_empty()
-    )
+fn error_message() -> &'static Mutable<String> {
+    Mutable::new("".to_string())
 }
 
-#[static_ref]
-fn article_id() -> &'static Mutable<u32> {
-    Mutable::new(0)
-}
+// pub fn set_error_msg(msg: String) {
+//     error_message().set(msg);
+// }
 
-#[static_ref]
-fn contributors() -> &'static MutableVec<String> {
-    MutableVec::new()
-}
-
-pub fn set_edit_article(art: LocalArticle) {
-    edit_article().set(art.clone().to_owned());
-    title_text().set(art.title.clone());
-    content_text().set(art.content.clone());
-    article_id().set(art.id.to_owned());
-    tags().lock_mut().replace_cloned(art.tags.clone());
-    contributors().lock_mut().replace_cloned(art.contributors.clone());
-}
-
-pub fn update_article() {
-    add_contributor();
+pub fn add_article() {
     Task::start(async {
-        let msg = UpMsg::EditArticle {
-            // org_title must be replace with ID when that gets implemented for Article object
-            id: article_id().get_cloned(),
-            new_title: title_text().lock_mut().to_string(),
-            new_content: content_text().lock_mut().to_string(),
-            new_contributors: contributors().lock_mut().to_vec(),
-            new_tags: tags().lock_mut().to_vec(),
+        let msg = UpMsg::AddArticle {
+            title: title_text().get_cloned(),
+            // TODO: change content when implemented in frontend with js quill.
+            content: content_text().get_cloned(),
+            author: app::logged_in_user().get_cloned().unwrap().username,
+            tags: tags().lock_mut().to_vec(),
         };
         if let Err(error) = connection::connection().send_up_msg(msg).await {
-            message_dialog(error.to_string().as_str());
+            message_dialog(error.to_string().as_str())
         }
     });
-}
-
-fn add_contributor() {
-    let logged_in_user = logged_user_name().get_cloned().to_string();
-    if !edit_article().get_cloned().author.to_string().eq(logged_in_user.clone().as_str()) {
-        if !contributors().lock_mut().contains(&logged_in_user.clone()) {
-            contributors().lock_mut().push_cloned(logged_in_user.clone());
-        }
-    }
-}
-
-pub fn delete_article() {
-    if app::logged_user_name().get_cloned().eq(edit_article().get_cloned().author.as_str()) {
-        Task::start(async {
-            if confirm_dialog("Are you sure you want to delete the article?") {
-                let msg = UpMsg::RemoveArticle {
-                    id: article_id().get_cloned(),
-                };
-                if let Err(error) = connection::connection().send_up_msg(msg).await {
-                    message_dialog(error.to_string().as_str());
-                }
-            } else {
-                return;
-            }
-        });
-    } else {
-        message_dialog("Only the author can delete an article");
-    }
 }
 
 // ------ state of title
@@ -146,6 +103,10 @@ fn title_text_input(id: &str) -> impl Element {
         .placeholder(Placeholder::new("Title of your article"))
         .text_signal(title_text().signal_cloned())
 }
+
+
+////////////////////////////////////////////////////////////
+
 
 // ------ state: content text
 #[static_ref]
@@ -202,23 +163,10 @@ fn content_text_input(id: &str) -> impl Element {
 
 fn button_panel() -> impl Element {
     Row::new()
-        .item(delete_button())
         .item(cancel_button())
         .item(publish_button())
         .s(Spacing::new(10))
         .s(Align::right(Default::default()))
-}
-
-fn delete_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Button::new()
-        .s(Font::new().size(16).color(GRAY_0))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Padding::new().y(10).x(15))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Delete article")
-        .on_press(delete_article)
 }
 
 fn publish_button() -> impl Element {
@@ -229,8 +177,8 @@ fn publish_button() -> impl Element {
             .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
         .s(Padding::new().y(10).x(15))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Publish changes")
-        .on_press(update_article)
+        .label("Publish")
+        .on_press(add_article)
 }
 
 fn cancel_button() -> impl Element {
@@ -243,27 +191,6 @@ fn cancel_button() -> impl Element {
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .label("Cancel")
         .on_press(cancel)
-}
-
-fn cancel() {
-    if confirm_dialog("Your changes will not be saved. Are you sure you want to leave the page?") {
-        router().go(Route::Root);
-    } else {
-        return;
-    }
-}
-
-
-fn add_tag_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Button::new()
-        .s(Font::new().size(16).color(GRAY_0))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Padding::new().y(6).x(15))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Add")
-        .on_press(add_tag)
 }
 
 // ------ tag label and input combined
@@ -313,6 +240,17 @@ fn tag_input(id: &str) -> impl Element {
         .on_key_down_event(|event| event.if_key(Key::Enter, add_tag))
 }
 
+fn add_tag_button() -> impl Element {
+    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
+    Button::new()
+        .s(Font::new().size(16).color(GRAY_0))
+        .s(Background::new()
+            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
+        .s(Padding::new().y(6).x(15))
+        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
+        .label("Add")
+        .on_press(add_tag)
+}
 
 #[static_ref]
 fn tags() -> &'static MutableVec<String> {
@@ -388,8 +326,16 @@ fn remove_tag_button(tag: String) -> impl Element {
             hovered_signal.map_bool(|| RED_5, || GRAY_4),
         ))
         .on_hovered_change(move |is_hovered| hovered.set_neq(is_hovered))
-        .on_press(move || remove_tag(tag.clone().to_string()))
+        .on_press(move || remove_tag(tag.to_string()))
         .label(Paragraph::new().content("x").s(Font::new().size(15)).s(Align::new().center_y()))
         .s(Height::new(20))
         .s(Padding::new().left(5))
+}
+
+fn cancel() {
+    if confirm_dialog("Your article will not be saved. Are you sure you want to leave the page?") {
+        router().go(Route::Home);
+    } else {
+        return;
+    }
 }

@@ -1,7 +1,6 @@
 use std::time::SystemTime;
 use moon::*;
 use shared::{UpMsg, DownMsg};
-use fireauth;
 use crate::firebase::init;
 
 mod login;

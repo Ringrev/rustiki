@@ -1,14 +1,7 @@
-use std::fmt::Debug;
-use std::future::Future;
-use moon::*;
 use shared::{DownMsg, LocalUser};
-use anyhow::Result;
-use aragog::{DatabaseConnection, DatabaseRecord, Record};
+use aragog::{DatabaseRecord, Record};
 use aragog::query::{Comparison, Filter};
-use fireauth::{Error, FireAuth};
-use moon::futures::future::err;
-use shared::DownMsg::LoginError;
-use crate::up_msg_handler::login;
+use fireauth::FireAuth;
 use crate::up_msg_handler::login::login;
 use crate::{firebase, init_db, User};
 
@@ -44,7 +37,7 @@ pub async fn register(auth: FireAuth, email: String, password: String) -> (Strin
             user.email = response.email.to_string();
             user.auth_token = response.id_token.to_string();
         }
-        Err(error) => { res = "Invalid email".to_string() }
+        Err(_error) => { res = "Invalid email".to_string() }
     }
     (res, user)
 }

@@ -4,15 +4,17 @@ use zoon::text_input::{InputTypePassword};
 use shared::UpMsg;
 use crate::connection;
 
+mod view;
+
 pub fn page() -> impl Element {
     email_text().set("".to_string());
     user_name_text().set("".to_string());
     password_text().set("".to_string());
     retyped_password_text().set("".to_string());
-        Column::new()
-            .s(Align::center())
-            .s(Width::new(800))
-            .s(Background::new().color(hsluv!(0,0,0,5)))
+    Column::new()
+        .s(Align::center())
+        .s(Width::new(800))
+        .s(Background::new().color(hsluv!(0,0,0,5)))
         .item(Column::new()
             .s(Align::center())
             .s(Padding::new().x(100).y(20))

@@ -1,5 +1,3 @@
-use std::thread;
-use moon::*;
 use fireauth::FireAuth;
 
 pub async fn init() -> FireAuth {

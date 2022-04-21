@@ -4,6 +4,8 @@ use zoon::text_input::{InputTypePassword};
 use shared::UpMsg;
 use crate::{connection};
 
+mod view;
+
 pub fn page() -> impl Element {
     user_name_text().set("".to_string());
     password_text().set("".to_string());

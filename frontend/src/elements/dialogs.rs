@@ -6,7 +6,6 @@ pub fn message_dialog(text: &str) {
     };
 }
 
-
 pub fn confirm_dialog(text: &str) -> bool {
     let res = window().confirm_with_message(text);
     res.unwrap()

@@ -1,36 +1,40 @@
 use zoon::*;
 use zoon::named_color::*;
 use shared::{LocalArticle, UpMsg};
-use crate::{app, connection, edit_article_page};
+use crate::{app, connection};
+use crate::pages::edit_article_page;
 use crate::elements::dialogs::{confirm_dialog, message_dialog};
 use crate::router::{Route, router};
 
+mod view;
+
 pub fn page() -> impl Element {
+
     Column::new()
         .s(Align::center())
         .s(Width::new(800))
         .s(Background::new().color(hsluv!(0,0,0,5)))
         .item(Column::new()
-            .s(Align::left(Default::default()))
-            .s(Align::center())
-            .s(Padding::new().x(100).y(20))
+                  .s(Align::left(Default::default()))
+                  .s(Align::center())
+                  .s(Padding::new().x(100).y(20))
                   .item(Row::new()
                       .item(Paragraph::new().content("Author: ").s(Font::new().size(12)))
                       .item(author_view()))
                   .item(Row::new()
-                            .item(Paragraph::new().content("Contributors: ").s(Font::new().size(12)))
+                      .item(Paragraph::new().content("Contributors: ").s(Font::new().size(12)))
                       .item(contributors_view()))
-            .item(Paragraph::new().content(view_article().get_cloned().title).s(Font::new().size(20))
-                .s(Padding::new().top(20)))
-            .item(Paragraph::new().content(view_article().get_cloned().content)
-                .s(Padding::new().bottom(20).top(10)))
+                  .item(Paragraph::new().content(view_article().get_cloned().title).s(Font::new().size(20))
+                      .s(Padding::new().top(20)))
+                  .item(Paragraph::new().content(view_article().get_cloned().content)
+                      .s(Padding::new().bottom(20).top(10)))
                   .item(Row::new()
                       .item(Paragraph::new().content("Tags: ").s(Font::new().size(12)))
                       .item(tags_view()))
                   .item(time_view())
-            // .item(content_text_panel())
-            // .item(tag_panel())
-            // .item(tags_view())
+              // .item(content_text_panel())
+              // .item(tag_panel())
+              // .item(tags_view())
 
         )
 
@@ -68,7 +72,7 @@ pub fn edit_article(article: LocalArticle) {
 
 //------ View Article -------
 #[static_ref]
-fn view_article() -> &'static Mutable<LocalArticle> {
+pub fn view_article() -> &'static Mutable<LocalArticle> {
     Mutable::new(
         LocalArticle::new_empty()
     )
@@ -132,10 +136,10 @@ fn tag(tag: String) -> impl Element {
     Row::new()
         .item(Label::new()
             .label(tag.clone().to_string())
-        .s(Padding::new().x(10))
+            .s(Padding::new().x(10))
             .s(Font::new().size(12))
-        .s(Background::new().color(GRAY_2))
-        .s(RoundedCorners::all(10)))
+            .s(Background::new().color(GRAY_2))
+            .s(RoundedCorners::all(10)))
 }
 
 #[static_ref]

@@ -1,6 +1,7 @@
 use crate::{app, router::Route};
 use zoon::{named_color::*, *};
 use crate::app::{logged_user_name};
+use crate::pages::home_page;
 use crate::router::router;
 
 // ------ ------
@@ -24,13 +25,13 @@ fn logo() -> impl Element {
     Link::new()
         .s(Font::new().size(50).weight(FontWeight::Bold))
         .label("Rustiki")
-        .to(Route::Root)
+        .to(Route::Home)
         .on_click(on_logo_click)
 }
 
 fn on_logo_click() {
     set_search_query("".to_string());
-    app::reset_articles();
+    home_page::reset_articles();
 }
 
 fn search_box() -> impl Element {
@@ -43,8 +44,8 @@ fn search_box() -> impl Element {
 }
 
 pub fn search() {
-    app::reset_articles();
-    app::articles().lock_mut().retain(|art| art.title.to_lowercase().contains(search_query().get_cloned().to_lowercase().as_str())||art.tags.contains(&search_query().get_cloned().to_lowercase()));
+    home_page::reset_articles();
+    home_page::articles().lock_mut().retain(|art| art.title.to_lowercase().contains(search_query().get_cloned().to_lowercase().as_str())||art.tags.contains(&search_query().get_cloned().to_lowercase()));
 }
 
 #[static_ref]
@@ -56,9 +57,9 @@ fn search_query() -> &'static Mutable<String> {
 pub fn set_search_query(query: String) {
     search_query().set(query);
     if search_query().get_cloned().eq("") {
-        app::reset_articles();
+        home_page::reset_articles();
     }
-    router().go(Route::Root);
+    router().go(Route::Home);
 }
 
 fn search_bar() -> impl Element {
@@ -89,7 +90,7 @@ fn search_button() -> impl Element {
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .on_click(search)
         .label("Search")
-        .to(Route::Root)
+        .to(Route::Home)
 }
 
 fn button_row() -> impl Element {
@@ -134,7 +135,7 @@ fn log_out_button() -> impl Element {
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .label("Log out")
         .on_click(app::log_out)
-        .to(Route::Root)
+        .to(Route::Home)
 }
 
 
