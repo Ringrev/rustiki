@@ -23,5 +23,5 @@ async fn remove_from_db(id: u32) {
         .uniq()
         .unwrap();
     let result = art.delete(&conn).await.unwrap();
-    println!("Result from updating db after save: {:?}", result);
+    println!("Result from updating db after delete: {:?}", result);
 }

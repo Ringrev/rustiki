@@ -1,6 +1,6 @@
 use zoon::*;
 use zoon::named_color::*;
-use shared::{LocalArticle, UpMsg};
+use shared::{LocalArticle, UpMsg, UpMsg::{EditArticle, RemoveArticle}};
 use crate::{app, connection};
 use crate::pages::edit_article_page;
 use crate::elements::dialogs::{confirm_dialog, message_dialog};
@@ -86,27 +86,26 @@ fn article_id() -> &'static Mutable<u32> {
 pub fn set_view_article(art: LocalArticle) {
     tags().lock_mut().replace_cloned(art.tags.to_vec());
     view_article().set(art.clone().to_owned());
-    article_id().set(art.clone().id);
+    article_id().set(art.id.to_owned());
     contributors().lock_mut().replace_cloned(art.contributors.clone())
 }
 
 pub fn delete_article() {
     if app::logged_user_name().get_cloned().eq(view_article().get_cloned().author.as_str()) {
         Task::start(async {
-            if confirm_dialog("This will permanently delete the article. Are you sure you want to delete it?") {
+            if confirm_dialog("Are you sure you want to delete the article?") {
                 let msg = UpMsg::RemoveArticle {
                     id: article_id().get_cloned(),
                 };
                 if let Err(error) = connection::connection().send_up_msg(msg).await {
-                    let _error = error.to_string();
-                    // TODO: handle error
+                    message_dialog(error.to_string().as_str());
                 }
             } else {
                 return;
             }
         });
     } else {
-        message_dialog("Only the author can delete an article");
+        message_dialog("Only the author can delete an article.")
     }
 }
 

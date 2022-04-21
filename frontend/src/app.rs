@@ -85,7 +85,6 @@ pub enum PageName {
 // ------ ------
 
 pub fn root() -> impl Element {
-    test_get_articles();
     Column::new()
         .s(Height::screen())
         .s(Width::fill())
@@ -95,7 +94,6 @@ pub fn root() -> impl Element {
 }
 
 fn page() -> impl Element {
-    test_get_articles();
     El::new().child_signal(page_name().signal().map(|page_name| match page_name {
         PageName::Home => home_page::page().into_raw_element(),
         PageName::Unknown => El::new().child("404").into_raw_element(),

@@ -13,6 +13,7 @@ mod view;
 // ------ front page content ------
 
 pub fn page() -> impl Element {
+    test_get_articles();
     Column::new()
         .s(Padding::new().top(50))
         .s(Width::fill())
@@ -57,9 +58,10 @@ fn card(article: LocalArticle) -> impl Element {
 
 pub fn view_article(article: LocalArticle) {
     view_article_page::set_view_article(article.clone());
-    router().go(Route::ViewArticle {
-        article_id: article.id.to_string()
-    });
+    // router().go(Route::ViewArticle {
+    //     article_id: article.id.to_string()
+    // });
+    router().go(Route::ViewArticle);
 }
 
 fn filtered_articles() -> impl SignalVec<Item = LocalArticle> {

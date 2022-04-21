@@ -50,10 +50,13 @@ pub fn router() -> &'static Router<Route> {
             Route::LogIn => {
                 app::set_page_name(PageName::LogIn);
             }
-            Route::ViewArticle {
-                article_id,
-            } => {
-                // view_article_page::set_expression();
+            // Route::ViewArticle {
+            //     article_id,
+            // } => {
+            //     // view_article_page::set_expression();
+            //     app::set_page_name(PageName::ViewArticle);
+            // }
+            Route::ViewArticle  => {
                 app::set_page_name(PageName::ViewArticle);
             }
             Route::EditArticle => {
@@ -76,10 +79,12 @@ pub enum Route {
     #[route("new_article")]
     NewArticle,
 
-    #[route("article", article_id)]
-    ViewArticle {
-        article_id: String,
-    },
+    // #[route("article", article_id)]
+    // ViewArticle {
+    //     article_id: String,
+    // },
+    #[route("view_article")]
+    ViewArticle,
 
     #[route("login")]
     LogIn,
