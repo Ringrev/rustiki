@@ -1,4 +1,4 @@
-use zoon::{format, *};
+use zoon::*;
 
 // ------ ------
 //    modules
@@ -16,6 +16,7 @@ mod connection;
 mod view_article_page;
 mod edit_article_page;
 mod tags;
+mod elements;
 
 // ------ ------
 //     Start

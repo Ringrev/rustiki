@@ -1,17 +1,8 @@
-use std::ops::Deref;
-use std::{thread, time};
-use std::thread::Thread;
 use zoon::*;
-use zoon::console::error;
-use zoon::events::Input;
-use zoon::future::err;
 use zoon::named_color::*;
-use zoon::Tag::Header;
-use zoon::text_input::{InputTypePassword, InputTypeText};
-use zoon::web_sys::HtmlTextAreaElement;
+use zoon::text_input::{InputTypePassword};
 use shared::UpMsg;
 use crate::connection;
-use crate::router::{Route, router};
 
 pub fn page() -> impl Element {
     email_text().set("".to_string());
@@ -300,7 +291,6 @@ fn retyped_password_text_input(id: &str) -> impl Element {
 
 fn button_panel() -> impl Element {
     Row::new()
-        // .item(cancel_button())
         .item(create_button())
         .s(Spacing::new(10))
         .s(Align::center())
@@ -316,15 +306,4 @@ fn create_button() -> impl Element {
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .label("Create user")
         .on_press(register_user)
-}
-
-fn cancel_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Button::new()
-        .s(Font::new().size(16).color(GRAY_0))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Padding::new().y(10).x(15))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Cancel")
 }

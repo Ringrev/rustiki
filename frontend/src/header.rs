@@ -1,10 +1,6 @@
-use std::borrow::{Borrow, Cow};
 use crate::{app, router::Route};
 use zoon::{named_color::*, *};
-use zoon::dominator::routing::go_to_url;
-use shared::LocalUser;
-use crate::app::{logged_user_name, PageName, reset_articles};
-use crate::router::Route::Root;
+use crate::app::{logged_user_name};
 use crate::router::router;
 
 // ------ ------
@@ -35,13 +31,6 @@ fn logo() -> impl Element {
 fn on_logo_click() {
     set_search_query("".to_string());
     app::reset_articles();
-}
-
-fn link(label: &str, route: Route) -> impl Element {
-    Link::new()
-        .s(Font::new().color(BLUE_4).line(FontLine::new().underline()))
-        .label(label)
-        .to(route)
 }
 
 fn search_box() -> impl Element {

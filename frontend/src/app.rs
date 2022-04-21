@@ -1,24 +1,17 @@
-use std::borrow::Borrow;
 use std::collections::VecDeque;
-use std::ops::Deref;
-use zoon::{format, *, Element, eprintln};
-use zoon::*;
-use zoon::named_color::{GRAY_0, GRAY_2, GRAY_3};
-use shared::{DownMsg, UpMsg, LocalUser, LocalArticle};
-use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}, edit_article_page, view_article_page};
+use zoon::{*, Element};
+use zoon::named_color::{GRAY_2, GRAY_3};
+use shared::{UpMsg, LocalUser, LocalArticle};
+use crate::{new_article_page, registration_page, log_in_page, router::{router, Route}, edit_article_page, view_article_page};
 
 use crate::footer::footer;
 use crate::connection::connection;
-use crate::header::{header, search};
+use crate::elements::dialogs::message_dialog;
+use crate::header::{header};
 
 ////////////////////////////////////
 // ------ article stuff ------
 ////////////////////////////////////
-
-// Just for testing
-pub fn dialog(text: String) {
-    window().confirm_with_message(text.as_str());
-}
 
 pub fn view_article(article: LocalArticle) {
     view_article_page::set_view_article(article);
@@ -76,8 +69,7 @@ pub fn test_get_articles() {
     Task::start(async {
         let msg = UpMsg::GetArticles;
         if let Err(error) = connection().send_up_msg(msg).await {
-            let error = error.to_string();
-            // eprintln!("login request failed: {}", error);
+            message_dialog(error.to_string().as_str())
         }
     })
 }
@@ -91,10 +83,10 @@ pub fn is_user_logged_signal() -> impl Signal<Item = bool> {
     logged_in_user().signal_ref(Option::is_some)
 }
 
-/// Boolean value which is set to true when logged_user
-pub fn is_user_logged() -> bool {
-    logged_in_user().map(Option::is_some)
-}
+// /// Boolean value which is set to true when logged_user
+// pub fn is_user_logged() -> bool {
+//     logged_in_user().map(Option::is_some)
+// }
 
 /// State of logged in user
 #[static_ref]
@@ -170,12 +162,6 @@ pub fn set_page_name(new_page_name: PageName) {
 }
 
 
-
-
-
-
-
-
 fn articles_view() -> impl Element {
     Row::new()
         .items_signal_vec(filtered_articles().map(card))
@@ -236,12 +222,4 @@ fn front_page() -> impl Element {
         .s(Padding::new().top(50))
         .s(Width::fill())
         .item(panel())
-}
-
-fn placeholder_text() -> impl Element {
-    El::new()
-        // .s(Padding::top(Default::default(), 500))
-        // .child("Rustiki!").s(Font::new().size(40).color(hsluv!(18,100,48,100)))
-        .s(Align::new().center_x())
-        .s(Align::new().center_y())
 }

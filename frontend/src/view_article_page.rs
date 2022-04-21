@@ -1,12 +1,8 @@
-use zoon::{*, println};
-use zoon::events::Input;
+use zoon::*;
 use zoon::named_color::*;
-use zoon::text_input::InputTypeText;
-use zoon::web_sys::HtmlTextAreaElement;
-use shared::{LocalArticle, UpMsg, LocalUser};
-use shared::UpMsg::AddArticle;
+use shared::{LocalArticle, UpMsg};
 use crate::{app, connection, edit_article_page};
-use crate::app::dialog;
+use crate::elements::dialogs::{confirm_dialog, message_dialog};
 use crate::router::{Route, router};
 
 pub fn page() -> impl Element {
@@ -93,21 +89,20 @@ pub fn set_view_article(art: LocalArticle) {
 pub fn delete_article() {
     if app::logged_user_name().get_cloned().eq(view_article().get_cloned().author.as_str()) {
         Task::start(async {
-            if delete_dialog() {
+            if confirm_dialog("This will permanently delete the article. Are you sure you want to delete it?") {
                 let msg = UpMsg::RemoveArticle {
-                    // Must be replaced with ID when that gets implemented for Article object
                     id: article_id().get_cloned(),
                 };
                 if let Err(error) = connection::connection().send_up_msg(msg).await {
-                    let error = error.to_string();
-                    //set_error.msg(error.clone());
+                    let _error = error.to_string();
+                    // TODO: handle error
                 }
             } else {
                 return;
             }
         });
     } else {
-        dialog("Only the author can delete an article".to_string());
+        message_dialog("Only the author can delete an article");
     }
 }
 
@@ -117,11 +112,6 @@ fn button_panel() -> impl Element {
         .item_signal(app::is_user_logged_signal().map_true(delete_button))
         .s(Spacing::new(10))
         .s(Align::right(Default::default()))
-}
-
-fn delete_dialog() -> bool {
-    let res = window().confirm_with_message("This will permanently delete the article. Are you sure you want to delete it?");
-    res.unwrap()
 }
 
 #[static_ref]
@@ -137,7 +127,7 @@ fn tags_view() -> impl Element {
 }
 
 fn tag(tag: String) -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
+    // let (hovered, hovered_signal) = Mutable::new_and_signal(false);
 
     Row::new()
         .item(Label::new()

@@ -1,13 +1,8 @@
-use std::sync::Arc;
 use zoon::*;
-use zoon::events::Input;
 use zoon::named_color::*;
-use zoon::Tag::Header;
-use zoon::text_input::InputTypeText;
-use zoon::web_sys::HtmlTextAreaElement;
 use shared::UpMsg;
-use shared::UpMsg::AddArticle;
 use crate::{app, connection};
+use crate::elements::dialogs::{confirm_dialog, message_dialog};
 use crate::router::{Route, router};
 
 pub fn page() -> impl Element {
@@ -38,11 +33,10 @@ fn error_message() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
-pub fn set_error_msg(msg: String) {
-    error_message().set(msg);
-}
+// pub fn set_error_msg(msg: String) {
+//     error_message().set(msg);
+// }
 
-//TODO Add error handlers and response to user on article added Ok.
 pub fn add_article() {
     Task::start(async {
         let msg = UpMsg::AddArticle {
@@ -53,8 +47,7 @@ pub fn add_article() {
             tags: tags().lock_mut().to_vec(),
         };
         if let Err(error) = connection::connection().send_up_msg(msg).await {
-            let error = error.to_string();
-            //set_error.msg(error.clone());
+            message_dialog(error.to_string().as_str())
         }
     });
 }
@@ -296,7 +289,7 @@ fn add_tag() {
         tags().lock_mut().push_cloned(tag.clone().to_string());
         new_tag.clear();
     } else {
-        window().alert_with_message("Tag already exists");
+        message_dialog("Tag already exists");
         new_tag.clear();
     }
 }
@@ -308,7 +301,7 @@ fn tags_view() -> impl Element {
 }
 
 fn tag(tag: String) -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
+    // let (hovered, hovered_signal) = Mutable::new_and_signal(false);
 
     Row::new()
         .item(Label::new()
@@ -337,13 +330,8 @@ fn remove_tag_button(tag: String) -> impl Element {
         .s(Padding::new().left(5))
 }
 
-fn cancel_dialog() -> bool {
-    let res = window().confirm_with_message("Your article will not be saved. Are you sure you want to leave the page?");
-    res.unwrap()
-}
-
 fn cancel() {
-    if cancel_dialog() {
+    if confirm_dialog("Your article will not be saved. Are you sure you want to leave the page?") {
         router().go(Route::Root);
     } else {
         return;

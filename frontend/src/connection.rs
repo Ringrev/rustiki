@@ -1,4 +1,4 @@
-use zoon::{*, println, eprintln};
+use zoon::*;
 use shared::{UpMsg, DownMsg};
 use crate::*;
 use router::router;
@@ -7,7 +7,7 @@ use crate::router::Route;
 #[static_ref]
 pub fn connection() -> &'static Connection<UpMsg, DownMsg> {
     Connection::new(|down_msg, _cor_id| {
-        println!("DownMsg received: {:?}", down_msg);
+        // println!("DownMsg received: {:?}", down_msg);
 
         match down_msg {
             // ------ Auth ------
@@ -16,16 +16,13 @@ pub fn connection() -> &'static Connection<UpMsg, DownMsg> {
 
             // ----- Article -------
             DownMsg::Articles(vec) => app::set_articles(vec),
-            DownMsg::ArticleAdded(text) => {
-                println!("Article added");
+            DownMsg::ArticleAdded(_) => {
                 router().go(Route::Root)},
             DownMsg::RegistrationError(string) => registration_page::set_error_msg(string),
             DownMsg::ArticleUpdated => {
-                println!("Article updated");
                 router().go(Route::Root)
             },
             DownMsg::ArticleRemoved => {
-                println!("Article removed");
                 router().go(Route::Root)
             }
         }

@@ -1,5 +1,5 @@
 use std::collections::VecDeque;
-use zoon::{println,*};
+use zoon::*;
 use crate::{app::{self, PageName}};
 
 // ------ Route history ------
@@ -15,10 +15,6 @@ fn push_to_route_history(route: Route) {
         history.pop_back();
     }
     history.push_front(route);
-}
-
-pub fn previous_route() -> Option<Route> {
-    route_history().lock_ref().get(1).cloned()
 }
 
 // ------ router ------

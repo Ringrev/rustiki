@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-use crate::{app, router::Route};
 use zoon::{named_color::*, *};
 
 // ------ ------

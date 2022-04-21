@@ -1,13 +1,10 @@
-use zoon::{*, println};
-use zoon::events::Input;
+use zoon::*;
 use zoon::named_color::*;
-use zoon::text_input::InputTypeText;
-use zoon::web_sys::HtmlTextAreaElement;
-use shared::{LocalArticle, UpMsg, LocalUser};
-use shared::UpMsg::AddArticle;
+use shared::{LocalArticle, UpMsg};
 use crate::{app, connection};
-use crate::app::{dialog, logged_user_name, view_article};
+use crate::app::{logged_user_name};
 use crate::router::{Route, router};
+use crate::elements::dialogs::*;
 
 pub fn page() -> impl Element {
     Column::new()
@@ -67,8 +64,7 @@ pub fn update_article() {
             new_tags: tags().lock_mut().to_vec(),
         };
         if let Err(error) = connection::connection().send_up_msg(msg).await {
-            let error = error.to_string();
-            //set_error.msg(error.clone());
+            message_dialog(error.to_string().as_str());
         }
     });
 }
@@ -85,21 +81,19 @@ fn add_contributor() {
 pub fn delete_article() {
     if app::logged_user_name().get_cloned().eq(edit_article().get_cloned().author.as_str()) {
         Task::start(async {
-            if delete_dialog() {
+            if confirm_dialog("Are you sure you want to delete the article?") {
                 let msg = UpMsg::RemoveArticle {
-                    // Must be replaced with ID when that gets implemented for Article object
                     id: article_id().get_cloned(),
                 };
                 if let Err(error) = connection::connection().send_up_msg(msg).await {
-                    let error = error.to_string();
-                    //set_error.msg(error.clone());
+                    message_dialog(error.to_string().as_str());
                 }
             } else {
                 return;
             }
         });
     } else {
-        dialog("Only the author can delete an article".to_string());
+        message_dialog("Only the author can delete an article");
     }
 }
 
@@ -215,16 +209,6 @@ fn button_panel() -> impl Element {
         .s(Align::right(Default::default()))
 }
 
-fn delete_dialog() -> bool {
-    let res = window().confirm_with_message("This will permanently delete the article. Are you sure you want to delete it?");
-    res.unwrap()
-}
-
-fn cancel_dialog() -> bool {
-    let res = window().confirm_with_message("Your changes will not be saved. Are you sure you want to leave the page?");
-    res.unwrap()
-}
-
 fn delete_button() -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
     Button::new()
@@ -262,7 +246,7 @@ fn cancel_button() -> impl Element {
 }
 
 fn cancel() {
-    if cancel_dialog() {
+    if confirm_dialog("Your changes will not be saved. Are you sure you want to leave the page?") {
         router().go(Route::Root);
     } else {
         return;
@@ -369,7 +353,7 @@ fn add_tag() {
         tags().lock_mut().push_cloned(tag.clone().to_string());
         new_tag.clear();
     } else {
-        window().alert_with_message("Tag already exists");
+        message_dialog("Tag already exists");
         new_tag.clear();
     }
 }
@@ -381,7 +365,7 @@ fn tags_view() -> impl Element {
 }
 
 fn tag(tag: String) -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
+    // let (hovered, hovered_signal) = Mutable::new_and_signal(false);
 
     Row::new()
         .item(Label::new()
