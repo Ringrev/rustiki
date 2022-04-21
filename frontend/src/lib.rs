@@ -6,6 +6,7 @@ use zoon::{format, *};
 
 mod app;
 mod router;
+mod pages;
 mod registration_page;
 mod new_article_page;
 mod header;
@@ -14,6 +15,7 @@ mod footer;
 mod connection;
 mod view_article_page;
 mod edit_article_page;
+mod tags;
 
 // ------ ------
 //     Start
@@ -22,5 +24,5 @@ mod edit_article_page;
 #[wasm_bindgen(start)]
 pub fn start() {
      router::router();
-     start_app("app", app::view::root);
+     start_app("app", app::root);
 }

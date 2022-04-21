@@ -31,13 +31,7 @@ async fn update_in_db(id: u32, new_title: String, new_content: String, new_contr
     art.content = new_content;
     art.tags = new_tags;
     art.contributors = new_contributors;
-    art.updated_time = get_time();
+    art.updated_time = super::get_time();
     let result = art.save(&conn).await.unwrap();
     println!("Result from updating db after save: {:?}", result);
-}
-
-fn get_time() -> String {
-    let system_time = SystemTime::now();
-    let datetime: DateTime<Local> = system_time.into();
-    datetime.format("%d.%m.%Y %T").to_string()
 }

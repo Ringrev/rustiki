@@ -1,10 +1,12 @@
+use std::time::SystemTime;
 use moon::*;
 use shared::{UpMsg, DownMsg};
-mod login;
-mod article;
 use fireauth;
 use crate::firebase::init;
-pub(crate) mod add_article;
+
+mod login;
+mod article;
+mod add_article;
 mod registration;
 mod edit_article;
 mod delete_article;
@@ -19,4 +21,10 @@ pub async fn handler(req: UpMsgRequest<UpMsg>) -> Result<DownMsg, Option<DownMsg
         UpMsg::EditArticle { id, new_title, new_content, new_contributors, new_tags} => edit_article::handler(id, new_title, new_content, new_contributors, new_tags).await,
         UpMsg::RemoveArticle { id } => delete_article::handler(id).await,
     })
+}
+
+fn get_time() -> String {
+    let system_time = SystemTime::now();
+    let datetime: DateTime<Local> = system_time.into();
+    datetime.format("%d.%m.%Y %T").to_string()
 }

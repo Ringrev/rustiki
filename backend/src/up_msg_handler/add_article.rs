@@ -12,40 +12,14 @@ use std::time::SystemTime;
 use crate::Article;
 
 pub async fn handler(title: String, content: String,  author: String, tags: Vec<String>) -> DownMsg {
-    let article = create_object(title, content, author, tags).await;
-    //if article.eq("Ok") {
     //Creates an article in the Db
-    create_article_in_db(article).await;
+    create_article_in_db(title, content, author, tags).await;
     DownMsg::ArticleAdded("".to_string())
 }
 
-pub async fn create_object(title: String, content: String,  author: String, tags: Vec<String>) -> LocalArticle {
-    LocalArticle::new(generate_id().await, title, content, vec![], author, tags, get_time(), get_time())
-}
-
-fn get_time() -> String {
-    let system_time = SystemTime::now();
-    let datetime: DateTime<Local> = system_time.into();
-    datetime.format("%d.%m.%Y %T").to_string()
-}
-
-async fn check_id_unique(id: u32) -> bool {
+pub async fn create_article_in_db(title: String, content: String,  author: String, tags: Vec<String>) {
     let conn = crate::init_db().await;
-
-    let query = Article::query().filter(Filter::new(Comparison::field("id").equals(id)));
-    let art = Article::get(query, &conn)
-        .await
-        .unwrap();
-    if art.is_empty() {
-        true
-    } else {
-        false
-    }
-}
-
-pub async fn create_article_in_db(art: LocalArticle) {
-    let conn = crate::init_db().await;
-    let db_article = Article::new(art.id, art.title, art.content, art.contributors, art.author, art.tags, art.created_time, art.updated_time);
+    let db_article = Article::new(generate_id().await, title, content, vec![], author, tags, super::get_time(), super::get_time());
     DatabaseRecord::create(db_article, &conn).await.unwrap();
 }
 
@@ -60,4 +34,18 @@ async fn generate_id() -> u32 {
         }
     }
     id.clone()
+}
+
+async fn check_id_unique(id: u32) -> bool {
+    let conn = crate::init_db().await;
+
+    let query = Article::query().filter(Filter::new(Comparison::field("id").equals(id)));
+    let art = Article::get(query, &conn)
+        .await
+        .unwrap();
+    if art.is_empty() {
+        true
+    } else {
+        false
+    }
 }

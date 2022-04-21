@@ -1,7 +1,6 @@
 mod up_msg_handler;
 mod firebase;
 use shared::{LocalArticle, DownMsg, UpMsg};
-use up_msg_handler::add_article;
 
 use moon::*;
 use aragog::query::{Comparison, Filter, QueryResult};
@@ -10,7 +9,6 @@ use serde::de::Unexpected::Str;
 use std::borrow::Borrow;
 use aragog::{DatabaseConnection, Record};
 use UpMsg::AddArticle;
-use crate::add_article::create_article_in_db;
 use crate::up_msg_handler::handler;
 
 async fn frontend() -> Frontend {
@@ -92,19 +90,6 @@ impl Article {
             updated_time
         }
     }
-
-    pub fn new_empty() -> Self {
-        Self {
-            id: 0,
-            title: "".to_string(),
-            content: "".to_string(),
-            contributors: vec![],
-            author: "".to_string(),
-            tags: vec![],
-            created_time: "".to_string(),
-            updated_time: "".to_string()
-        }
-    }
 }
 
 /// This struct must be used instead of LocalUser struct in shared folder
@@ -124,14 +109,6 @@ impl User {
             id,
             email,
             username
-        }
-    }
-
-    pub fn new_empty() -> Self {
-        Self {
-            id: "".to_string(),
-            email: "".to_string(),
-            username: "".to_string()
         }
     }
 }

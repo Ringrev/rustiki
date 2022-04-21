@@ -3,15 +3,13 @@ use std::collections::VecDeque;
 use std::ops::Deref;
 use zoon::{format, *, Element, eprintln};
 use zoon::*;
-use zoon::named_color::GRAY_0;
+use zoon::named_color::{GRAY_0, GRAY_2, GRAY_3};
 use shared::{DownMsg, UpMsg, LocalUser, LocalArticle};
 use crate::{new_article_page, registration_page, log_in_page, router::{previous_route, router, Route}, edit_article_page, view_article_page};
 
 use crate::footer::footer;
 use crate::connection::connection;
 use crate::header::{header, search};
-
-pub mod view;
 
 ////////////////////////////////////
 // ------ article stuff ------
@@ -152,7 +150,7 @@ pub enum PageName {
 
 fn page() -> impl Element {
     El::new().child_signal(page_name().signal().map(|page_name| match page_name {
-        PageName::Home => view::front_page().into_raw_element(),
+        PageName::Home => front_page().into_raw_element(),
         PageName::Unknown => El::new().child("404").into_raw_element(),
         PageName::EditArticle => edit_article_page::page().into_raw_element(),
         PageName::NewArticle => new_article_page::page().into_raw_element(),
@@ -169,4 +167,81 @@ fn page_name() -> &'static Mutable<PageName> {
 
 pub fn set_page_name(new_page_name: PageName) {
     page_name().set_neq(new_page_name);
+}
+
+
+
+
+
+
+
+
+fn articles_view() -> impl Element {
+    Row::new()
+        .items_signal_vec(filtered_articles().map(card))
+        .s(Spacing::new(50))
+        .multiline()
+        .s(Width::new(1300))
+}
+
+fn panel() -> impl Element {
+    Column::new()
+        .item_signal(articles_exist().map_true(articles_view))
+        .s(Align::new().center_x())
+}
+
+fn card(article: LocalArticle) -> impl Element {
+    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
+    Column::new()
+        .s(Padding::new().x(10).y(20))
+        .s(Spacing::new(5))
+        .s(Font::new().size(24))
+        .s(Background::new()
+            .color_signal(hovered_signal.map_bool(|| GRAY_2, || hsluv!(0, 0, 100))))
+        .item(Image::new().url("https://rustacean.net/assets/rustacean-flat-happy.png")
+            .description("Placeholder picture")
+            .s(Width::max(Default::default(), 200))
+            .s(Background::new().color(GRAY_3)))
+        .item(Paragraph::new().content(article.title.clone()))
+        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
+        // .item(Paragraph::new().content(article.content.clone()))
+        .on_click(move || view_article(article))
+}
+
+// ------ content visible on all pages ------
+
+pub fn root() -> impl Element {
+    // Stack::new()
+    //     .s(Height::screen())
+    //     .layer(Column::new()
+    //         .item(page())
+    //         .item(footer()).s(Align::bottom(Default::default()))
+    //         .s(Padding::top(Default::default(), 100))
+    //         .s(Height::fill()))
+    //     .layer(header())
+
+    Column::new()
+        .s(Height::screen())
+        .s(Width::fill())
+        .item(header()).s(Align::top(Default::default())) //navbar placeholder
+        .item(page())
+        .item(footer()).s(Align::bottom(Default::default()))
+}
+
+// ------ front page content ------
+
+fn front_page() -> impl Element {
+    test_get_articles();
+    Column::new()
+        .s(Padding::new().top(50))
+        .s(Width::fill())
+        .item(panel())
+}
+
+fn placeholder_text() -> impl Element {
+    El::new()
+        // .s(Padding::top(Default::default(), 500))
+        // .child("Rustiki!").s(Font::new().size(40).color(hsluv!(18,100,48,100)))
+        .s(Align::new().center_x())
+        .s(Align::new().center_y())
 }

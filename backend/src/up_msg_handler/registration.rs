@@ -51,7 +51,7 @@ pub async fn register(auth: FireAuth, email: String, password: String) -> (Strin
 
 async fn create_user_in_db(id: String, email: String, username: String) {
     let conn = crate::init_db().await;
-    let db_user = User { id, email, username };
+    let db_user = User::new(id, email, username);
     DatabaseRecord::create(db_user, &conn).await.unwrap();
 }
 
