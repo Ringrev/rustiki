@@ -97,7 +97,6 @@ fn button_row() -> impl Element {
     Row::new()
         .s(Align::new().bottom().right())
         .s(Spacing::new(6))
-        // .item(Paragraph::new().content(logged_user_name()).s(Font::new().color(GRAY_9)))
         .item(Text::with_signal(logged_user_name().signal_cloned()))
         .item_signal(app::is_user_logged_signal().map_false(registration_button))
         .item_signal(app::is_user_logged_signal().map_false(log_in_button))
@@ -105,25 +104,8 @@ fn button_row() -> impl Element {
         .item_signal(app::is_user_logged_signal().map_true(new_article_button))
 }
 
-// fn logged_in_button_row() -> impl Element {
-//     Row::new()
-//         .s(Align::new().bottom().right())
-//         .s(Spacing::new(6))
-//         // .item()
-//         .item(Paragraph::new().content(logged_user_name()))
-//         .item(log_out_button())
-//         .item(new_article_button())
-// }
-
-// fn username_text() -> impl Element {
-//     Paragraph::new().content(logged_in_username())
-// }
-
 fn log_out_button() -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    // Commented out button because could not figure out how to send to Route without a "Link" element.
-    // We can change this back to button if we figure it out. Nothing else changed
-    // Button::new()
     Link::new()
         .s(Font::new().size(20).color(GRAY_0))
         .s(Align::new().right().bottom())
@@ -141,9 +123,6 @@ fn log_out_button() -> impl Element {
 
 fn log_in_button() -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    // Commented out button because could not figure out how to send to Route without a "Link" element.
-    // We can change this back to button if we figure it out. Nothing else changed
-    // Button::new()
     Link::new()
         .s(Font::new().size(20).color(GRAY_0))
         .s(Align::new().right().bottom())
@@ -160,9 +139,6 @@ fn log_in_button() -> impl Element {
 
 fn new_article_button() -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    // Commented out button because could not figure out how to send to Route without a "Link" element.
-    // We can change this back to button if we figure it out. Nothing else changed
-    // Button::new()
     Link::new()
         .s(Font::new().size(20).color(GRAY_0))
         .s(Align::new().right().bottom())
@@ -178,9 +154,6 @@ fn new_article_button() -> impl Element {
 
 fn registration_button() -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    // Commented out button because could not figure out how to send to Route without a "Link" element.
-    // We can change this back to button if we figure it out. Nothing else changed
-    // Button::new()
     Link::new()
         .s(Font::new().size(20).color(GRAY_0))
         .s(Align::new().right().bottom())
