@@ -4,16 +4,6 @@ use zoon::*;
 use zoon::signal::MutableSignalCloned;
 use zoon::text_input::{InputTypePassword, InputTypeText, InputTypeTrait};
 
-
-#[static_ref]
-pub fn is_password() -> &'static Mutable<Option<bool>> {
-    Mutable::new(None)
-}
-
-pub fn is_password_signal() -> impl Signal<Item = bool> {
-    is_password().signal_ref(Option::is_some)
-}
-
 pub fn input_panel(id: &str,
                    label_text: &str,
                    function: fn(String),
@@ -21,9 +11,6 @@ pub fn input_panel(id: &str,
                    input_type: impl InputTypeTrait,
                    text_signal: MutableSignalCloned<String>,
                    on_key: Option<fn()>) -> impl Element {
-    if check_if_password(id.clone()) {
-        is_password().set(Some(true));
-    }
     Column::new()
         .s(Spacing::new(15))
         .item(input_label(id.clone(), label_text))
@@ -42,14 +29,6 @@ fn input_label(id: &str, label_text: &str) -> impl Element {
 }
 
 // ------  text input
-
-fn check_if_password(id: &str) -> bool {
-    if id.clone().eq("password_input") {
-        true
-    } else {
-        false
-    }
-}
 
 fn text_input(id: &str, function: fn(String), placeholder: &str, input_type: impl InputTypeTrait, text_signal: MutableSignalCloned<String>, on_key: Option<fn()>) -> impl Element {
     TextInput::new()

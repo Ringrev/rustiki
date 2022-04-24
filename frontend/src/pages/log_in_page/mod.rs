@@ -4,6 +4,7 @@ use zoon::text_input::{InputTypePassword, InputTypeText};
 use shared::UpMsg;
 use crate::{connection};
 use crate::elements::panel;
+use crate::elements::button;
 
 mod view;
 
@@ -105,13 +106,5 @@ fn button_panel() -> impl Element {
 }
 
 fn log_in_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Button::new()
-        .s(Font::new().size(16).color(GRAY_0))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Padding::new().y(10).x(15))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Log in")
-        .on_click(login)
+    button::button("Log in", login)
 }

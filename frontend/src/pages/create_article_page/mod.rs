@@ -7,6 +7,8 @@ use crate::elements::dialogs;
 use crate::router::{Route, router};
 use crate::elements::tags;
 use crate::elements::panel;
+use crate::elements::button;
+use crate::elements::button::button;
 
 mod view;
 
@@ -101,31 +103,33 @@ fn button_panel() -> impl Element {
         .item(cancel_button())
         .item(publish_button())
         .s(Spacing::new(10))
-        .s(Align::right(Default::default()))
+        .s(Align::center())
 }
 
 fn publish_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Button::new()
-        .s(Font::new().size(16).color(GRAY_0))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Padding::new().y(10).x(15))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Publish")
-        .on_press(add_article)
+    button::button("Publish", add_article)
+    // let (hovered, hovered_signal) = Mutable::new_and_signal(false);
+    // Button::new()
+    //     .s(Font::new().size(16).color(GRAY_0))
+    //     .s(Background::new()
+    //         .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
+    //     .s(Padding::new().y(10).x(15))
+    //     .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
+    //     .label("Publish")
+    //     .on_press(add_article)
 }
 
 fn cancel_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Button::new()
-        .s(Font::new().size(16).color(GRAY_0))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Padding::new().y(10).x(15))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Cancel")
-        .on_press(cancel)
+    button::button("Cancel", cancel)
+    // let (hovered, hovered_signal) = Mutable::new_and_signal(false);
+    // Button::new()
+    //     .s(Font::new().size(16).color(GRAY_0))
+    //     .s(Background::new()
+    //         .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
+    //     .s(Padding::new().y(10).x(15))
+    //     .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
+    //     .label("Cancel")
+    //     .on_press(cancel)
 }
 
 fn cancel() {

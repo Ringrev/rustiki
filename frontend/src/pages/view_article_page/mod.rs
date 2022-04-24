@@ -5,68 +5,51 @@ use crate::{app, connection};
 use crate::pages::edit_article_page;
 use crate::elements::dialogs::{confirm_dialog, message_dialog};
 use crate::router::{Route, router};
+use crate::elements::button;
+use crate::elements::button::button;
 
 mod view;
 
 pub fn page() -> impl Element {
-
     Column::new()
         .s(Align::center())
         .s(Width::new(800))
         .s(Background::new().color(hsluv!(0,0,0,5)))
-        .item(Column::new()
-                  .s(Align::left(Default::default()))
-                  .s(Align::center())
-                  .s(Padding::new().x(100).y(20))
-                  .item(Row::new()
-                      .item(Paragraph::new().content("Author: ").s(Font::new().size(12)))
-                      .item(author_view()))
-                  .item(Row::new()
-                      .item(Paragraph::new().content("Contributors: ").s(Font::new().size(12)))
-                      .item(contributors_view()))
-                  .item(Paragraph::new().content(view_article().get_cloned().title).s(Font::new().size(20))
-                      .s(Padding::new().top(20)))
-                  .item(Paragraph::new().content(view_article().get_cloned().content)
-                      .s(Padding::new().bottom(20).top(10)))
-                  .item(Row::new()
-                      .item(Paragraph::new().content("Tags: ").s(Font::new().size(12)))
-                      .item(tags_view()))
-                  .item(time_view())
-              // .item(content_text_panel())
-              // .item(tag_panel())
-              // .item(tags_view())
-
-        )
-
+        .item(article_view())
         .item(button_panel())
 }
 
+fn article_view() -> impl Element {
+    Column::new()
+        .s(Align::left(Default::default()))
+        .s(Align::center())
+        .s(Padding::new().x(100).y(20))
+        .item(Row::new()
+            .item(Paragraph::new().content("Author: ").s(Font::new().size(12)))
+            .item(author_view()))
+        .item(Row::new()
+            .item(Paragraph::new().content("Contributors: ").s(Font::new().size(12)))
+            .item(contributors_view()))
+        .item(Paragraph::new().content(view_article().get_cloned().title).s(Font::new().size(20))
+            .s(Padding::new().top(20)))
+        .item(Paragraph::new().content(view_article().get_cloned().content)
+            .s(Padding::new().bottom(20).top(10)))
+        .item(Row::new()
+            .item(Paragraph::new().content("Tags: ").s(Font::new().size(12)))
+            .item(tags_view()))
+        .item(time_view())
+}
+
 fn edit_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Button::new()
-        .s(Font::new().size(16).color(GRAY_0))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Padding::new().y(10).x(15))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Edit")
-        .on_press(move || edit_article(view_article().get_cloned()))
+    button::button("Edit", edit_article)
 }
 
 fn delete_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Button::new()
-        .s(Font::new().size(16).color(GRAY_0))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Padding::new().y(10).x(15))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Delete")
-        .on_press(delete_article)
+    button::button("Delete", delete_article)
 }
 
-pub fn edit_article(article: LocalArticle) {
-    edit_article_page::set_edit_article(article.clone());
+pub fn edit_article() {
+    edit_article_page::set_edit_article(view_article().get_cloned());
     router().go(Route::EditArticle);
 }
 
@@ -114,7 +97,7 @@ fn button_panel() -> impl Element {
         .item_signal(app::is_user_logged_signal().map_true(edit_button))
         .item_signal(app::is_user_logged_signal().map_true(delete_button))
         .s(Spacing::new(10))
-        .s(Align::right(Default::default()))
+        .s(Align::center())
 }
 
 #[static_ref]

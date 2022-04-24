@@ -6,7 +6,8 @@ use crate::{app, connection};
 use crate::app::{logged_user_name};
 use crate::router::{Route, router};
 use crate::elements::dialogs::*;
-use crate::elements::{panel, tags};
+use crate::elements::{panel, tags, button};
+
 
 mod view;
 
@@ -141,43 +142,19 @@ fn button_panel() -> impl Element {
         .item(cancel_button())
         .item(publish_button())
         .s(Spacing::new(10))
-        .s(Align::right(Default::default()))
+        .s(Align::center())
 }
 
 fn delete_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Button::new()
-        .s(Font::new().size(16).color(GRAY_0))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Padding::new().y(10).x(15))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Delete article")
-        .on_press(delete_article)
+    button::button("Delete article", delete_article)
 }
 
 fn publish_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Button::new()
-        .s(Font::new().size(16).color(GRAY_0))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Padding::new().y(10).x(15))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Publish changes")
-        .on_press(update_article)
+    button::button("Publish changes", update_article)
 }
 
 fn cancel_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Button::new()
-        .s(Font::new().size(16).color(GRAY_0))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Padding::new().y(10).x(15))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Cancel")
-        .on_press(cancel)
+    button::button("Cancel", cancel)
 }
 
 fn cancel() {
