@@ -1,25 +1,23 @@
 use zoon::{*, named_color::{*}};
-use zoon::text_input::InputTypeText;
 use crate::elements::dialogs::message_dialog;
-use crate::elements::panel;
+use crate::elements::{panel, button};
 
 fn add_tag_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Button::new()
-        .s(Font::new().size(16).color(GRAY_0))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Padding::new().y(6).x(15))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Add")
-        .on_press(add_tag)
+    button::button("Add", add_tag)
 }
 
 // ------ tag label and input combined
 
 pub fn tag_panel() -> impl Element {
     let id = "tag_input";
-    panel::input_panel(id, "Add a tag:", set_tag_text, "Write a tag...", InputType::text(),new_tag().signal_cloned(), Some(add_tag))
+    Column::new()
+        .s(Spacing::new(15))
+        .item(panel::input_label(id.clone(), "Add a tag:"))
+        .s(Spacing::new(0))
+        .item(Row::new()
+            .s(Spacing::new(10))
+            .item(panel::text_input(id, set_tag_text, "Write a tag...", InputType::text(), new_tag().signal_cloned(), Some(add_tag)))
+            .item(add_tag_button()))
 }
 
 fn set_tag_text(tag: String) {
@@ -81,7 +79,6 @@ fn tag(tag: String) -> impl Element {
 
     Row::new()
         .item(Label::new()
-            // .for_input(tag.clone())
             .label(tag.clone().to_string())
             .element_on_right( remove_tag_button(tag.clone())))
         .s(Padding::new().left(10).right(20))

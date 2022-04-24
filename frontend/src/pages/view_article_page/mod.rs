@@ -1,12 +1,11 @@
 use zoon::*;
 use zoon::named_color::*;
-use shared::{LocalArticle, UpMsg, UpMsg::{EditArticle, RemoveArticle}};
+use shared::{LocalArticle, UpMsg};
 use crate::{app, connection};
 use crate::pages::edit_article_page;
 use crate::elements::dialogs::{confirm_dialog, message_dialog};
 use crate::router::{Route, router};
 use crate::elements::button;
-use crate::elements::button::button;
 
 mod view;
 

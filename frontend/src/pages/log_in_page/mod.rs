@@ -1,6 +1,4 @@
 use zoon::{*, eprintln};
-use zoon::named_color::*;
-use zoon::text_input::{InputTypePassword, InputTypeText};
 use shared::UpMsg;
 use crate::{connection};
 use crate::elements::panel;

@@ -11,7 +11,6 @@ pub async fn handler(auth: FireAuth, email: String, password: String, username: 
     }
     let (res, user) = register(auth, email.clone(), password.clone()).await;
     if res.eq("Ok") {
-        println!("User created in firebase: {:?}", res);
         // Creates a User object in database
         create_user_in_db(user.id, email.clone(), username).await;
         let (result, user) = login(firebase::init().await, email.clone(), password).await;

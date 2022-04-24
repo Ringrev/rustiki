@@ -1,6 +1,4 @@
 use zoon::*;
-use zoon::named_color::*;
-use zoon::text_input::{InputTypePassword, InputTypeText};
 use shared::UpMsg;
 use crate::{app, connection};
 use crate::elements::dialogs;
@@ -8,7 +6,6 @@ use crate::router::{Route, router};
 use crate::elements::tags;
 use crate::elements::panel;
 use crate::elements::button;
-use crate::elements::button::button;
 
 mod view;
 
@@ -87,7 +84,7 @@ fn content_text() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
-// ------ title label and input combined
+// ------ content label and input combined
 
 fn content_text_panel() -> impl Element {
     panel::textarea_panel(set_content_text, content_text().signal_cloned())
@@ -108,28 +105,10 @@ fn button_panel() -> impl Element {
 
 fn publish_button() -> impl Element {
     button::button("Publish", add_article)
-    // let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    // Button::new()
-    //     .s(Font::new().size(16).color(GRAY_0))
-    //     .s(Background::new()
-    //         .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-    //     .s(Padding::new().y(10).x(15))
-    //     .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-    //     .label("Publish")
-    //     .on_press(add_article)
 }
 
 fn cancel_button() -> impl Element {
     button::button("Cancel", cancel)
-    // let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    // Button::new()
-    //     .s(Font::new().size(16).color(GRAY_0))
-    //     .s(Background::new()
-    //         .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-    //     .s(Padding::new().y(10).x(15))
-    //     .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-    //     .label("Cancel")
-    //     .on_press(cancel)
 }
 
 fn cancel() {

@@ -26,11 +26,8 @@ pub async fn login(auth: FireAuth, email: String, password: String) -> (String, 
             user.username = get_username(user.id.clone()).await;
             user.auth_token = response.id_token.to_string();
         }
-        Err(error) => {  println!("Error from firebase: {:?}", error.clone());
-            // res = error.clone().to_string();
-        res = String::from("Incorrect input, please try again.")}
+        Err(_) => { res = String::from("Incorrect input, please try again.")}
     }
-
     (res, user)
 }
 

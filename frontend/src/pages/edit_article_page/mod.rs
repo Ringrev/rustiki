@@ -1,6 +1,4 @@
 use zoon::*;
-use zoon::named_color::*;
-use zoon::text_input::InputTypeText;
 use shared::{LocalArticle, UpMsg};
 use crate::{app, connection};
 use crate::app::{logged_user_name};

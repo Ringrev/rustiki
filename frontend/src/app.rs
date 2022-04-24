@@ -1,7 +1,6 @@
 use zoon::{*, Element};
 use shared::LocalUser;
 use crate::{ router::{router, Route}, pages::{home_page, log_in_page, registration_page, view_article_page, create_article_page, edit_article_page}};
-use crate::pages::home_page::test_get_articles;
 use crate::elements::footer::footer;
 use crate::elements::header::header;
 
@@ -31,7 +30,6 @@ pub fn auth_token() -> &'static Mutable<Option<String>> {
 fn page_name() -> &'static Mutable<PageName> {
     Mutable::new(PageName::Unknown)
 }
-
 
 // ------ ------
 //    Signals

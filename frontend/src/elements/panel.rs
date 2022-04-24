@@ -1,8 +1,6 @@
-use std::ops::Deref;
-use std::process::id;
 use zoon::*;
 use zoon::signal::MutableSignalCloned;
-use zoon::text_input::{InputTypePassword, InputTypeText, InputTypeTrait};
+use zoon::text_input::{InputTypeTrait};
 
 pub fn input_panel(id: &str,
                    label_text: &str,
@@ -20,7 +18,7 @@ pub fn input_panel(id: &str,
 
 // ------ label
 
-fn input_label(id: &str, label_text: &str) -> impl Element {
+pub fn input_label(id: &str, label_text: &str) -> impl Element {
     Label::new()
         .s(Font::new().color(hsluv!(0,0,0,100)))
         .s(Padding::all(0))
@@ -30,7 +28,7 @@ fn input_label(id: &str, label_text: &str) -> impl Element {
 
 // ------  text input
 
-fn text_input(id: &str, function: fn(String), placeholder: &str, input_type: impl InputTypeTrait, text_signal: MutableSignalCloned<String>, on_key: Option<fn()>) -> impl Element {
+pub fn text_input(id: &str, function: fn(String), placeholder: &str, input_type: impl InputTypeTrait, text_signal: MutableSignalCloned<String>, on_key: Option<fn()>) -> impl Element {
     TextInput::new()
         .s(Width::new(300))
         .s(Padding::new().x(10).y(6))
