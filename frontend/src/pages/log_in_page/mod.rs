@@ -1,13 +1,14 @@
 use zoon::{*, eprintln};
 use zoon::named_color::*;
-use zoon::text_input::{InputTypePassword};
+use zoon::text_input::{InputTypePassword, InputTypeText};
 use shared::UpMsg;
 use crate::{connection};
+use crate::elements::panel;
 
 mod view;
 
 pub fn page() -> impl Element {
-    user_name_text().set("".to_string());
+    email_text().set("".to_string());
     password_text().set("".to_string());
     Column::new()
         .s(Align::center())
@@ -17,7 +18,7 @@ pub fn page() -> impl Element {
             .s(Align::center())
             .s(Padding::new().x(100).y(20))
             .item(Paragraph::new().content("Log in").s(Font::new().size(20)).s(Padding::bottom(Default::default(), 20)))
-            .item(user_name_panel())
+            .item(email_panel())
             .item(password_panel())
             .item(Text::with_signal(login_error().signal_cloned()))
         )
@@ -38,7 +39,7 @@ pub fn login() {
     Task::start(async {
         set_login_error("".to_string());
         let msg = UpMsg::Login {
-            email: user_name_text().get_cloned(),
+            email: email_text().get_cloned(),
             password: password_text().get_cloned(),
         };
         if let Err(error) = connection::connection().send_up_msg(msg).await {
@@ -52,52 +53,27 @@ pub fn login() {
 // ------ state of user_name
 
 #[static_ref]
-fn user_name_text() -> &'static Mutable<String> {
+fn email_text() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
 // ------ user_name label and input combined
 
-fn user_name_panel() -> impl Element {
+fn email_panel() -> impl Element {
     let id = "user_name_input";
-    Column::new()
-        .s(Spacing::new(15))
-        .item(user_name_text_label(id))
-        .s(Spacing::new(0))
-        .item(user_name_text_input(id))
-    // .s(Padding::all(0))
+    panel::input_panel(id,
+                       "Email address:",
+                       set_email,
+                       "Your email address ",
+                       InputType::text(),
+                       email_text().signal_cloned(),
+                       None)
 }
 
-// ------ user_name label
-
-fn user_name_text_label(id: &str) -> impl Element {
-    Label::new()
-        .s(Font::new().color(hsluv!(0,0,0,100)))
-        .s(Padding::all(0))
-        .for_input(id)
-        .label("Email address:")
+fn set_email(email: String) {
+    email_text().set(email);
 }
 
-fn set_user_name(user_name: String) {
-    user_name_text().set(user_name);
-}
-
-// ------ user_name text input
-
-fn user_name_text_input(id: &str) -> impl Element {
-    TextInput::new()
-        .s(Width::new(300))
-        .s(Padding::new().x(10).y(6))
-        .s(Shadows::new(vec![Shadow::new()
-            .inner()
-            .y(1)
-            .blur(2)
-            .color(hsluv!(0,0,0,20))]))
-        .id(id)
-        .on_change(set_user_name)
-        .placeholder(Placeholder::new("Your email address "))
-        .text_signal(user_name_text().signal_cloned())
-}
 // Password start
 
 // ------ state of password
@@ -111,50 +87,15 @@ fn password_text() -> &'static Mutable<String> {
 
 fn password_panel() -> impl Element {
     let id = "password_input";
-    Column::new()
-        .s(Spacing::new(15))
-        .item(password_text_label(id))
-        .s(Spacing::new(0))
-        .item(password_text_input(id))
-    // .s(Padding::all(0))
-}
-
-// ------ password label
-
-fn password_text_label(id: &str) -> impl Element {
-    Label::new()
-        .s(Font::new().color(hsluv!(0,0,0,100)))
-        .s(Padding::all(0))
-        .for_input(id)
-        .label("Password:")
+    panel::input_panel(id, "Password:", set_password, "Your password...",
+                        InputType::password(),
+                        password_text().signal_cloned(), Some(login))
 }
 
 fn set_password(password: String) {
     password_text().set(password);
 }
 
-// ------ password text input
-
-fn password_text_input(id: &str) -> impl Element {
-    TextInput::new()
-        .s(Width::new(300))
-        .s(Padding::new().x(10).y(6))
-        .s(Shadows::new(vec![Shadow::new()
-            .inner()
-            .y(1)
-            .blur(2)
-            .color(hsluv!(0,0,0,20))]))
-        .id(id)
-        .on_change(set_password)
-        .placeholder(Placeholder::new("Your password"))
-        .text_signal(password_text().signal_cloned())
-        .input_type(InputTypePassword::default())
-        .on_key_down_event(|event| event.if_key(Key::Enter, login))
-}
-
-// Password end
-
-// ------
 
 fn button_panel() -> impl Element {
     Row::new()

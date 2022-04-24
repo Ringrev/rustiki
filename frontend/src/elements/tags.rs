@@ -1,5 +1,7 @@
 use zoon::{*, named_color::{*}};
+use zoon::text_input::InputTypeText;
 use crate::elements::dialogs::message_dialog;
+use crate::elements::panel;
 
 fn add_tag_button() -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
@@ -17,49 +19,12 @@ fn add_tag_button() -> impl Element {
 
 pub fn tag_panel() -> impl Element {
     let id = "tag_input";
-    Column::new()
-        .s(Spacing::new(15))
-        .item(tag_label(id))
-        .s(Spacing::new(0))
-        .item(Row::new()
-            .s(Spacing::new(5))
-            .item(tag_input(id))
-            .item(add_tag_button()))
-}
-
-// ------ tag label
-
-fn tag_label(id: &str) -> impl Element {
-    Label::new()
-        .s(Font::new().color(hsluv!(0,0,0,100)))
-        .s(Padding::all(0))
-        .for_input(id)
-        .label("Add a tag:")
+    panel::input_panel(id, "Add a tag:", set_tag_text, "Write a tag...", InputType::text(),new_tag().signal_cloned(), Some(add_tag))
 }
 
 fn set_tag_text(tag: String) {
     new_tag().set(tag);
 }
-
-// ------ tag input
-
-
-fn tag_input(id: &str) -> impl Element {
-    TextInput::new()
-        .s(Width::new(300))
-        .s(Padding::new().x(10).y(6))
-        .s(Shadows::new(vec![Shadow::new()
-            .inner()
-            .y(1)
-            .blur(2)
-            .color(hsluv!(0,0,0,20))]))
-        .id(id)
-        .on_change(set_tag_text)
-        .placeholder(Placeholder::new("Tag..."))
-        .text_signal(new_tag().signal_cloned())
-        .on_key_down_event(|event| event.if_key(Key::Enter, add_tag))
-}
-
 
 #[static_ref]
 pub fn tags() -> &'static MutableVec<String> {

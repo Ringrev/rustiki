@@ -3,6 +3,7 @@ use zoon::named_color::*;
 use zoon::text_input::{InputTypePassword};
 use shared::UpMsg;
 use crate::connection;
+use crate::elements::panel;
 
 mod view;
 
@@ -88,44 +89,19 @@ fn email_text() -> &'static Mutable<String> {
 // ------ email label and input combined
 
 fn email_panel() -> impl Element {
-    let id = "email_input";
-    Column::new()
-        .s(Spacing::new(15))
-        .item(email_text_label(id))
-        .s(Spacing::new(0))
-        .item(email_text_input(id))
-    // .s(Padding::all(0))
+    let id = "user_name_input";
+    panel::input_panel(id,
+                       "Email address:",
+                       set_email,
+                       "Your email address ",
+                       InputType::text(),
+                       email_text().signal_cloned(),
+                       None)
 }
 
-// ------ user_name label
-
-fn email_text_label(id: &str) -> impl Element {
-    Label::new()
-        .s(Font::new().color(hsluv!(0,0,0,100)))
-        .s(Padding::all(0))
-        .for_input(id)
-        .label("Email:")
-}
 
 fn set_email(email: String) {
     email_text().set(email);
-}
-
-// ------ user_name text input
-
-fn email_text_input(id: &str) -> impl Element {
-    TextInput::new()
-        .s(Width::new(300))
-        .s(Padding::new().x(10).y(6))
-        .s(Shadows::new(vec![Shadow::new()
-            .inner()
-            .y(1)
-            .blur(2)
-            .color(hsluv!(0,0,0,20))]))
-        .id(id)
-        .on_change(set_email)
-        .placeholder(Placeholder::new("Your email "))
-        .text_signal(email_text().signal_cloned())
 }
 
 // ------ state of user_name
@@ -139,45 +115,19 @@ fn user_name_text() -> &'static Mutable<String> {
 
 fn user_name_panel() -> impl Element {
     let id = "user_name_input";
-    Column::new()
-        .s(Spacing::new(15))
-        .item(user_name_text_label(id))
-        .s(Spacing::new(0))
-        .item(user_name_text_input(id))
-    // .s(Padding::all(0))
+    panel::input_panel(id,
+                       "Username:",
+                       set_user_name,
+                       "Choose a username",
+                       InputType::text(),
+                       user_name_text().signal_cloned(),
+                       None)
 }
 
-// ------ user_name label
-
-fn user_name_text_label(id: &str) -> impl Element {
-    Label::new()
-        .s(Font::new().color(hsluv!(0,0,0,100)))
-        .s(Padding::all(0))
-        .for_input(id)
-        .label("Username:")
-}
 
 fn set_user_name(user_name: String) {
     user_name_text().set(user_name);
 }
-
-// ------ user_name text input
-
-fn user_name_text_input(id: &str) -> impl Element {
-    TextInput::new()
-        .s(Width::new(300))
-        .s(Padding::new().x(10).y(6))
-        .s(Shadows::new(vec![Shadow::new()
-            .inner()
-            .y(1)
-            .blur(2)
-            .color(hsluv!(0,0,0,20))]))
-        .id(id)
-        .on_change(set_user_name)
-        .placeholder(Placeholder::new("Your user id "))
-        .text_signal(user_name_text().signal_cloned())
-}
-// Password start
 
 // ------ state of password
 
@@ -190,45 +140,15 @@ fn password_text() -> &'static Mutable<String> {
 
 fn password_panel() -> impl Element {
     let id = "password_input";
-    Column::new()
-        .s(Spacing::new(15))
-        .item(password_text_label(id))
-        .s(Spacing::new(0))
-        .item(password_text_input(id))
-    // .s(Padding::all(0))
-}
-
-// ------ password label
-
-fn password_text_label(id: &str) -> impl Element {
-    Label::new()
-        .s(Font::new().color(hsluv!(0,0,0,100)))
-        .s(Padding::all(0))
-        .for_input(id)
-        .label("Password:")
+    panel::input_panel(id, "Password:", set_password, "Your password...",
+                       InputType::password(),
+                       password_text().signal_cloned(), None)
 }
 
 fn set_password(password: String) {
     password_text().set(password);
 }
 
-// ------ password text input
-
-fn password_text_input(id: &str) -> impl Element {
-    TextInput::new()
-        .s(Width::new(300))
-        .s(Padding::new().x(10).y(6))
-        .s(Shadows::new(vec![Shadow::new()
-            .inner()
-            .y(1)
-            .blur(2)
-            .color(hsluv!(0,0,0,20))]))
-        .id(id)
-        .on_change(set_password)
-        .placeholder(Placeholder::new("Your password"))
-        .text_signal(password_text().signal_cloned())
-        .input_type(InputTypePassword::default())
-}
 
 // Password end
 
@@ -245,51 +165,14 @@ fn retyped_password_text() -> &'static Mutable<String> {
 
 fn retyped_password_panel() -> impl Element {
     let id = "retyped_password_input";
-    Column::new()
-        .s(Spacing::new(15))
-        .item(retyped_password_text_label(id))
-        .s(Spacing::new(0))
-        .item(retyped_password_text_input(id))
-    // .s(Padding::all(0))
-}
-
-// ------ retyped_password label
-
-fn retyped_password_text_label(id: &str) -> impl Element {
-    Label::new()
-        .s(Font::new().color(hsluv!(0,0,0,100)))
-        .s(Padding::all(0))
-        .for_input(id)
-        .label("Please retype your password:")
+    panel::input_panel(id, "Confirm password:", set_retyped_password, "Type password again...",
+                       InputType::password(),
+                       retyped_password_text().signal_cloned(), Some(register_user))
 }
 
 fn set_retyped_password(retyped_password: String) {
     retyped_password_text().set(retyped_password);
 }
-
-// ------ retyped_password text input
-
-fn retyped_password_text_input(id: &str) -> impl Element {
-    TextInput::new()
-        .s(Width::new(300))
-        .s(Padding::new().x(10).y(6))
-        .s(Shadows::new(vec![Shadow::new()
-            .inner()
-            .y(1)
-            .blur(2)
-            .color(hsluv!(0,0,0,20))]))
-        .id(id)
-        .on_change(set_retyped_password)
-        .placeholder(Placeholder::new("Your password"))
-        .text_signal(retyped_password_text().signal_cloned())
-        .input_type(InputTypePassword::default())
-        .on_key_down_event(|event| event.if_key(Key::Enter, register_user))
-}
-
-// Retyped retyped_password end
-
-// ------
-
 
 fn button_panel() -> impl Element {
     Row::new()

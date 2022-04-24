@@ -1,11 +1,12 @@
 use zoon::*;
 use zoon::named_color::*;
+use zoon::text_input::InputTypeText;
 use shared::{LocalArticle, UpMsg};
 use crate::{app, connection};
 use crate::app::{logged_user_name};
 use crate::router::{Route, router};
 use crate::elements::dialogs::*;
-use crate::elements::tags;
+use crate::elements::{panel, tags};
 
 mod view;
 
@@ -106,47 +107,15 @@ fn title_text() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
-// ------ title label and input combined
+// ------ title label and input
 
 fn title_panel() -> impl Element {
     let id = "title_input";
-    Column::new()
-        .s(Spacing::new(15))
-        .item(title_text_label(id))
-        .s(Spacing::new(0))
-        .item(title_text_input(id))
-    // .s(Padding::all(0))
-}
-
-// ------ title label
-
-fn title_text_label(id: &str) -> impl Element {
-    Label::new()
-        .s(Font::new().color(hsluv!(0,0,0,100)))
-        .s(Padding::all(0))
-        .for_input(id)
-        .label("Title:")
+    panel::input_panel(id, "Title:", set_title, "Title of your article", InputType::text(), title_text().signal_cloned(), None)
 }
 
 fn set_title(title: String) {
     title_text().set(title);
-}
-
-// ------ title text input
-
-fn title_text_input(id: &str) -> impl Element {
-    TextInput::new()
-        .s(Width::new(300))
-        .s(Padding::new().x(10).y(6))
-        .s(Shadows::new(vec![Shadow::new()
-            .inner()
-            .y(1)
-            .blur(2)
-            .color(hsluv!(0,0,0,20))]))
-        .id(id)
-        .on_change(set_title)
-        .placeholder(Placeholder::new("Title of your article"))
-        .text_signal(title_text().signal_cloned())
 }
 
 // ------ state: content text
@@ -158,49 +127,13 @@ fn content_text() -> &'static Mutable<String> {
 // ------ title label and input combined
 
 fn content_text_panel() -> impl Element {
-    let id = "content_input";
-    Column::new()
-        .s(Spacing::new(15))
-        .item(content_text_label(id))
-        .s(Spacing::new(0))
-        .item(content_text_input(id))
-    // .s(Padding::all(0))
-}
-
-// ------ title label
-
-fn content_text_label(id: &str) -> impl Element {
-    Label::new()
-        .s(Font::new().color(hsluv!(0,0,0,100)))
-        .s(Padding::all(0))
-        .for_input(id)
-        .label("Article text:")
+    panel::textarea_panel(set_content_text, content_text().signal_cloned())
 }
 
 fn set_content_text(content: String) {
     content_text().set(content);
 }
 
-// ------ title text input
-
-
-fn content_text_input(id: &str) -> impl Element {
-    TextArea::new()
-        .s(Width::new(600))
-        .s(Height::new(400))
-        .s(Padding::all(10))
-        .s(Shadows::new(vec![Shadow::new()
-            .inner()
-            .y(1)
-            .blur(2)
-            .color(hsluv!(0,0,0,20))]))
-        .id(id)
-        .on_change(set_content_text)
-        .placeholder(Placeholder::new("content text of your article"))
-        .text_signal(content_text().signal_cloned())
-}
-
-// ------
 
 fn button_panel() -> impl Element {
     Row::new()
