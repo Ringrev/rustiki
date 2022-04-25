@@ -1,3 +1,4 @@
+use std::any::Any;
 use zoon::*;
 use zoon::named_color::*;
 
@@ -11,4 +12,5 @@ pub fn button(label_text: &str, function: fn()) -> impl Element {
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
         .label(label_text)
         .on_click(function)
+        .on_key_down_event(move |event| event.if_key(Key::Enter, function))
 }
