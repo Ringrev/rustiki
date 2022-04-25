@@ -9,6 +9,30 @@ use crate::elements::button;
 
 mod view;
 
+// ------ ------
+//    States
+// ------ ------
+
+#[static_ref]
+fn error_message() -> &'static Mutable<String> {
+    Mutable::new("".to_string())
+}
+
+// ------ state of title
+
+#[static_ref]
+fn title_text() -> &'static Mutable<String> {
+    Mutable::new("".to_string())
+}
+
+// ------ state: content text
+#[static_ref]
+fn content_text() -> &'static Mutable<String> {
+    Mutable::new("".to_string())
+}
+
+
+
 pub fn page() -> impl Element {
     title_text().set("".to_string());
     content_text().set("".to_string());
@@ -30,16 +54,9 @@ pub fn page() -> impl Element {
         .item(button_panel())
 }
 
-
-//------ Add Article -------
-#[static_ref]
-fn error_message() -> &'static Mutable<String> {
-    Mutable::new("".to_string())
-}
-
-// pub fn set_error_msg(msg: String) {
-//     error_message().set(msg);
-// }
+// ------ ------
+//    Commands
+// ------ ------
 
 pub fn add_article() {
     Task::start(async {
@@ -56,16 +73,17 @@ pub fn add_article() {
     });
 }
 
-
-
-
-
-// ------ state of title
-
-#[static_ref]
-fn title_text() -> &'static Mutable<String> {
-    Mutable::new("".to_string())
+fn cancel() {
+    if dialogs::confirm_dialog("Your article will not be saved. Are you sure you want to leave the page?") {
+        router().go(Route::Home);
+    } else {
+        return;
+    }
 }
+
+// ------ ------
+//     View
+// ------ ------
 
 // ------ title label and input
 
@@ -74,26 +92,11 @@ fn title_panel() -> impl Element {
     panel::input_panel(id, "Title:", set_title, "Title of your article", InputType::text(), title_text().signal_cloned(), None)
 }
 
-fn set_title(title: String) {
-    title_text().set(title);
-}
-
-// ------ state: content text
-#[static_ref]
-fn content_text() -> &'static Mutable<String> {
-    Mutable::new("".to_string())
-}
-
-// ------ content label and input combined
+// ------ content label and input
 
 fn content_text_panel() -> impl Element {
     panel::textarea_panel(set_content_text, content_text().signal_cloned())
 }
-
-fn set_content_text(content: String) {
-    content_text().set(content);
-}
-
 
 fn button_panel() -> impl Element {
     Row::new()
@@ -111,10 +114,18 @@ fn cancel_button() -> impl Element {
     button::button("Cancel", cancel)
 }
 
-fn cancel() {
-    if dialogs::confirm_dialog("Your article will not be saved. Are you sure you want to leave the page?") {
-        router().go(Route::Home);
-    } else {
-        return;
-    }
+// ------ ------
+//     Helpers
+// ------ ------
+
+// pub fn set_error_msg(msg: String) {
+//     error_message().set(msg);
+// }
+
+fn set_content_text(content: String) {
+    content_text().set(content);
+}
+
+fn set_title(title: String) {
+    title_text().set(title);
 }

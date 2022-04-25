@@ -1,6 +1,9 @@
+use std::borrow::Borrow;
 use std::collections::VecDeque;
 use zoon::*;
+use zoon::events::Click;
 use zoon::named_color::{GRAY_2, GRAY_3};
+use zoon::web_sys::Event;
 use shared::{LocalArticle, UpMsg};
 use crate::app::is_user_logged_signal;
 use crate::connection::connection;
@@ -10,11 +13,27 @@ use crate::pages::view_article_page;
 
 mod view;
 
+// ------ ------
+//    States
+// ------ ------
 
-// ------ front page content ------
+#[static_ref]
+pub fn articles() -> &'static MutableVec<LocalArticle> {
+    MutableVec::new()
+}
+
+#[static_ref]
+pub fn original_articles() -> &'static MutableVec<LocalArticle> {
+    MutableVec::new()
+}
+
+// ------ ------
+//     View
+// ------ ------
+
 
 pub fn page() -> impl Element {
-    test_get_articles();
+    get_articles();
     Column::new()
         .s(Padding::new().top(50))
         .s(Width::fill())
@@ -37,25 +56,30 @@ fn panel() -> impl Element {
 }
 
 fn card(article: LocalArticle) -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
     Column::new()
-        .s(Padding::new().x(10).y(20))
-        .s(Spacing::new(5))
-        .s(Font::new().size(24))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_2, || hsluv!(0, 0, 100))))
-        .item(Image::new().url("https://rustacean.net/assets/rustacean-flat-happy.png")
+        .item(card_template(Image::new().url("https://rustacean.net/assets/rustacean-flat-happy.png")
             .description("Placeholder picture")
             .s(Width::new(200))
             .s(Height::new(130))
-            .s(Background::new().color(GRAY_3)))
-        .item(Paragraph::new().content(article.title.clone()))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        // .item(Paragraph::new().content(article.content.clone()))
+            .s(Background::new().color(GRAY_3)),
+                            article.title.clone()))
         .on_click(move || view_article(article))
 }
 
 fn empty_card() -> impl Element {
+
+    Column::new()
+        .item(card_template(Row::new()
+                                .s(Width::new(200))
+                                .s(Height::new(130))
+                                .s(Background::new().color(GRAY_3))
+                                .item(
+                                    Paragraph::new().content("+").s(Align::new().center_x().center_y()).s(Font::new().size(100))),
+                            "Create new article".to_string()))
+        .on_click(move || router().go(Route::NewArticle))
+}
+
+fn card_template(element: impl Element, text: String) -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
     Column::new()
         .s(Padding::new().x(10).y(20))
@@ -63,22 +87,15 @@ fn empty_card() -> impl Element {
         .s(Font::new().size(24))
         .s(Background::new()
             .color_signal(hovered_signal.map_bool(|| GRAY_2, || hsluv!(0, 0, 100))))
-        .item(Row::new()
-            .s(Width::new(200))
-            .s(Height::new(130))
-            .s(Background::new().color(GRAY_3))
-            .item(
-                Paragraph::new().content("+").s(Align::new().center_x().center_y()).s(Font::new().size(100))))
-        .item(Paragraph::new().content("Create new article"))
+        .item(element)
+        .item(Paragraph::new().content(text))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        // .item(Paragraph::new().content(article.content.clone()))
-        .on_click(move|| router().go(Route::NewArticle))
+    // .on_click(move|| router().go(Route::NewArticle))
 }
 
-
-////////////////////////////////////
-// ------ article stuff ------
-////////////////////////////////////
+// ------ ------
+//     Commands
+// ------ ------
 
 pub fn view_article(article: LocalArticle) {
     view_article_page::set_view_article(article.clone());
@@ -86,30 +103,6 @@ pub fn view_article(article: LocalArticle) {
     //     article_id: article.id.to_string()
     // });
     router().go(Route::ViewArticle);
-}
-
-fn filtered_articles() -> impl SignalVec<Item = LocalArticle> {
-    articles()
-        .signal_vec_cloned()
-        .map(|article|  article.clone())
-}
-
-#[static_ref]
-pub fn articles() -> &'static MutableVec<LocalArticle> {
-    MutableVec::new()
-}
-
-#[static_ref]
-pub fn original_articles() -> &'static MutableVec<LocalArticle> {
-    MutableVec::new()
-}
-
-fn articles_count() -> impl Signal<Item = usize> {
-    articles().signal_vec_cloned().len()
-}
-
-fn articles_exist() -> impl Signal<Item = bool> {
-    articles_count().map(|count| count != 0).dedupe()
 }
 
 pub fn set_articles(vector: Vec<LocalArticle>) {
@@ -127,19 +120,40 @@ pub fn set_articles(vector: Vec<LocalArticle>) {
     })
 }
 
-pub fn reset_articles() {
-    articles().update_mut(|art| {
-        art.clear();
-        art.extend(original_articles().lock_mut().to_vec());
-    });
-
-}
-
-pub fn test_get_articles() {
+pub fn get_articles() {
     Task::start(async {
         let msg = UpMsg::GetArticles;
         if let Err(error) = connection().send_up_msg(msg).await {
             message_dialog(error.to_string().as_str())
         }
     })
+}
+
+fn go_create_article() {
+    router().go(Route::NewArticle);
+}
+
+pub fn reset_articles() {
+    articles().update_mut(|art| {
+        art.clear();
+        art.extend(original_articles().lock_mut().to_vec());
+    });
+}
+
+// ------ ------
+//     Signals
+// ------ ------
+
+fn filtered_articles() -> impl SignalVec<Item = LocalArticle> {
+    articles()
+        .signal_vec_cloned()
+        .map(|article|  article.clone())
+}
+
+fn articles_count() -> impl Signal<Item = usize> {
+    articles().signal_vec_cloned().len()
+}
+
+fn articles_exist() -> impl Signal<Item = bool> {
+    articles_count().map(|count| count != 0).dedupe()
 }

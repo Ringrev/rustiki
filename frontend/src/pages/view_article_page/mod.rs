@@ -73,22 +73,7 @@ pub fn set_view_article(art: LocalArticle) {
 }
 
 pub fn delete_article() {
-    if app::logged_user_name().get_cloned().eq(view_article().get_cloned().author.as_str()) {
-        Task::start(async {
-            if confirm_dialog("Are you sure you want to delete the article?") {
-                let msg = UpMsg::RemoveArticle {
-                    id: article_id().get_cloned(),
-                };
-                if let Err(error) = connection::connection().send_up_msg(msg).await {
-                    message_dialog(error.to_string().as_str());
-                }
-            } else {
-                return;
-            }
-        });
-    } else {
-        message_dialog("Only the author can delete an article.")
-    }
+    super::delete_article(view_article().get_cloned().author.as_str(), article_id().get_cloned());
 }
 
 fn button_panel() -> impl Element {
