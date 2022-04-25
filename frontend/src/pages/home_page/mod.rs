@@ -90,7 +90,6 @@ fn card_template(element: impl Element, text: String) -> impl Element {
         .item(element)
         .item(Paragraph::new().content(text))
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-    // .on_click(move|| router().go(Route::NewArticle))
 }
 
 // ------ ------
