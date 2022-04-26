@@ -1,8 +1,12 @@
 use crate::{app, router::Route};
 use zoon::{named_color::*, *};
-use crate::app::{logged_user_name};
+use zoon::console::log;
+use shared::LocalArticle;
+use crate::app::{log_out, logged_user_name};
 use crate::pages::home_page;
 use crate::router::router;
+use crate::elements::button;
+use crate::pages::home_page::articles;
 
 // ------ ------
 //     View
@@ -45,7 +49,22 @@ fn search_box() -> impl Element {
 
 pub fn search() {
     home_page::reset_articles();
-    home_page::articles().lock_mut().retain(|art| art.title.to_lowercase().contains(search_query().get_cloned().to_lowercase().as_str())||art.tags.contains(&search_query().get_cloned().to_lowercase()));
+    let query = search_query().get_cloned().to_lowercase();
+    home_page::articles().lock_mut().retain(|art|
+            art.title.to_lowercase().contains(&query) ||
+            art.author.to_lowercase().contains(&query) ||
+            search_inner_vec(art.tags.to_vec(), &query) ||
+            search_inner_vec(art.contributors.to_vec(), &query)
+    );
+}
+
+pub fn search_inner_vec(mut vec: Vec<String>, query: &String) -> bool {
+    let filtered: Vec<String> = vec.iter().map(|tag| tag.to_lowercase()).filter(|tag| tag.contains(query.as_str())).collect();
+    if (filtered.len())> 0 {
+        true
+    } else {
+        false
+    }
 }
 
 #[static_ref]
@@ -79,18 +98,7 @@ fn search_bar() -> impl Element {
 }
 
 fn search_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Link::new()
-        .s(Padding::all(20))
-        .s(RoundedCorners::new().right(5))
-        .s(Background::new().color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Font::new().color(GRAY_0).size(17))
-        .s(Align::new().left())
-        .s(RoundedCorners::new().right(25).left(25))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .on_click(search)
-        .label("Search")
-        .to(Route::Home)
+    button::header_button("Search", Route::Home, Some(search))
 }
 
 fn button_row() -> impl Element {
@@ -105,64 +113,19 @@ fn button_row() -> impl Element {
 }
 
 fn log_out_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Link::new()
-        .s(Font::new().size(20).color(GRAY_0))
-        .s(Align::new().right().bottom())
-        .s(Spacing::new(20))
-        .s(RoundedCorners::new().right(25).left(25))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Padding::all(17))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Log out")
-        .on_click(app::log_out)
-        .to(Route::Home)
+    button::header_button("Log out", Route::Home, Some(app::log_out))
 }
 
 
 fn log_in_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Link::new()
-        .s(Font::new().size(20).color(GRAY_0))
-        .s(Align::new().right().bottom())
-        .s(Spacing::new(20))
-        .s(RoundedCorners::new().right(25).left(25))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Padding::all(17))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Log in")
-        .to(Route::LogIn)
+    button::header_button("Log in", Route::LogIn, None)
 }
 
 
 fn new_article_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Link::new()
-        .s(Font::new().size(20).color(GRAY_0))
-        .s(Align::new().right().bottom())
-        .s(Spacing::new(20))
-        .s(RoundedCorners::new().right(25).left(25))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Padding::all(17))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Create New Article")
-        .to(Route::NewArticle)
+    button::header_button("Create new article", Route::NewArticle, None)
 }
 
 fn registration_button() -> impl Element {
-    let (hovered, hovered_signal) = Mutable::new_and_signal(false);
-    Link::new()
-        .s(Font::new().size(20).color(GRAY_0))
-        .s(Align::new().right().bottom())
-        .s(Spacing::new(20))
-        .s(RoundedCorners::new().right(25).left(25))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-        .s(Padding::all(17))
-        .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-        .label("Registration")
-        .to(Route::Registration)
+    button::header_button("Registration", Route::Registration, None)
 }

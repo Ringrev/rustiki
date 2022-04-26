@@ -77,6 +77,7 @@ fn empty_card() -> impl Element {
                                     Paragraph::new().content("+").s(Align::new().center_x().center_y()).s(Font::new().size(100))),
                             "Create new article".to_string()))
         .on_click(move || router().go(Route::NewArticle))
+        // .on_key_down_event(|event| event.if_key(Key::Enter, router().go(Route::NewArticle)))
 }
 
 fn card_template(element: impl Element, text: String) -> impl Element {

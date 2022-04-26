@@ -903,7 +903,7 @@ dependencies = [
 [[package]]
 name = "hsluv"
 version = "0.1.0"
-source = "git+https://github.com/lindahageselle/MoonZoon?rev=a673172#a673172ecb55014f1eece5e3fbb79508201eaa97"
+source = "git+https://github.com/MoonZoon/MoonZoon?rev=45f9d0b#45f9d0b30e18c4aef0e1ae86371b130cc256685b"
 dependencies = [
  "hsluv_macro",
  "rust-hsluv",
@@ -912,7 +912,7 @@ dependencies = [
 [[package]]
 name = "hsluv_macro"
 version = "0.1.0"
-source = "git+https://github.com/lindahageselle/MoonZoon?rev=a673172#a673172ecb55014f1eece5e3fbb79508201eaa97"
+source = "git+https://github.com/MoonZoon/MoonZoon?rev=45f9d0b#45f9d0b30e18c4aef0e1ae86371b130cc256685b"
 dependencies = [
  "quote 1.0.14",
  "syn 1.0.84",
@@ -1260,7 +1260,7 @@ dependencies = [
 [[package]]
 name = "moonlight"
 version = "0.1.0"
-source = "git+https://github.com/lindahageselle/MoonZoon?rev=a673172#a673172ecb55014f1eece5e3fbb79508201eaa97"
+source = "git+https://github.com/MoonZoon/MoonZoon?rev=45f9d0b#45f9d0b30e18c4aef0e1ae86371b130cc256685b"
 dependencies = [
  "chrono",
  "getrandom",
@@ -1848,7 +1848,7 @@ dependencies = [
 [[package]]
 name = "route_macro"
 version = "0.1.0"
-source = "git+https://github.com/lindahageselle/MoonZoon?rev=a673172#a673172ecb55014f1eece5e3fbb79508201eaa97"
+source = "git+https://github.com/MoonZoon/MoonZoon?rev=45f9d0b#45f9d0b30e18c4aef0e1ae86371b130cc256685b"
 dependencies = [
  "proc-macro2 1.0.36",
  "quote 1.0.14",
@@ -2138,7 +2138,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 [[package]]
 name = "static_ref_macro"
 version = "0.1.0"
-source = "git+https://github.com/lindahageselle/MoonZoon?rev=a673172#a673172ecb55014f1eece5e3fbb79508201eaa97"
+source = "git+https://github.com/MoonZoon/MoonZoon?rev=45f9d0b#45f9d0b30e18c4aef0e1ae86371b130cc256685b"
 dependencies = [
  "proc-macro2 1.0.36",
  "quote 1.0.14",
@@ -2659,7 +2659,7 @@ dependencies = [
 [[package]]
 name = "zoon"
 version = "0.1.0"
-source = "git+https://github.com/lindahageselle/MoonZoon?rev=a673172#a673172ecb55014f1eece5e3fbb79508201eaa97"
+source = "git+https://github.com/MoonZoon/MoonZoon?rev=45f9d0b#45f9d0b30e18c4aef0e1ae86371b130cc256685b"
 dependencies = [
  "apply",
  "chrono",
@@ -2672,7 +2672,7 @@ dependencies = [
  "gensym",
  "hsluv",
  "js-sys",
- "moonlight 0.1.0 (git+https://github.com/lindahageselle/MoonZoon?rev=a673172)",
+ "moonlight 0.1.0 (git+https://github.com/MoonZoon/MoonZoon?rev=45f9d0b)",
  "once_cell",
  "paste",
  "pin-project",
