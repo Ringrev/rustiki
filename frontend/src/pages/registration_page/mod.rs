@@ -180,5 +180,5 @@ fn button_panel() -> impl Element {
 }
 
 fn register_button() -> impl Element {
-    button::button("Register", register_user)
+    button::button("register_user","Register", register_user)
 }

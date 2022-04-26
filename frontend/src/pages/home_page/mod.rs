@@ -56,28 +56,35 @@ fn panel() -> impl Element {
 }
 
 fn card(article: LocalArticle) -> impl Element {
-    Column::new()
-        .item(card_template(Image::new().url("https://rustacean.net/assets/rustacean-flat-happy.png")
-            .description("Placeholder picture")
-            .s(Width::new(200))
-            .s(Height::new(130))
-            .s(Background::new().color(GRAY_3)),
-                            article.title.clone()))
+    let extra_article = article.clone();
+    let id = article.clone().title;
+    Button::new()
+        .id(id.clone())
+        .label(card_template(Image::new().url("https://rustacean.net/assets/rustacean-flat-happy.png")
+                                 .description("Placeholder picture")
+                                 .s(Width::new(200))
+                                 .s(Height::new(130))
+                                 .s(Background::new().color(GRAY_3)),
+                             id))
         .on_click(move || view_article(article))
+        .focus(true)
+        .on_key_down_event(|event| event.if_key(Key::Enter, || view_article(extra_article)))
 }
 
 fn empty_card() -> impl Element {
-
-    Column::new()
-        .item(card_template(Row::new()
-                                .s(Width::new(200))
-                                .s(Height::new(130))
-                                .s(Background::new().color(GRAY_3))
-                                .item(
-                                    Paragraph::new().content("+").s(Align::new().center_x().center_y()).s(Font::new().size(100))),
-                            "Create new article".to_string()))
+    let id = "Create new article";
+    Button::new()
+        .id(id.clone())
+        .label(card_template(Row::new()
+                                 .s(Width::new(200))
+                                 .s(Height::new(130))
+                                 .s(Background::new().color(GRAY_3))
+                                 .item(
+                                     Paragraph::new().content("+").s(Align::new().center_x().center_y()).s(Font::new().size(100))),
+                             id.to_string()))
         .on_click(move || router().go(Route::NewArticle))
-        // .on_key_down_event(|event| event.if_key(Key::Enter, router().go(Route::NewArticle)))
+        .focus(true)
+        .on_key_down_event(|event| event.if_key(Key::Enter, || router().go(Route::NewArticle)))
 }
 
 fn card_template(element: impl Element, text: String) -> impl Element {

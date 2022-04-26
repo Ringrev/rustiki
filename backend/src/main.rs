@@ -14,6 +14,8 @@ async fn frontend() -> Frontend {
                 background-color: white;
                 color: black;
             }
+/* :focus { outline: dashed black; } */
+
         </style>"
         ,
     )

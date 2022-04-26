@@ -40,11 +40,11 @@ fn article_view() -> impl Element {
 }
 
 fn edit_button() -> impl Element {
-    button::button("Edit", edit_article)
+    button::button("edit_article","Edit", edit_article)
 }
 
 fn delete_button() -> impl Element {
-    button::button("Delete", delete_article)
+    button::button("delete_article","Delete", delete_article)
 }
 
 pub fn edit_article() {

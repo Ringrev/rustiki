@@ -104,5 +104,5 @@ fn button_panel() -> impl Element {
 }
 
 fn log_in_button() -> impl Element {
-    button::button("Log in", login)
+    button::button("log_in","Log in", login)
 }

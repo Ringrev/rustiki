@@ -1,9 +1,10 @@
+use std::borrow::Borrow;
 use zoon::{*, named_color::{*}};
 use crate::elements::dialogs::message_dialog;
 use crate::elements::{panel, button};
 
 fn add_tag_button() -> impl Element {
-    button::button("Add", add_tag)
+    button::button("add_tag","Add tag", add_tag)
 }
 
 // ------ tag label and input combined
@@ -80,7 +81,7 @@ fn tag(tag: String) -> impl Element {
     Row::new()
         .item(Label::new()
             .label(tag.clone().to_string())
-            .element_on_right( remove_tag_button(tag.clone())))
+            .element_on_right(remove_tag_button(tag)))
         .s(Padding::new().left(10).right(20))
         .s(Background::new().color(GRAY_2))
         .s(RoundedCorners::all(10))
@@ -92,13 +93,16 @@ fn remove_tag(text: String) {
 
 fn remove_tag_button(tag: String) -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
+    let extra_tag = tag.clone();
     Button::new()
+        .id("remove_tag_button")
         .s(Font::new().size(20).color_signal(
-            hovered_signal.map_bool(|| RED_5, || GRAY_4),
-        ))
+            hovered_signal.map_bool(|| RED_5, || GRAY_4),))
         .on_hovered_change(move |is_hovered| hovered.set_neq(is_hovered))
-        .on_press(move || remove_tag(tag.clone().to_string()))
+        .on_click(move || remove_tag(tag.clone().to_string()))
         .label(Paragraph::new().content("x").s(Font::new().size(15)).s(Align::new().center_y()))
         .s(Height::new(20))
         .s(Padding::new().left(5))
+        .focus(true)
+        .on_key_down_event(move |event| event.if_key(Key::Enter, || remove_tag(extra_tag)))
 }

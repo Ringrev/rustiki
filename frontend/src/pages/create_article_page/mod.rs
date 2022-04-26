@@ -107,11 +107,11 @@ fn button_panel() -> impl Element {
 }
 
 fn publish_button() -> impl Element {
-    button::button("Publish", add_article)
+    button::button("publish","Publish", add_article)
 }
 
 fn cancel_button() -> impl Element {
-    button::button("Cancel", cancel)
+    button::button("cancel","Cancel", cancel)
 }
 
 // ------ ------

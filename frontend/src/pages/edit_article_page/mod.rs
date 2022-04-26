@@ -88,15 +88,15 @@ fn button_panel() -> impl Element {
 }
 
 fn delete_button() -> impl Element {
-    button::button("Delete article", delete_article)
+    button::button("delete_article","Delete article", delete_article)
 }
 
 fn publish_button() -> impl Element {
-    button::button("Publish changes", update_article)
+    button::button("publish_changes","Publish changes", update_article)
 }
 
 fn cancel_button() -> impl Element {
-    button::button("Cancel", cancel)
+    button::button("cancel","Cancel", cancel)
 }
 
 // ------ ------

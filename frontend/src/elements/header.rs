@@ -31,6 +31,8 @@ fn logo() -> impl Element {
         .label("Rustiki")
         .to(Route::Home)
         .on_click(on_logo_click)
+        .focus(true)
+        .on_key_down_event(|event| event.if_key(Key::Enter, || router().go(Route::Home)))
 }
 
 fn on_logo_click() {
@@ -98,7 +100,7 @@ fn search_bar() -> impl Element {
 }
 
 fn search_button() -> impl Element {
-    button::header_button("Search", Route::Home, Some(search))
+    button::header_button("search","Search", Route::Home, Some(search))
 }
 
 fn button_row() -> impl Element {
@@ -113,19 +115,19 @@ fn button_row() -> impl Element {
 }
 
 fn log_out_button() -> impl Element {
-    button::header_button("Log out", Route::Home, Some(app::log_out))
+    button::header_button("log_out","Log out", Route::Home, Some(app::log_out))
 }
 
 
 fn log_in_button() -> impl Element {
-    button::header_button("Log in", Route::LogIn, None)
+    button::header_button("log_in","Log in", Route::LogIn, None)
 }
 
 
 fn new_article_button() -> impl Element {
-    button::header_button("Create new article", Route::NewArticle, None)
+    button::header_button("create_new_article","Create new article", Route::NewArticle, None)
 }
 
 fn registration_button() -> impl Element {
-    button::header_button("Registration", Route::Registration, None)
+    button::header_button("registration","Registration", Route::Registration, None)
 }
