@@ -6,8 +6,33 @@ use crate::router::{Route, router};
 use crate::elements::tags;
 use crate::elements::panel;
 use crate::elements::button;
+use crate::rich_text::TextEditor;
 
 mod view;
+
+fn rich_text_editor() -> impl Element {
+    Column::new()
+        .s(Background::new().color(hsluv!(0,0,0,0)))
+        .s(Width::new(600))
+        .s(Height::new(600))
+        .item(TextEditor::new()
+            .on_change(|json| {
+                contents().set(format!("{json:#}"));
+            }))
+
+}
+
+fn contents_display() -> impl Element {
+    El::new()
+        .s(Padding::all(10))
+        .s(Font::new().family([FontFamily::Monospace]))
+        .child_signal(contents().signal_cloned())
+}
+
+#[static_ref]
+fn contents() -> &'static Mutable<String> {
+    Mutable::new(String::new())
+}
 
 // ------ ------
 //    States
@@ -47,7 +72,9 @@ pub fn page() -> impl Element {
             .s(Padding::new().x(100).y(20))
             .item(Paragraph::new().content("Create new article").s(Font::new().size(20)).s(Padding::bottom(Default::default(), 20)))
             .item(title_panel())
-            .item(content_text_panel())
+            .item(rich_text_editor())
+            .item(contents_display())
+            // .item(content_text_panel())
             .item(tags::tag_panel())
             .item(tags::tags_view())
         )

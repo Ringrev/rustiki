@@ -9,6 +9,7 @@ mod router;
 mod pages;
 mod connection;
 mod elements;
+mod rich_text;
 
 // ------ ------
 //     Start

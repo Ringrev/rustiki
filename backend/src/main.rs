@@ -8,7 +8,7 @@ async fn frontend() -> Frontend {
     Frontend::new()
         .title("Rustiki")
         .append_to_head(
-        "
+        r#"
         <style>
             html {
                 background-color: white;
@@ -19,7 +19,7 @@ async fn frontend() -> Frontend {
 /* :focus { outline: dashed black; } */
 
         </style>
-   "
+   "#
         ,
     )
 
