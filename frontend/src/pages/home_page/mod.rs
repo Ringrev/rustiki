@@ -31,7 +31,6 @@ pub fn original_articles() -> &'static MutableVec<LocalArticle> {
 //     View
 // ------ ------
 
-
 pub fn page() -> impl Element {
     get_articles();
     Column::new()
@@ -46,13 +45,16 @@ fn articles_view() -> impl Element {
         .items_signal_vec(filtered_articles().map(card))
         .s(Spacing::new(50))
         .multiline()
-        .s(Width::new(1300))
+        .s(Width::fill())
+        // .s(Padding::new().left(50).right(50))
 }
+
+
 
 fn panel() -> impl Element {
     Column::new()
         .item_signal(articles_exist().map_true(articles_view))
-        .s(Align::new().center_x())
+        .s(Padding::new().left(50))
 }
 
 fn card(article: LocalArticle) -> impl Element {
@@ -69,6 +71,7 @@ fn card(article: LocalArticle) -> impl Element {
         .on_click(move || view_article(article))
         .focus(true)
         .on_key_down_event(|event| event.if_key(Key::Enter, || view_article(extra_article)))
+        .s(Align::new().top())
 }
 
 fn empty_card() -> impl Element {
@@ -81,22 +84,32 @@ fn empty_card() -> impl Element {
                                  .s(Background::new().color(GRAY_3))
                                  .item(
                                      Paragraph::new().content("+").s(Align::new().center_x().center_y()).s(Font::new().size(100))),
-                             id.to_string()))
+                             id.to_string()
+
+        ))
         .on_click(move || router().go(Route::NewArticle))
         .focus(true)
         .on_key_down_event(|event| event.if_key(Key::Enter, || router().go(Route::NewArticle)))
+        .s(Align::new().top())
 }
 
 fn card_template(element: impl Element, text: String) -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
     Column::new()
         .s(Padding::new().x(10).y(20))
-        .s(Spacing::new(5))
+        // .s(Spacing::new(5))
         .s(Font::new().size(24))
         .s(Background::new()
             .color_signal(hovered_signal.map_bool(|| GRAY_2, || hsluv!(0, 0, 100))))
         .item(element)
-        .item(Paragraph::new().content(text))
+        .item(Row::new()
+            .multiline()
+            .s(Width::new(200))
+            .s(Height::max(Default::default(), 100))
+            .item(Paragraph::new()
+                .content(text)
+            )
+        )
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
 }
 

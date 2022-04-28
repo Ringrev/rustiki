@@ -14,6 +14,7 @@ use crate::pages::home_page::articles;
 
 pub fn header() -> impl Element {
     Row::new()
+        .id("rustiki_header")
         .s(Height::new(100))
         .s(Background::new().color(GRAY_4))
         .s(Spacing::new(10))
@@ -88,7 +89,7 @@ fn search_bar() -> impl Element {
         .s(Align::new().center_x())
         .s(Padding::all(10))
         .s(RoundedCorners::new().left(5))
-        .s(Width::fill().min(350).max(400))
+        .s(Width::new(350).min(150))
         .s(Font::new().size(16))
         .s(RoundedCorners::new().right(25).left(25))
         .focus(true)
@@ -111,7 +112,6 @@ fn button_row() -> impl Element {
         .item_signal(app::is_user_logged_signal().map_false(registration_button))
         .item_signal(app::is_user_logged_signal().map_false(log_in_button))
         .item_signal(app::is_user_logged_signal().map_true(log_out_button))
-        .item_signal(app::is_user_logged_signal().map_true(new_article_button))
 }
 
 fn log_out_button() -> impl Element {
@@ -121,11 +121,6 @@ fn log_out_button() -> impl Element {
 
 fn log_in_button() -> impl Element {
     button::header_button("log_in","Log in", Route::LogIn, None)
-}
-
-
-fn new_article_button() -> impl Element {
-    button::header_button("create_new_article","Create new article", Route::NewArticle, None)
 }
 
 fn registration_button() -> impl Element {

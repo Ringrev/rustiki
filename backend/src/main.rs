@@ -14,11 +14,15 @@ async fn frontend() -> Frontend {
                 background-color: white;
                 color: black;
             }
+
+         /*   #rustiki_header { position: fixed; } */
 /* :focus { outline: dashed black; } */
 
-        </style>"
+        </style>
+   "
         ,
     )
+
 }
 
 async fn up_msg_handler(req: UpMsgRequest<UpMsg>) {
