@@ -32,9 +32,11 @@ pub fn header_button(id: &str, label: &str, route: Route, function: Option<fn()>
             .s(Padding::new().x(16).y(9))
             .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
             .label(label)
-            .on_click(function.unwrap_or_else(|| {
+            .on_click(
+                function.unwrap_or_else(|| {
                 on_click_do_nothing
-            }))
+            })
+            )
             .to(route.clone())
             .on_key_down_event(move |event| event.if_key(Key::Enter, || router().go(route)))
 }

@@ -1,5 +1,6 @@
 use std::borrow::Borrow;
 use std::collections::VecDeque;
+use std::ops::Deref;
 use zoon::*;
 use zoon::events::Click;
 use zoon::named_color::{GRAY_2, GRAY_3};
@@ -10,6 +11,7 @@ use crate::connection::connection;
 use crate::elements::dialogs::message_dialog;
 use crate::router::{Route, router};
 use crate::pages::view_article_page;
+use crate::router;
 
 mod view;
 
@@ -25,6 +27,20 @@ pub fn articles() -> &'static MutableVec<LocalArticle> {
 #[static_ref]
 pub fn original_articles() -> &'static MutableVec<LocalArticle> {
     MutableVec::new()
+}
+
+pub fn get_article_from_route() -> LocalArticle {
+    let route = router::route_history().deref().get_cloned().front().cloned().unwrap();
+    let route_text = route.to_owned().into_cow_str();
+    let mut str: String = "".to_string();
+    if route_text.contains("edit") {
+        str = route_text.to_string().replace("/edit_article/", "");
+    } else {
+        str = route_text.to_string().replace("/article/", "");
+    }
+    let mut articles_vec = articles().lock_mut().to_vec();
+    articles_vec.retain(|art| art.id.to_string().eq(str.trim()));
+    articles_vec.get(0).unwrap().clone()
 }
 
 // ------ ------
@@ -114,11 +130,7 @@ fn card_template(element: impl Element, text: String) -> impl Element {
 // ------ ------
 
 pub fn view_article(article: LocalArticle) {
-    view_article_page::set_view_article(article.clone());
-    // router().go(Route::ViewArticle {
-    //     article_id: article.id.to_string()
-    // });
-    router().go(Route::ViewArticle);
+    router().go(Route::ViewArticle { article_id: article.id.to_string() });
 }
 
 pub fn set_articles(vector: Vec<LocalArticle>) {

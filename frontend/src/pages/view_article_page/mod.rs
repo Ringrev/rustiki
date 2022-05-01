@@ -6,6 +6,7 @@ use crate::pages::edit_article_page;
 use crate::elements::dialogs::{confirm_dialog, message_dialog};
 use crate::router::{Route, router};
 use crate::elements::button;
+use crate::pages::home_page;
 
 mod view;
 
@@ -48,8 +49,7 @@ fn delete_button() -> impl Element {
 }
 
 pub fn edit_article() {
-    edit_article_page::set_edit_article(view_article().get_cloned());
-    router().go(Route::EditArticle);
+    router().go(Route::EditArticle { article_id: view_article().get_cloned().id.to_string() });
 }
 
 //------ View Article -------

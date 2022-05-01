@@ -1,4 +1,4 @@
-use crate::{app, router::Route};
+use crate::{app, pages, router::Route};
 use zoon::{named_color::*, *};
 use zoon::console::log;
 use shared::LocalArticle;
@@ -70,18 +70,20 @@ fn button_row() -> impl Element {
         .s(Align::new().center_y().right())
         .s(Width::min(Default::default(), 200))
         .s(Spacing::new(6))
-        .item(Text::with_signal(logged_user_name().signal_cloned()))
+        .item(Row::new()
+            .s(Align::new().right())
+            .s(Spacing::new(6))
+            .item(
+                Paragraph::new().content_signal(logged_user_name().signal_cloned()).s(Align::new().right()))
+            .item_signal(app::is_user_logged_signal().map_true(log_out_button)))
         .item_signal(app::is_user_logged_signal().map_false(registration_button))
         .item_signal(app::is_user_logged_signal().map_false(log_in_button))
-        .item_signal(app::is_user_logged_signal().map_true(log_out_button))
 }
 
 fn on_logo_click() {
     set_search_query("".to_string());
     home_page::reset_articles();
 }
-
-
 
 pub fn search() {
     home_page::reset_articles();
@@ -117,14 +119,12 @@ pub fn set_search_query(query: String) {
     router().go(Route::Home);
 }
 
-
-
 fn search_button() -> impl Element {
-    button::header_button("search","Search", Route::Home, Some(search))
+    button::header_button("search_button","Search", Route::Home, Some(search))
 }
 
 fn log_out_button() -> impl Element {
-    button::header_button("log_out","Log out", Route::Home, Some(app::log_out))
+    button::header_button("log_out_button","Log out", Route::Home, Some(app::log_out))
 }
 
 fn log_in_button() -> impl Element {
@@ -132,5 +132,5 @@ fn log_in_button() -> impl Element {
 }
 
 fn registration_button() -> impl Element {
-    button::header_button("registration","Registration", Route::Registration, None)
+    button::header_button("registration_button","Registration", Route::Registration, None)
 }

@@ -1,8 +1,10 @@
 use zoon::{*, Element};
 use shared::LocalUser;
 use crate::{ router::{router, Route}, pages::{home_page, log_in_page, registration_page, view_article_page, create_article_page, edit_article_page}};
+use crate::app::PageName::ViewArticle;
 use crate::elements::footer::footer;
 use crate::elements::header::header;
+use crate::pages::home_page::{get_article_from_route};
 
 // ------ ------
 //    States
@@ -83,6 +85,7 @@ pub enum PageName {
 // ------ ------
 
 pub fn root() -> impl Element {
+    home_page::get_articles();
     Column::new()
         .s(Height::screen())
         .s(Width::fill())
@@ -95,10 +98,14 @@ fn page() -> impl Element {
     El::new().child_signal(page_name().signal().map(|page_name| match page_name {
         PageName::Home => home_page::page().into_raw_element(),
         PageName::Unknown => El::new().child("404").into_raw_element(),
-        PageName::EditArticle => edit_article_page::page().into_raw_element(),
+        PageName::EditArticle => {
+            edit_article_page::set_edit_article(get_article_from_route());
+            edit_article_page::page().into_raw_element() },
         PageName::NewArticle => create_article_page::page().into_raw_element(),
         PageName::Registration => registration_page::page().into_raw_element(),
         PageName::LogIn => log_in_page::page().into_raw_element(),
-        PageName::ViewArticle => view_article_page::page().into_raw_element(),
+        PageName::ViewArticle => {
+            view_article_page::set_view_article(get_article_from_route());
+            view_article_page::page().into_raw_element() },
     }))
 }

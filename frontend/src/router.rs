@@ -19,7 +19,7 @@ fn push_to_route_history(route: Route) {
 // ------ ------
 
 #[static_ref]
-fn route_history() -> &'static Mutable<VecDeque<Route>> {
+pub fn route_history() -> &'static Mutable<VecDeque<Route>> {
     Mutable::new(VecDeque::new())
 }
 
@@ -50,16 +50,14 @@ pub fn router() -> &'static Router<Route> {
             Route::LogIn => {
                 app::set_page_name(PageName::LogIn);
             }
-            // Route::ViewArticle {
-            //     article_id,
-            // } => {
-            //     // view_article_page::set_expression();
-            //     app::set_page_name(PageName::ViewArticle);
-            // }
-            Route::ViewArticle  => {
+            Route::ViewArticle {
+                article_id,
+            } => {
                 app::set_page_name(PageName::ViewArticle);
             }
-            Route::EditArticle => {
+            Route::EditArticle {
+                article_id,
+            } => {
                 app::set_page_name(PageName::EditArticle)
             }
         }
@@ -79,12 +77,10 @@ pub enum Route {
     #[route("new_article")]
     NewArticle,
 
-    // #[route("article", article_id)]
-    // ViewArticle {
-    //     article_id: String,
-    // },
-    #[route("view_article")]
-    ViewArticle,
+    #[route("article", article_id)]
+    ViewArticle {
+        article_id: String,
+    },
 
     #[route("login")]
     LogIn,
@@ -92,6 +88,8 @@ pub enum Route {
     #[route()]
     Home,
 
-    #[route("edit_article")]
-    EditArticle,
+    #[route("edit_article", article_id)]
+    EditArticle {
+        article_id: String,
+    },
 }
