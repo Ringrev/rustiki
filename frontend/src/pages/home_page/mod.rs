@@ -46,10 +46,7 @@ fn articles_view() -> impl Element {
         .s(Spacing::new(50))
         .multiline()
         .s(Width::fill())
-        // .s(Padding::new().left(50).right(50))
 }
-
-
 
 fn panel() -> impl Element {
     Column::new()
@@ -59,15 +56,16 @@ fn panel() -> impl Element {
 
 fn card(article: LocalArticle) -> impl Element {
     let extra_article = article.clone();
-    let id = article.clone().title;
+    let mut id = article.clone().title+article.clone().created_time.as_str();
+    id = id.replace(" ", "-");
     Button::new()
-        .id(id.clone())
+        .id(id)
         .label(card_template(Image::new().url("https://rustacean.net/assets/rustacean-flat-happy.png")
                                  .description("Placeholder picture")
                                  .s(Width::new(200))
                                  .s(Height::new(130))
                                  .s(Background::new().color(GRAY_3)),
-                             id))
+                             article.clone().title))
         .on_click(move || view_article(article))
         .focus(true)
         .on_key_down_event(|event| event.if_key(Key::Enter, || view_article(extra_article)))
@@ -75,17 +73,16 @@ fn card(article: LocalArticle) -> impl Element {
 }
 
 fn empty_card() -> impl Element {
-    let id = "Create new article";
+    let id = "create_new_article";
     Button::new()
-        .id(id.clone())
+        .id(id)
         .label(card_template(Row::new()
                                  .s(Width::new(200))
                                  .s(Height::new(130))
                                  .s(Background::new().color(GRAY_3))
                                  .item(
                                      Paragraph::new().content("+").s(Align::new().center_x().center_y()).s(Font::new().size(100))),
-                             id.to_string()
-
+                             "Create new article".to_string()
         ))
         .on_click(move || router().go(Route::NewArticle))
         .focus(true)
@@ -105,7 +102,6 @@ fn card_template(element: impl Element, text: String) -> impl Element {
         .item(Row::new()
             .multiline()
             .s(Width::new(200))
-            .s(Height::max(Default::default(), 100))
             .item(Paragraph::new()
                 .content(text)
             )

@@ -1,4 +1,5 @@
 use zoon::*;
+use zoon::named_color::GRAY_0;
 use shared::UpMsg;
 use crate::connection;
 use crate::elements::panel;
@@ -14,7 +15,7 @@ pub fn page() -> impl Element {
     Column::new()
         .s(Align::center())
         .s(Width::new(800))
-        .s(Background::new().color(hsluv!(0,0,0,5)))
+        .s(Background::new().color(GRAY_0))
         .item(Column::new()
             .s(Align::center())
             .s(Padding::new().x(100).y(20))

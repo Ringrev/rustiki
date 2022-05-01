@@ -47,8 +47,8 @@ pub fn text_input(id: &str, function: fn(String), placeholder: &str, input_type:
 
 // ------ title label and input combined
 
-pub fn textarea_panel(function: fn(String), text_signal: MutableSignalCloned<String>) -> impl Element {
-    let id = "content_input";
+pub fn textarea_panel(id: &str, function: fn(String), text_signal: MutableSignalCloned<String>) -> impl Element {
+    // let id = "content_input";
     Column::new()
         .s(Spacing::new(15))
         .item(textarea_label(id.clone()))

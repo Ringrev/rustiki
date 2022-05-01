@@ -13,7 +13,7 @@ pub fn page() -> impl Element {
     Column::new()
         .s(Align::center())
         .s(Width::new(800))
-        .s(Background::new().color(hsluv!(0,0,0,5)))
+        .s(Background::new().color(GRAY_1))
         .item(article_view())
         .item(button_panel())
 }
@@ -149,6 +149,6 @@ fn time_view() -> impl Element {
             .content("Last updated: ".to_string() + view_article().get_cloned().updated_time.as_str())
             .s(Font::new().size(12)))
         .s(Padding::new().bottom(5))
-        .item(Paragraph::new().content("Created: ".to_string() + view_article().get_cloned().created_time.as_str()).s(Font::new().size(12)))
+        .item(Paragraph::new().content("Created: ".to_string() + view_article().get_cloned().created_time.as_str()).s(Font::new().size(12)).lang("nn-NO"))
         .s(Align::left(Default::default()))
 }

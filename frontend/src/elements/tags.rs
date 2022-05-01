@@ -9,8 +9,7 @@ fn add_tag_button() -> impl Element {
 
 // ------ tag label and input combined
 
-pub fn tag_panel() -> impl Element {
-    let id = "tag_input";
+pub fn tag_panel(id: &str) -> impl Element {
     Column::new()
         .s(Spacing::new(15))
         .item(panel::input_label(id.clone(), "Add a tag:"))
@@ -35,11 +34,6 @@ fn new_tag() -> &'static Mutable<String> {
     Mutable::new(String::new())
 }
 
-#[static_ref]
-fn tag_id() -> &'static Mutable<u32> {
-    Mutable::new(0)
-}
-
 fn check_tag_unique(new_tag: String) -> bool {
     let mut unique = true;
     if tags().lock_mut().to_vec().len()>0 {
@@ -60,7 +54,6 @@ fn add_tag() {
         return;
     }
     if check_tag_unique(tag.clone().to_string()) {
-        tag_id().update(|id|id+1);
         tags().lock_mut().push_cloned(tag.clone().to_string());
         new_tag.clear();
     } else {

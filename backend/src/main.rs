@@ -6,6 +6,7 @@ use aragog::{DatabaseConnection, Record};
 
 async fn frontend() -> Frontend {
     Frontend::new()
+        .lang("no")
         .title("Rustiki")
         .append_to_head(
         "
@@ -16,7 +17,6 @@ async fn frontend() -> Frontend {
             }
 
          /*   #rustiki_header { position: fixed; } */
-/* :focus { outline: dashed black; } */
 
         </style>
    "

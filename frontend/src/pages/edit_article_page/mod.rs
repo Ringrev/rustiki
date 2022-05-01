@@ -1,4 +1,5 @@
 use zoon::*;
+use zoon::named_color::GRAY_0;
 use shared::{LocalArticle, UpMsg};
 use crate::{app, connection};
 use crate::app::{logged_user_name};
@@ -51,15 +52,16 @@ pub fn page() -> impl Element {
     Column::new()
         .s(Align::center())
         .s(Width::new(800))
-        .s(Background::new().color(hsluv!(0,0,0,5)))
+        .s(Background::new().color(GRAY_0))
         .item(Column::new()
             .s(Align::left(Default::default()))
             .s(Align::center())
             .s(Padding::new().x(100).y(20))
-            .item(Paragraph::new().content("Edit article"))
+            .item(Paragraph::new().content("Edit article").s(Font::new().size(20))
+                .s(Padding::bottom(Default::default(), 20)))
             .item(title_panel())
             .item(content_text_panel())
-            .item(tags::tag_panel())
+            .item(tags::tag_panel("tag_input_edit_article"))
             .item(tags::tags_view())
         )
         .item(button_panel())
@@ -75,7 +77,7 @@ fn title_panel() -> impl Element {
 // ------ title label and input combined
 
 fn content_text_panel() -> impl Element {
-    panel::textarea_panel(set_content_text, content_text().signal_cloned())
+    panel::textarea_panel("textarea_edit_article",set_content_text, content_text().signal_cloned())
 }
 
 fn button_panel() -> impl Element {

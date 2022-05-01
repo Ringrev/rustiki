@@ -23,13 +23,13 @@ pub fn header_button(id: &str, label: &str, route: Route, function: Option<fn()>
         let (hovered, hovered_signal) = Mutable::new_and_signal(false);
         Link::new()
             .id(id)
-            .s(Font::new().size(20).color(GRAY_0))
+            .s(Font::new().size(18).color(GRAY_0))
             .s(Align::new().right().bottom())
             .s(Spacing::new(20))
-            .s(RoundedCorners::new().right(25).left(25))
+            .s(RoundedCorners::new().right(15).left(15))
             .s(Background::new()
                 .color_signal(hovered_signal.map_bool(|| GRAY_5, || GRAY_9)))
-            .s(Padding::all(17))
+            .s(Padding::new().x(16).y(9))
             .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
             .label(label)
             .on_click(function.unwrap_or_else(|| {
