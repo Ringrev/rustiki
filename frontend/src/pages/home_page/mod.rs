@@ -25,6 +25,10 @@ pub fn original_articles() -> &'static MutableVec<LocalArticle> {
     MutableVec::new()
 }
 
+// ------ ------
+//     Commands
+// ------ ------
+
 pub fn get_article_from_route() -> LocalArticle {
     let route = router::route_history()
         .deref()
@@ -33,20 +37,76 @@ pub fn get_article_from_route() -> LocalArticle {
         .cloned()
         .unwrap();
     let route_text = route.to_owned().into_cow_str();
-    let mut str: String = "".to_string();
-    if route_text.contains("edit") {
-        str = route_text.to_string().replace("/edit_article/", "");
-    } else {
-        str = route_text.to_string().replace("/article/", "");
-    }
+    let mut text: String = "".to_string();
+    text = route_text.to_string().replace("/article/", "");
     let mut articles_vec = articles().lock_mut().to_vec();
-    articles_vec.retain(|art| art.id.to_string().eq(str.trim()));
+    articles_vec.retain(|art| art.id.to_string().eq(text.trim()));
     articles_vec.get(0).unwrap().clone()
+}
+
+pub fn view_article(article: LocalArticle) {
+    router().go(Route::ViewArticle {
+        article_id: article.id.to_string(),
+    });
+}
+
+pub fn set_articles(vector: Vec<LocalArticle>) {
+    let mut vec = VecDeque::new();
+    for article in vector {
+        vec.push_front(article);
+    }
+    articles().update_mut(|art| {
+        art.clear();
+        art.extend(vec.clone());
+    });
+    original_articles().update_mut(|art| {
+        art.clear();
+        art.extend(vec.clone());
+    })
+}
+
+pub fn get_articles() {
+    Task::start(async {
+        let msg = UpMsg::GetArticles;
+        if let Err(error) = connection().send_up_msg(msg).await {
+            message_dialog(error.to_string().as_str())
+        }
+    })
+}
+
+pub fn reset_articles() {
+    articles().update_mut(|art| {
+        art.clear();
+        art.extend(original_articles().lock_mut().to_vec());
+    });
+}
+
+// ------ ------
+//     Signals
+// ------ ------
+
+fn filtered_articles() -> impl SignalVec<Item = LocalArticle> {
+    articles()
+        .signal_vec_cloned()
+        .map(|article| article.clone())
+}
+
+fn articles_count() -> impl Signal<Item = usize> {
+    articles().signal_vec_cloned().len()
+}
+
+fn articles_exist() -> impl Signal<Item = bool> {
+    articles_count().map(|count| count != 0).dedupe()
 }
 
 // ------ ------
 //     View
 // ------ ------
+
+// TODO: Use when moving view functions into view module
+// pub fn view() -> RawElement {
+//     view::page().into_raw_element()
+// }
 
 pub fn page() -> impl Element {
     get_articles();
@@ -133,63 +193,4 @@ fn card_template(element: impl Element, text: String) -> impl Element {
                 .item(Paragraph::new().content(text)),
         )
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
-}
-
-// ------ ------
-//     Commands
-// ------ ------
-
-pub fn view_article(article: LocalArticle) {
-    router().go(Route::ViewArticle {
-        article_id: article.id.to_string(),
-    });
-}
-
-pub fn set_articles(vector: Vec<LocalArticle>) {
-    let mut vec = VecDeque::new();
-    for article in vector {
-        vec.push_front(article);
-    }
-    articles().update_mut(|art| {
-        art.clear();
-        art.extend(vec.clone());
-    });
-    original_articles().update_mut(|art| {
-        art.clear();
-        art.extend(vec.clone());
-    })
-}
-
-pub fn get_articles() {
-    Task::start(async {
-        let msg = UpMsg::GetArticles;
-        if let Err(error) = connection().send_up_msg(msg).await {
-            message_dialog(error.to_string().as_str())
-        }
-    })
-}
-
-pub fn reset_articles() {
-    articles().update_mut(|art| {
-        art.clear();
-        art.extend(original_articles().lock_mut().to_vec());
-    });
-}
-
-// ------ ------
-//     Signals
-// ------ ------
-
-fn filtered_articles() -> impl SignalVec<Item = LocalArticle> {
-    articles()
-        .signal_vec_cloned()
-        .map(|article| article.clone())
-}
-
-fn articles_count() -> impl Signal<Item = usize> {
-    articles().signal_vec_cloned().len()
-}
-
-fn articles_exist() -> impl Signal<Item = bool> {
-    articles_count().map(|count| count != 0).dedupe()
 }
