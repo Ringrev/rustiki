@@ -1,9 +1,9 @@
-use zoon::{*, eprintln};
-use zoon::named_color::GRAY_0;
-use shared::UpMsg;
-use crate::{connection};
-use crate::elements::panel;
+use crate::connection;
 use crate::elements::button;
+use crate::elements::panel;
+use shared::UpMsg;
+use zoon::named_color::GRAY_0;
+use zoon::{eprintln, *};
 
 mod view;
 
@@ -14,13 +14,19 @@ pub fn page() -> impl Element {
         .s(Align::center())
         .s(Width::new(800))
         .s(Background::new().color(GRAY_0))
-        .item(Column::new()
-            .s(Align::center())
-            .s(Padding::new().x(100).y(20))
-            .item(Paragraph::new().content("Log in").s(Font::new().size(20)).s(Padding::bottom(Default::default(), 20)))
-            .item(email_panel())
-            .item(password_panel())
-            .item(Text::with_signal(login_error().signal_cloned()))
+        .item(
+            Column::new()
+                .s(Align::center())
+                .s(Padding::new().x(100).y(20))
+                .item(
+                    Paragraph::new()
+                        .content("Log in")
+                        .s(Font::new().size(20))
+                        .s(Padding::bottom(Default::default(), 20)),
+                )
+                .item(email_panel())
+                .item(password_panel())
+                .item(Text::with_signal(login_error().signal_cloned())),
         )
         .item(button_panel())
 }
@@ -61,13 +67,15 @@ fn email_text() -> &'static Mutable<String> {
 
 fn email_panel() -> impl Element {
     let id = "user_name_input";
-    panel::input_panel(id,
-                       "Email address:",
-                       set_email,
-                       "Your email address ",
-                       InputType::text(),
-                       email_text().signal_cloned(),
-                       None)
+    panel::input_panel(
+        id,
+        "Email address:",
+        set_email,
+        "Your email address ",
+        InputType::text(),
+        email_text().signal_cloned(),
+        None,
+    )
 }
 
 fn set_email(email: String) {
@@ -87,15 +95,20 @@ fn password_text() -> &'static Mutable<String> {
 
 fn password_panel() -> impl Element {
     let id = "password_input";
-    panel::input_panel(id, "Password:", set_password, "Your password...",
-                        InputType::password(),
-                        password_text().signal_cloned(), Some(login))
+    panel::input_panel(
+        id,
+        "Password:",
+        set_password,
+        "Your password...",
+        InputType::password(),
+        password_text().signal_cloned(),
+        Some(login),
+    )
 }
 
 fn set_password(password: String) {
     password_text().set(password);
 }
-
 
 fn button_panel() -> impl Element {
     Row::new()
@@ -105,5 +118,5 @@ fn button_panel() -> impl Element {
 }
 
 fn log_in_button() -> impl Element {
-    button::button("log_in","Log in", login)
+    button::button("log_in", "Log in", login)
 }

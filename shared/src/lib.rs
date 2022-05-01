@@ -5,7 +5,6 @@ use moonlight::*;
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(crate = "serde")]
 pub enum UpMsg {
-
     // ------ Auth ------
     Login {
         email: String,
@@ -45,7 +44,6 @@ pub enum UpMsg {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(crate = "serde")]
 pub enum DownMsg {
-
     // ------ Auth ------
     LoginError(String),
     RegistrationError(String),
@@ -73,7 +71,7 @@ impl LocalUser {
             id,
             email,
             username,
-            auth_token
+            auth_token,
         }
     }
 
@@ -82,7 +80,7 @@ impl LocalUser {
             id: "".to_string(),
             email: "".to_string(),
             username: "".to_string(),
-            auth_token: "".to_string()
+            auth_token: "".to_string(),
         }
     }
 }
@@ -101,13 +99,16 @@ pub struct LocalArticle {
 }
 
 impl LocalArticle {
-    pub fn new(id: u32,
-               title: String,
-               content: String,
-               contributors: Vec<String>,
-               author: String, tags: Vec<String>,
-               created_time: String,
-               updated_time: String) -> Self {
+    pub fn new(
+        id: u32,
+        title: String,
+        content: String,
+        contributors: Vec<String>,
+        author: String,
+        tags: Vec<String>,
+        created_time: String,
+        updated_time: String,
+    ) -> Self {
         Self {
             id,
             title,
@@ -116,7 +117,7 @@ impl LocalArticle {
             author,
             tags,
             created_time,
-            updated_time
+            updated_time,
         }
     }
 
@@ -129,7 +130,7 @@ impl LocalArticle {
             author: "".to_string(),
             tags: vec![],
             created_time: "".to_string(),
-            updated_time: "".to_string()
+            updated_time: "".to_string(),
         }
     }
 }

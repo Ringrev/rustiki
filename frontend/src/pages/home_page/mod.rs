@@ -1,17 +1,13 @@
-use std::borrow::Borrow;
-use std::collections::VecDeque;
-use std::ops::Deref;
-use zoon::*;
-use zoon::events::Click;
-use zoon::named_color::{GRAY_2, GRAY_3};
-use zoon::web_sys::Event;
-use shared::{LocalArticle, UpMsg};
 use crate::app::is_user_logged_signal;
 use crate::connection::connection;
 use crate::elements::dialogs::message_dialog;
-use crate::router::{Route, router};
-use crate::pages::view_article_page;
 use crate::router;
+use crate::router::{router, Route};
+use shared::{LocalArticle, UpMsg};
+use std::collections::VecDeque;
+use std::ops::Deref;
+use zoon::named_color::{GRAY_2, GRAY_3};
+use zoon::*;
 
 mod view;
 
@@ -30,7 +26,12 @@ pub fn original_articles() -> &'static MutableVec<LocalArticle> {
 }
 
 pub fn get_article_from_route() -> LocalArticle {
-    let route = router::route_history().deref().get_cloned().front().cloned().unwrap();
+    let route = router::route_history()
+        .deref()
+        .get_cloned()
+        .front()
+        .cloned()
+        .unwrap();
     let route_text = route.to_owned().into_cow_str();
     let mut str: String = "".to_string();
     if route_text.contains("edit") {
@@ -72,16 +73,19 @@ fn panel() -> impl Element {
 
 fn card(article: LocalArticle) -> impl Element {
     let extra_article = article.clone();
-    let mut id = article.clone().title+article.clone().created_time.as_str();
+    let mut id = article.clone().title + article.clone().created_time.as_str();
     id = id.replace(" ", "-");
     Button::new()
         .id(id)
-        .label(card_template(Image::new().url("https://rustacean.net/assets/rustacean-flat-happy.png")
-                                 .description("Placeholder picture")
-                                 .s(Width::new(200))
-                                 .s(Height::new(130))
-                                 .s(Background::new().color(GRAY_3)),
-                             article.clone().title))
+        .label(card_template(
+            Image::new()
+                .url("https://rustacean.net/assets/rustacean-flat-happy.png")
+                .description("Placeholder picture")
+                .s(Width::new(200))
+                .s(Height::new(130))
+                .s(Background::new().color(GRAY_3)),
+            article.clone().title,
+        ))
         .on_click(move || view_article(article))
         .focus(true)
         .on_key_down_event(|event| event.if_key(Key::Enter, || view_article(extra_article)))
@@ -92,13 +96,18 @@ fn empty_card() -> impl Element {
     let id = "create_new_article";
     Button::new()
         .id(id)
-        .label(card_template(Row::new()
-                                 .s(Width::new(200))
-                                 .s(Height::new(130))
-                                 .s(Background::new().color(GRAY_3))
-                                 .item(
-                                     Paragraph::new().content("+").s(Align::new().center_x().center_y()).s(Font::new().size(100))),
-                             "Create new article".to_string()
+        .label(card_template(
+            Row::new()
+                .s(Width::new(200))
+                .s(Height::new(130))
+                .s(Background::new().color(GRAY_3))
+                .item(
+                    Paragraph::new()
+                        .content("+")
+                        .s(Align::new().center_x().center_y())
+                        .s(Font::new().size(100)),
+                ),
+            "Create new article".to_string(),
         ))
         .on_click(move || router().go(Route::NewArticle))
         .focus(true)
@@ -112,15 +121,16 @@ fn card_template(element: impl Element, text: String) -> impl Element {
         .s(Padding::new().x(10).y(20))
         // .s(Spacing::new(5))
         .s(Font::new().size(24))
-        .s(Background::new()
-            .color_signal(hovered_signal.map_bool(|| GRAY_2, || hsluv!(0, 0, 100))))
+        .s(
+            Background::new()
+                .color_signal(hovered_signal.map_bool(|| GRAY_2, || hsluv!(0, 0, 100))),
+        )
         .item(element)
-        .item(Row::new()
-            .multiline()
-            .s(Width::new(200))
-            .item(Paragraph::new()
-                .content(text)
-            )
+        .item(
+            Row::new()
+                .multiline()
+                .s(Width::new(200))
+                .item(Paragraph::new().content(text)),
         )
         .on_hovered_change(move |is_hovered| hovered.set(is_hovered))
 }
@@ -130,11 +140,13 @@ fn card_template(element: impl Element, text: String) -> impl Element {
 // ------ ------
 
 pub fn view_article(article: LocalArticle) {
-    router().go(Route::ViewArticle { article_id: article.id.to_string() });
+    router().go(Route::ViewArticle {
+        article_id: article.id.to_string(),
+    });
 }
 
 pub fn set_articles(vector: Vec<LocalArticle>) {
-    let mut vec= VecDeque::new();
+    let mut vec = VecDeque::new();
     for article in vector {
         vec.push_front(article);
     }
@@ -157,10 +169,6 @@ pub fn get_articles() {
     })
 }
 
-fn go_create_article() {
-    router().go(Route::NewArticle);
-}
-
 pub fn reset_articles() {
     articles().update_mut(|art| {
         art.clear();
@@ -175,7 +183,7 @@ pub fn reset_articles() {
 fn filtered_articles() -> impl SignalVec<Item = LocalArticle> {
     articles()
         .signal_vec_cloned()
-        .map(|article|  article.clone())
+        .map(|article| article.clone())
 }
 
 fn articles_count() -> impl Signal<Item = usize> {

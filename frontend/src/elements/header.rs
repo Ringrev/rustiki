@@ -1,16 +1,9 @@
-use crate::{app, pages, router::Route};
-use zoon::{named_color::*, *};
-use zoon::console::log;
-use shared::LocalArticle;
-use crate::app::{log_out, logged_user_name};
+use crate::app::{logged_user_name};
+use crate::elements::button;
 use crate::pages::home_page;
 use crate::router::router;
-use crate::elements::button;
-use crate::pages::home_page::articles;
-
-// ------ ------
-//     View
-// ------ ------
+use crate::{app, router::Route};
+use zoon::{named_color::*, *};
 
 pub fn header() -> impl Element {
     Row::new()
@@ -27,27 +20,28 @@ pub fn header() -> impl Element {
 
 /// If clicked, user is sent to front page. Resets articles to original list too.
 fn logo() -> impl Element {
-    Row::new()
-        .item(
-            Link::new()
-                .s(Font::new().size(50).weight(FontWeight::Bold))
-                .label("Rustiki")
-                .to(Route::Home)
-                .on_click(on_logo_click)
-                .focus(true)
-                .on_key_down_event(|event| event.if_key(Key::Enter, || router().go(Route::Home)))
-        )
+    Row::new().item(
+        Link::new()
+            .s(Font::new().size(50).weight(FontWeight::Bold))
+            .label("Rustiki")
+            .to(Route::Home)
+            .on_click(on_logo_click)
+            .focus(true)
+            .on_key_down_event(|event| event.if_key(Key::Enter, || router().go(Route::Home))),
+    )
 }
 
 fn search_box() -> impl Element {
     Row::new()
         .s(Width::fill())
         .s(Align::new().center_x().center_y())
-        .item(Row::new()
-            .s(Align::new().center_x())
-            .item(search_bar())
-            .item(search_button())
-            .s(Spacing::new(6)))
+        .item(
+            Row::new()
+                .s(Align::new().center_x())
+                .item(search_bar())
+                .item(search_button())
+                .s(Spacing::new(6)),
+        )
 }
 
 fn search_bar() -> impl Element {
@@ -70,12 +64,17 @@ fn button_row() -> impl Element {
         .s(Align::new().center_y().right())
         .s(Width::min(Default::default(), 200))
         .s(Spacing::new(6))
-        .item(Row::new()
-            .s(Align::new().right())
-            .s(Spacing::new(6))
-            .item(
-                Paragraph::new().content_signal(logged_user_name().signal_cloned()).s(Align::new().right()))
-            .item_signal(app::is_user_logged_signal().map_true(log_out_button)))
+        .item(
+            Row::new()
+                .s(Align::new().right())
+                .s(Spacing::new(6))
+                .item(
+                    Paragraph::new()
+                        .content_signal(logged_user_name().signal_cloned())
+                        .s(Align::new().right()),
+                )
+                .item_signal(app::is_user_logged_signal().map_true(log_out_button)),
+        )
         .item_signal(app::is_user_logged_signal().map_false(registration_button))
         .item_signal(app::is_user_logged_signal().map_false(log_in_button))
 }
@@ -88,17 +87,21 @@ fn on_logo_click() {
 pub fn search() {
     home_page::reset_articles();
     let query = search_query().get_cloned().to_lowercase();
-    home_page::articles().lock_mut().retain(|art|
-            art.title.to_lowercase().contains(&query) ||
-            art.author.to_lowercase().contains(&query) ||
-            search_inner_vec(art.tags.to_vec(), &query) ||
-            search_inner_vec(art.contributors.to_vec(), &query)
-    );
+    home_page::articles().lock_mut().retain(|art| {
+        art.title.to_lowercase().contains(&query)
+            || art.author.to_lowercase().contains(&query)
+            || search_inner_vec(art.tags.to_vec(), &query)
+            || search_inner_vec(art.contributors.to_vec(), &query)
+    });
 }
 
-pub fn search_inner_vec(mut vec: Vec<String>, query: &String) -> bool {
-    let filtered: Vec<String> = vec.iter().map(|tag| tag.to_lowercase()).filter(|tag| tag.contains(query.as_str())).collect();
-    if (filtered.len())> 0 {
+pub fn search_inner_vec(vec: Vec<String>, query: &String) -> bool {
+    let filtered: Vec<String> = vec
+        .iter()
+        .map(|tag| tag.to_lowercase())
+        .filter(|tag| tag.contains(query.as_str()))
+        .collect();
+    if (filtered.len()) > 0 {
         true
     } else {
         false
@@ -120,17 +123,22 @@ pub fn set_search_query(query: String) {
 }
 
 fn search_button() -> impl Element {
-    button::header_button("search_button","Search", Route::Home, Some(search))
+    button::header_button("search_button", "Search", Route::Home, Some(search))
 }
 
 fn log_out_button() -> impl Element {
-    button::header_button("log_out_button","Log out", Route::Home, Some(app::log_out))
+    button::header_button("log_out_button", "Log out", Route::Home, Some(app::log_out))
 }
 
 fn log_in_button() -> impl Element {
-    button::header_button("log_in","Log in", Route::LogIn, None)
+    button::header_button("log_in", "Log in", Route::LogIn, None)
 }
 
 fn registration_button() -> impl Element {
-    button::header_button("registration_button","Registration", Route::Registration, None)
+    button::header_button(
+        "registration_button",
+        "Registration",
+        Route::Registration,
+        None,
+    )
 }

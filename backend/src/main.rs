@@ -1,12 +1,12 @@
-mod up_msg_handler;
 mod firebase;
-use shared::UpMsg;
-use moon::*;
+mod up_msg_handler;
 use aragog::{DatabaseConnection, Record};
+use moon::*;
+use shared::UpMsg;
 
 async fn frontend() -> Frontend {
     Frontend::new()
-        .lang("no")
+        .lang(Lang::English)
         .title("Rustiki")
         .append_to_head(
         "
@@ -16,13 +16,9 @@ async fn frontend() -> Frontend {
                 color: black;
             }
 
-         /*   #rustiki_header { position: fixed; } */
-
         </style>
-   "
-        ,
+   ",
     )
-
 }
 
 async fn up_msg_handler(req: UpMsgRequest<UpMsg>) {
@@ -48,13 +44,11 @@ async fn main() -> std::io::Result<()> {
 
 //ArangoDb connection
 async fn init_db() -> DatabaseConnection {
-    DatabaseConnection::builder()
-        .build()
-        .await
-        .unwrap()
+    DatabaseConnection::builder().build().await.unwrap()
 }
 
-/// This struct must be used instead of LocalArticle struct in shared folder
+/// This struct must be used to send and receive objects to and from database
+/// instead of LocalArticle struct in shared folder. This is
 /// because of an issue implementing Record for structs in shared folder.
 /// Name of struct has to match name of collection in DB. Case sensitive.
 #[derive(Debug, Serialize, Deserialize, Clone, Record)]
@@ -71,13 +65,16 @@ pub struct Article {
 }
 
 impl Article {
-    pub fn new(id: u32,
-               title: String,
-               content: String,
-               contributors: Vec<String>,
-               author: String, tags: Vec<String>,
-               created_time: String,
-               updated_time: String) -> Self {
+    pub fn new(
+        id: u32,
+        title: String,
+        content: String,
+        contributors: Vec<String>,
+        author: String,
+        tags: Vec<String>,
+        created_time: String,
+        updated_time: String,
+    ) -> Self {
         Self {
             id,
             title,
@@ -86,12 +83,13 @@ impl Article {
             author,
             tags,
             created_time,
-            updated_time
+            updated_time,
         }
     }
 }
 
-/// This struct must be used instead of LocalUser struct in shared folder
+/// This struct must be used to send and receive objects to and from database
+/// instead of LocalUser struct in shared folder. This is
 /// because of an issue implementing Record for structs in shared folder.
 /// Name of struct has to match name of collection in DB. Case sensitive.
 #[derive(Debug, Serialize, Deserialize, Clone, Record)]
@@ -107,7 +105,7 @@ impl User {
         Self {
             id,
             email,
-            username
+            username,
         }
     }
 }

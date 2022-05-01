@@ -10,8 +10,7 @@ readme = "../README.md"
 edition = "2021"
 
 [dependencies]
-#moon = { git = "https://github.com/MoonZoon/MoonZoon", rev = "15cb619faca5f78a47e08f4af4bfa595f0eb64b1" }
-moon = { git = "https://github.com/lindahageselle/MoonZoon", rev = "ce3e2bd" }
+moon = { git = "https://github.com/MoonZoon/MoonZoon", rev="5769c15" }
 shared = { path = "../shared" }
 fireauth = "0.1.5"
 anyhow = "1.0.56"

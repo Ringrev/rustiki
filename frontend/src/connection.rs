@@ -1,9 +1,8 @@
-use zoon::*;
-use shared::{UpMsg, DownMsg};
-use crate::*;
-use router::router;
 use crate::pages::{home_page, log_in_page, registration_page};
 use crate::router::Route;
+use crate::*;
+use router::router;
+use shared::{DownMsg, UpMsg};
 
 #[static_ref]
 pub fn connection() -> &'static Connection<UpMsg, DownMsg> {
@@ -15,15 +14,10 @@ pub fn connection() -> &'static Connection<UpMsg, DownMsg> {
 
             // ----- Article -------
             DownMsg::Articles(vec) => home_page::set_articles(vec),
-            DownMsg::ArticleAdded(_) => {
-                router().go(Route::Home)},
+            DownMsg::ArticleAdded(_) => router().go(Route::Home),
             DownMsg::RegistrationError(string) => registration_page::set_error_msg(string),
-            DownMsg::ArticleUpdated => {
-                router().go(Route::Home)
-            },
-            DownMsg::ArticleRemoved => {
-                router().go(Route::Home)
-            }
+            DownMsg::ArticleUpdated => router().go(Route::Home),
+            DownMsg::ArticleRemoved => router().go(Route::Home),
         }
     })
 }

@@ -5,10 +5,10 @@ use zoon::*;
 // ------ ------
 
 mod app;
-mod router;
-mod pages;
 mod connection;
 mod elements;
+mod pages;
+mod router;
 
 // ------ ------
 //     Start
@@ -16,6 +16,6 @@ mod elements;
 
 #[wasm_bindgen(start)]
 pub fn start() {
-     router::router();
-     start_app("app", app::root);
+    router::router();
+    start_app("app", app::root);
 }

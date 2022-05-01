@@ -1,9 +1,9 @@
-use shared::{DownMsg, LocalUser};
-use aragog::{DatabaseRecord, Record};
-use aragog::query::{Comparison, Filter};
-use fireauth::FireAuth;
 use crate::up_msg_handler::login::login;
 use crate::{firebase, init_db, User};
+use aragog::query::{Comparison, Filter};
+use aragog::{DatabaseRecord, Record};
+use fireauth::FireAuth;
+use shared::{DownMsg, LocalUser};
 
 pub async fn handler(auth: FireAuth, email: String, password: String, username: String) -> DownMsg {
     if !check_username_unique(username.clone()).await {
@@ -11,7 +11,6 @@ pub async fn handler(auth: FireAuth, email: String, password: String, username: 
     }
     let (res, user) = register(auth, email.clone(), password.clone()).await;
     if res.eq("Ok") {
-        // Creates a User object in database
         create_user_in_db(user.id, email.clone(), username).await;
         let (result, user) = login(firebase::init().await, email.clone(), password).await;
         if result.eq("Ok") {
@@ -36,7 +35,7 @@ pub async fn register(auth: FireAuth, email: String, password: String) -> (Strin
             user.email = response.email.to_string();
             user.auth_token = response.id_token.to_string();
         }
-        Err(_error) => { res = "Invalid email".to_string() }
+        Err(_error) => res = "Invalid email".to_string(),
     }
     (res, user)
 }
@@ -49,7 +48,9 @@ async fn create_user_in_db(id: String, email: String, username: String) {
 
 async fn check_username_unique(username: String) -> bool {
     let conn = init_db().await;
-    let query = User::query().filter(Filter::new(Comparison::field("username").equals_str(username.as_str())));
+    let query = User::query().filter(Filter::new(
+        Comparison::field("username").equals_str(username.as_str()),
+    ));
     let user_record = User::get(query, &conn).await.unwrap();
     if user_record.is_empty() {
         true

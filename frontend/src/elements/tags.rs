@@ -1,10 +1,9 @@
-use std::borrow::Borrow;
-use zoon::{*, named_color::{*}};
 use crate::elements::dialogs::message_dialog;
-use crate::elements::{panel, button};
+use crate::elements::{button, panel};
+use zoon::{named_color::*, *};
 
 fn add_tag_button() -> impl Element {
-    button::button("add_tag","Add tag", add_tag)
+    button::button("add_tag", "Add tag", add_tag)
 }
 
 // ------ tag label and input combined
@@ -14,10 +13,19 @@ pub fn tag_panel(id: &str) -> impl Element {
         .s(Spacing::new(15))
         .item(panel::input_label(id.clone(), "Add a tag:"))
         .s(Spacing::new(0))
-        .item(Row::new()
-            .s(Spacing::new(10))
-            .item(panel::text_input(id, set_tag_text, "Write a tag...", InputType::text(), new_tag().signal_cloned(), Some(add_tag)))
-            .item(add_tag_button()))
+        .item(
+            Row::new()
+                .s(Spacing::new(10))
+                .item(panel::text_input(
+                    id,
+                    set_tag_text,
+                    "Write a tag...",
+                    InputType::text(),
+                    new_tag().signal_cloned(),
+                    Some(add_tag),
+                ))
+                .item(add_tag_button()),
+        )
 }
 
 fn set_tag_text(tag: String) {
@@ -36,7 +44,7 @@ fn new_tag() -> &'static Mutable<String> {
 
 fn check_tag_unique(new_tag: String) -> bool {
     let mut unique = true;
-    if tags().lock_mut().to_vec().len()>0 {
+    if tags().lock_mut().to_vec().len() > 0 {
         for existing_tag in tags().lock_mut().to_vec() {
             if existing_tag.eq(&new_tag) {
                 unique = false;
@@ -72,9 +80,11 @@ fn tag(tag: String) -> impl Element {
     // let (hovered, hovered_signal) = Mutable::new_and_signal(false);
 
     Row::new()
-        .item(Label::new()
-            .label(tag.clone().to_string())
-            .element_on_right(remove_tag_button(tag)))
+        .item(
+            Label::new()
+                .label(tag.clone().to_string())
+                .element_on_right(remove_tag_button(tag)),
+        )
         .s(Padding::new().left(10).right(20))
         .s(Background::new().color(GRAY_2))
         .s(RoundedCorners::all(10))
@@ -89,11 +99,17 @@ fn remove_tag_button(tag: String) -> impl Element {
     let extra_tag = tag.clone();
     Button::new()
         .id("remove_tag_button")
-        .s(Font::new().size(20).color_signal(
-            hovered_signal.map_bool(|| RED_5, || GRAY_4),))
+        .s(Font::new()
+            .size(20)
+            .color_signal(hovered_signal.map_bool(|| RED_5, || GRAY_4)))
         .on_hovered_change(move |is_hovered| hovered.set_neq(is_hovered))
         .on_click(move || remove_tag(tag.clone().to_string()))
-        .label(Paragraph::new().content("x").s(Font::new().size(15)).s(Align::new().center_y()))
+        .label(
+            Paragraph::new()
+                .content("x")
+                .s(Font::new().size(15))
+                .s(Align::new().center_y()),
+        )
         .s(Height::new(20))
         .s(Padding::new().left(5))
         .focus(true)

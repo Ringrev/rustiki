@@ -1,12 +1,12 @@
-use zoon::*;
-use zoon::named_color::GRAY_0;
-use shared::UpMsg;
-use crate::{app, connection};
-use crate::elements::dialogs;
-use crate::router::{Route, router};
-use crate::elements::tags;
-use crate::elements::panel;
 use crate::elements::button;
+use crate::elements::dialogs;
+use crate::elements::panel;
+use crate::elements::tags;
+use crate::router::{router, Route};
+use crate::{app, connection};
+use shared::UpMsg;
+use zoon::named_color::GRAY_0;
+use zoon::*;
 
 mod view;
 
@@ -32,8 +32,6 @@ fn content_text() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
-
-
 pub fn page() -> impl Element {
     title_text().set("".to_string());
     content_text().set("".to_string());
@@ -42,16 +40,21 @@ pub fn page() -> impl Element {
         .s(Align::center())
         .s(Width::new(800))
         .s(Background::new().color(GRAY_0))
-        .item(Column::new()
-            .s(Align::left(Default::default()))
-            .s(Align::center())
-            .s(Padding::new().x(100).y(20))
-            .item(Paragraph::new().content("Create new article").s(Font::new().size(20))
-                .s(Padding::bottom(Default::default(), 20)))
-            .item(title_panel())
-            .item(content_text_panel())
-            .item(tags::tag_panel("tag_input_create_article"))
-            .item(tags::tags_view())
+        .item(
+            Column::new()
+                .s(Align::left(Default::default()))
+                .s(Align::center())
+                .s(Padding::new().x(100).y(20))
+                .item(
+                    Paragraph::new()
+                        .content("Create new article")
+                        .s(Font::new().size(20))
+                        .s(Padding::bottom(Default::default(), 20)),
+                )
+                .item(title_panel())
+                .item(content_text_panel())
+                .item(tags::tag_panel("tag_input_create_article"))
+                .item(tags::tags_view()),
         )
         .item(button_panel())
 }
@@ -76,7 +79,9 @@ pub fn add_article() {
 }
 
 fn cancel() {
-    if dialogs::confirm_dialog("Your article will not be saved. Are you sure you want to leave the page?") {
+    if dialogs::confirm_dialog(
+        "Your article will not be saved. Are you sure you want to leave the page?",
+    ) {
         router().go(Route::Home);
     } else {
         return;
@@ -91,13 +96,25 @@ fn cancel() {
 
 fn title_panel() -> impl Element {
     let id = "title_input";
-    panel::input_panel(id, "Title:", set_title, "Title of your article", InputType::text(), title_text().signal_cloned(), None)
+    panel::input_panel(
+        id,
+        "Title:",
+        set_title,
+        "Title of your article",
+        InputType::text(),
+        title_text().signal_cloned(),
+        None,
+    )
 }
 
 // ------ content label and input
 
 fn content_text_panel() -> impl Element {
-    panel::textarea_panel("textarea_create_article", set_content_text, content_text().signal_cloned())
+    panel::textarea_panel(
+        "textarea_create_article",
+        set_content_text,
+        content_text().signal_cloned(),
+    )
 }
 
 fn button_panel() -> impl Element {
@@ -109,11 +126,11 @@ fn button_panel() -> impl Element {
 }
 
 fn publish_button() -> impl Element {
-    button::button("publish","Publish", add_article)
+    button::button("publish", "Publish", add_article)
 }
 
 fn cancel_button() -> impl Element {
-    button::button("cancel","Cancel", cancel)
+    button::button("cancel", "Cancel", cancel)
 }
 
 // ------ ------

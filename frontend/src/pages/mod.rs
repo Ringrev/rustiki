@@ -1,15 +1,14 @@
-use crate::{app, connection};
-use zoon::*;
-use shared::UpMsg;
 use crate::elements::dialogs::{confirm_dialog, message_dialog};
+use crate::{app, connection};
+use shared::UpMsg;
+use zoon::*;
 
+pub mod create_article_page;
+pub mod edit_article_page;
 pub mod home_page;
 pub mod log_in_page;
 pub mod registration_page;
 pub mod view_article_page;
-pub mod create_article_page;
-pub mod edit_article_page;
-
 
 pub fn delete_article(author: &str, article_id: u32) {
     if app::logged_user_name().get_cloned().eq(author) {

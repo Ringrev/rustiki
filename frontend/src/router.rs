@@ -1,6 +1,6 @@
+use crate::app::{self, PageName};
 use std::collections::VecDeque;
 use zoon::*;
-use crate::{app::{self, PageName}};
 
 // ------ ------
 //    Commands
@@ -26,7 +26,6 @@ pub fn route_history() -> &'static Mutable<VecDeque<Route>> {
 #[static_ref]
 pub fn router() -> &'static Router<Route> {
     Router::new(|route: Option<Route>| {
-
         let route = match route {
             Some(route) => {
                 push_to_route_history(route.clone());
@@ -50,16 +49,10 @@ pub fn router() -> &'static Router<Route> {
             Route::LogIn => {
                 app::set_page_name(PageName::LogIn);
             }
-            Route::ViewArticle {
-                article_id,
-            } => {
+            Route::ViewArticle { article_id } => {
                 app::set_page_name(PageName::ViewArticle);
             }
-            Route::EditArticle {
-                article_id,
-            } => {
-                app::set_page_name(PageName::EditArticle)
-            }
+            Route::EditArticle => app::set_page_name(PageName::EditArticle),
         }
     })
 }
@@ -78,9 +71,7 @@ pub enum Route {
     NewArticle,
 
     #[route("article", article_id)]
-    ViewArticle {
-        article_id: String,
-    },
+    ViewArticle { article_id: String },
 
     #[route("login")]
     LogIn,
@@ -88,8 +79,6 @@ pub enum Route {
     #[route()]
     Home,
 
-    #[route("edit_article", article_id)]
-    EditArticle {
-        article_id: String,
-    },
+    #[route("edit_article")]
+    EditArticle,
 }

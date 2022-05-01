@@ -1,9 +1,8 @@
-use shared::{DownMsg, LocalUser};
-use aragog::Record;
-use aragog::query::{Comparison, Filter};
-use fireauth::FireAuth;
 use crate::User;
-
+use aragog::query::{Comparison, Filter};
+use aragog::Record;
+use fireauth::FireAuth;
+use shared::{DownMsg, LocalUser};
 
 pub async fn handler(auth: FireAuth, email: String, password: String) -> DownMsg {
     let (res, user) = login(auth, email, password).await;
@@ -26,7 +25,7 @@ pub async fn login(auth: FireAuth, email: String, password: String) -> (String, 
             user.username = get_username(user.id.clone()).await;
             user.auth_token = response.id_token.to_string();
         }
-        Err(_) => { res = String::from("Incorrect input, please try again.")}
+        Err(_) => res = String::from("Incorrect input, please try again."),
     }
     (res, user)
 }
