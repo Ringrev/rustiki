@@ -109,7 +109,6 @@ fn articles_exist() -> impl Signal<Item = bool> {
 // }
 
 pub fn page() -> impl Element {
-    get_articles();
     Column::new()
         .s(Padding::new().top(50))
         .s(Width::fill())

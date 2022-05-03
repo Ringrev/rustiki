@@ -86,6 +86,7 @@ fn on_logo_click() {
 
 pub fn search() {
     home_page::reset_articles();
+    router().go(Route::Home);
     let query = search_query().get_cloned().to_lowercase();
     home_page::articles().lock_mut().retain(|art| {
         art.title.to_lowercase().contains(&query)
@@ -119,7 +120,6 @@ pub fn set_search_query(query: String) {
     if search_query().get_cloned().eq("") {
         home_page::reset_articles();
     }
-    router().go(Route::Home);
 }
 
 fn search_button() -> impl Element {

@@ -14,10 +14,16 @@ pub fn connection() -> &'static Connection<UpMsg, DownMsg> {
 
             // ----- Article -------
             DownMsg::Articles(vec) => home_page::set_articles(vec),
-            DownMsg::ArticleAdded(_) => router().go(Route::Home),
+            DownMsg::ArticleAdded(_) => {
+                home_page::get_articles();
+                router().go(Route::Home); },
             DownMsg::RegistrationError(string) => registration_page::set_error_msg(string),
-            DownMsg::ArticleUpdated => router().go(Route::Home),
-            DownMsg::ArticleRemoved => router().go(Route::Home),
+            DownMsg::ArticleUpdated => {
+                home_page::get_articles();
+                router().go(Route::Home); },
+            DownMsg::ArticleRemoved => {
+                home_page::get_articles();
+                router().go(Route::Home); },
         }
     })
 }
