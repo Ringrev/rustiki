@@ -101,7 +101,7 @@ fn remove_tag_button(tag: String) -> impl Element {
         .id("remove_tag_button")
         .s(Font::new()
             .size(20)
-            .color_signal(hovered_signal.map_bool(|| RED_5, || GRAY_4)))
+            .color_signal(hovered_signal.map_bool(|| GRAY_9, || RED_5)))
         .on_hovered_change(move |is_hovered| hovered.set_neq(is_hovered))
         .on_click(move || remove_tag(tag.clone().to_string()))
         .label(
