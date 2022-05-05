@@ -1,3 +1,4 @@
+//! Handles requests received from frontend crate.
 use crate::firebase::init;
 use moon::*;
 use shared::{DownMsg, UpMsg};
@@ -10,7 +11,11 @@ mod edit_article;
 mod login;
 mod registration;
 
-// What you receive from frontend and what you do with it
+/// Defines which function to execute when an UpMsgRequest is received by matching the UpMsg enum.
+/// Returns a Result after handling UpMsg requests.
+///
+/// # Arguments
+/// * `req` - An UpMsgRequest containing the UpMsg from frontend crate.
 pub async fn handler(req: UpMsgRequest<UpMsg>) -> Result<DownMsg, Option<DownMsg>> {
     Ok(match req.up_msg {
         UpMsg::GetArticles => article::handler().await,
@@ -37,6 +42,7 @@ pub async fn handler(req: UpMsgRequest<UpMsg>) -> Result<DownMsg, Option<DownMsg
     })
 }
 
+/// Returns current time as a String.
 fn get_time() -> String {
     let system_time = SystemTime::now();
     let datetime: DateTime<Local> = system_time.into();

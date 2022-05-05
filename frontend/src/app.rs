@@ -1,3 +1,5 @@
+//! Defines root element of app and sets the page displayed as decided by the routing.
+//! Also keeps track of whether a user is logged in or not.
 use crate::elements::footer::footer;
 use crate::elements::header::header;
 use crate::pages::home_page::get_article_from_route;
@@ -15,24 +17,27 @@ use zoon::{Element, *};
 //    States
 // ------ ------
 
-/// State of logged in user
+/// State of logged in user. Initiated with no value.
+/// Set to LocalUser struct when user logs in.
 #[static_ref]
 pub fn logged_in_user() -> &'static Mutable<Option<LocalUser>> {
     Mutable::new(None)
 }
 
-/// The username of the logged in user
+/// State of logged in user's username. Initialized with empty String.
 #[static_ref]
 pub fn logged_user_name() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
-/// Holds the auth token when a user is logged in
+/// The state of authentication token. Initialized with no value.
+/// Set to a String token when a user is logged in.
 #[static_ref]
 pub fn auth_token() -> &'static Mutable<Option<String>> {
     Mutable::new(None)
 }
 
+// The state of the current page. Initialized with unknown page.
 #[static_ref]
 fn page_name() -> &'static Mutable<PageName> {
     Mutable::new(PageName::Unknown)
@@ -58,7 +63,7 @@ pub fn log_out() {
     logged_user_name().set("".to_string());
 }
 
-/// Sets user info and token when user logs in. Called from connection.rs
+/// Sets user info and token when user logs in. Called from connection.rs.
 pub fn set_logged_in_user_and_token(user: LocalUser) {
     logged_in_user().set(Some(user.clone()));
     logged_user_name().set(Some(user.clone()).unwrap().username);
@@ -66,6 +71,7 @@ pub fn set_logged_in_user_and_token(user: LocalUser) {
     router().go(Route::Home);
 }
 
+/// Sets page to display
 pub fn set_page_name(new_page_name: PageName) {
     page_name().set_neq(new_page_name);
 }
@@ -74,6 +80,7 @@ pub fn set_page_name(new_page_name: PageName) {
 //     Types
 // ------ ------
 
+/// Represents the different pages available on the website.
 #[derive(Clone, Copy, PartialEq, PartialOrd)]
 pub enum PageName {
     Home,
@@ -89,6 +96,9 @@ pub enum PageName {
 //     View
 // ------ ------
 
+/// The root element of the website.
+/// This decides the general layout of the website, except from the page content.
+/// All articles in database are loaded when you first load website.
 pub fn root() -> impl Element {
     home_page::get_articles();
     Column::new()
@@ -102,13 +112,12 @@ pub fn root() -> impl Element {
             .item(footer()))
 }
 
+/// When the route changes, this function changes the displayed page.
 fn page() -> impl Element {
     El::new().child_signal(page_name().signal().map(|page_name| match page_name {
         PageName::Home => home_page::page().into_raw_element(),
         PageName::Unknown => El::new().child("404").into_raw_element(),
-        PageName::EditArticle => {
-            edit_article_page::page().into_raw_element()
-        }
+        PageName::EditArticle => edit_article_page::page().into_raw_element(),
         PageName::NewArticle => create_article_page::page().into_raw_element(),
         PageName::Registration => registration_page::page().into_raw_element(),
         PageName::LogIn => log_in_page::page().into_raw_element(),

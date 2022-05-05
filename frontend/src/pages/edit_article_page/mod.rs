@@ -1,6 +1,7 @@
+//! Defines the content and operations for create edit article page.
 use crate::app::logged_user_name;
 use crate::elements::dialogs::*;
-use crate::elements::{button, panel, tags};
+use crate::elements::{button, dialogs, panel, tags};
 use crate::router::{router, Route};
 use crate::connection;
 use shared::{LocalArticle, UpMsg};
@@ -13,26 +14,31 @@ mod view;
 //     States
 // ------ ------
 
+/// Title text of the article. Initialized with an empty String.
 #[static_ref]
 fn title_text() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
+/// The content of the article. Initialized with an empty String.
 #[static_ref]
 fn content_text() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
+/// The current article. Initialized with an empty LocalArticle.
 #[static_ref]
 fn edit_article() -> &'static Mutable<LocalArticle> {
     Mutable::new(LocalArticle::new_empty())
 }
 
+/// The current article's id. Initialized with 0.
 #[static_ref]
 fn article_id() -> &'static Mutable<u32> {
     Mutable::new(0)
 }
 
+/// Vector of current article's contributors. Initialized with empty vector.
 #[static_ref]
 fn contributors() -> &'static MutableVec<String> {
     MutableVec::new()
@@ -42,11 +48,12 @@ fn contributors() -> &'static MutableVec<String> {
 //    Commands
 // ------ ------
 
+/// Starts an async Task that tells backend handler "edit_article" to update the current article in the database.
+/// Dialog shown if there's an error in connection between frontend and backend.
 pub fn update_article() {
     add_contributor();
     Task::start(async {
         let msg = UpMsg::EditArticle {
-            // org_title must be replace with ID when that gets implemented for Article object
             id: article_id().get_cloned(),
             new_title: title_text().lock_mut().to_string(),
             new_content: content_text().lock_mut().to_string(),
@@ -59,6 +66,7 @@ pub fn update_article() {
     });
 }
 
+/// Deletes an article from database as defined in pages::mod module.
 pub fn delete_article() {
     super::delete_article(
         edit_article().get_cloned().author.as_str(),
@@ -66,6 +74,10 @@ pub fn delete_article() {
     );
 }
 
+/// Sets which LocalArticle should be edited.
+///
+/// # Arguments
+/// * `art` - The LocalArticle to be edited.
 pub fn set_edit_article(art: LocalArticle) {
     edit_article().set(art.clone().to_owned());
     title_text().set(art.title.clone());
@@ -77,6 +89,8 @@ pub fn set_edit_article(art: LocalArticle) {
         .replace_cloned(art.contributors.clone());
 }
 
+/// If logged_in_user is not the author of the article they are editing,
+/// they are added as a contributor (unless they are already listed as one).
 fn add_contributor() {
     let logged_in_user = logged_user_name().get_cloned().to_string();
     if !edit_article()
@@ -93,22 +107,16 @@ fn add_contributor() {
     }
 }
 
-fn cancel() {
-    if confirm_dialog("Your changes will not be saved. Are you sure you want to leave the page?") {
-        router().go(Route::Home);
-    } else {
-        return;
-    }
-}
-
 // ------ ------
 //     Helpers
 // ------ ------
 
+// Sets text of title_text()
 fn set_title(title: String) {
     title_text().set(title);
 }
 
+/// Sets text of content_text()
 fn set_content_text(content: String) {
     content_text().set(content);
 }
@@ -122,6 +130,7 @@ fn set_content_text(content: String) {
 //     view::page().into_raw_element()
 // }
 
+/// Returns a Column representing the whole edit article page.
 pub fn page() -> impl Element {
     Column::new()
         .s(Align::center())
@@ -129,7 +138,6 @@ pub fn page() -> impl Element {
         .s(Background::new().color(GRAY_0))
         .item(
             Column::new()
-                .s(Align::left(Default::default()))
                 .s(Align::center())
                 .s(Padding::new().x(100).y(20))
                 .item(
@@ -146,10 +154,9 @@ pub fn page() -> impl Element {
         .item(button_panel())
 }
 
-// ------ title label and input
-
+/// Returns a Column containing a label and TextInput element as defined in "elements::panel" module.
 fn title_panel() -> impl Element {
-    let id = "title_input";
+    let id = "title_input_edit_article";
     panel::input_panel(
         id,
         "Title:",
@@ -161,8 +168,7 @@ fn title_panel() -> impl Element {
     )
 }
 
-// ------ title label and input combined
-
+/// Returns a Column containing a multiline TextArea element as defined in "elements::panel" module.
 fn content_text_panel() -> impl Element {
     panel::textarea_panel(
         "textarea_edit_article",
@@ -171,6 +177,7 @@ fn content_text_panel() -> impl Element {
     )
 }
 
+/// Returns a Row containing cancel_button and publish_button.
 fn button_panel() -> impl Element {
     Row::new()
         .item(delete_button())
@@ -180,14 +187,17 @@ fn button_panel() -> impl Element {
         .s(Align::center())
 }
 
+/// Returns a Button element as defined in "elements::button" module.
 fn delete_button() -> impl Element {
     button::button("delete_article", "Delete article", delete_article)
 }
 
+/// Returns a Button element as defined in "elements::button" module.
 fn publish_button() -> impl Element {
     button::button("publish_changes", "Publish changes", update_article)
 }
 
+/// Returns a Button element as defined in "elements::button" module.
 fn cancel_button() -> impl Element {
-    button::button("cancel", "Cancel", cancel)
+    button::button("cancel", "Cancel", dialogs::cancel)
 }

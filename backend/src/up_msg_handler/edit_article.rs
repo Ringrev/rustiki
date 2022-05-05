@@ -1,8 +1,17 @@
+//! Defines functions used for editing articles in database.
 use crate::Article;
 use aragog::query::{Comparison, Filter};
 use aragog::Record;
 use shared::DownMsg;
 
+/// The handler for updating an article in DB. Returns a DownMsg indicating the article was updated.
+///
+/// # Arguments
+/// * `id` - An u32 value holding the id of the article.
+/// * `new_title` - A String holding the title of the article.
+/// * `new_content` - A String holding the content of the article.
+/// * `new_contributors` - A vector of Strings holding the article's contributors.
+/// * `new_tags` - A vector of Strings holding the article's tags.
 pub async fn handler(
     id: u32,
     new_title: String,
@@ -14,6 +23,14 @@ pub async fn handler(
     DownMsg::ArticleUpdated
 }
 
+/// Updated the article in the ArangoDB database using Aragog crate.
+///
+/// # Arguments
+/// * `id` - An u32 value holding the id of the article.
+/// * `new_title` - A String holding the title of the article.
+/// * `new_content` - A String holding the content of the article.
+/// * `new_contributors` - A vector of Strings holding the article's contributors.
+/// * `new_tags` - A vector of Strings holding the article's tags.
 async fn update_in_db(
     id: u32,
     new_title: String,

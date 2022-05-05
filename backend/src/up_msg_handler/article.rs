@@ -1,13 +1,28 @@
+//! Defines functions used for getting articles from database.
 use crate::Article;
 use aragog::*;
 use shared::{DownMsg, LocalArticle};
 use std::u32;
 
+/// The handler for getting articles from DB. Returns a DownMsg containing a vector of articles.
 pub async fn handler() -> DownMsg {
     let art = articles().await;
     DownMsg::Articles(art)
 }
 
+/// Gets articles from ArangoDB database using Aragog crate.
+///
+/// # Arguments
+/// * `conn` - A reference to an Aragog DatabaseConnection.
+async fn get_articles_from_db(conn: &DatabaseConnection) -> Vec<DatabaseRecord<Article>> {
+    let query = Article::query();
+    let article_records = Article::get(query, conn).await.unwrap();
+    let records: Vec<DatabaseRecord<Article>> = article_records.to_vec();
+    records
+}
+
+/// Put the articles received from database into a vector containing the sharable struct type LocalArticle
+/// Returns this vector populated with LocalArticle objects.
 pub async fn articles() -> Vec<LocalArticle> {
     let conn = crate::init_db().await;
 
@@ -29,9 +44,4 @@ pub async fn articles() -> Vec<LocalArticle> {
     records
 }
 
-async fn get_articles_from_db(conn: &DatabaseConnection) -> Vec<DatabaseRecord<Article>> {
-    let query = Article::query();
-    let article_records = Article::get(query, conn).await.unwrap();
-    let records: Vec<DatabaseRecord<Article>> = article_records.to_vec();
-    records
-}
+

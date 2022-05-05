@@ -1,13 +1,22 @@
+//! Defines functions used for deleting articles from database.
 use crate::Article;
 use aragog::query::{Comparison, Filter};
 use aragog::Record;
 use shared::DownMsg;
 
+/// The handler for deleting articles from DB. Returns a DownMsg indicating the article was removed.
+///
+/// # Arguments
+/// * `id` - An u32 value holding the id of the article.
 pub async fn handler(id: u32) -> DownMsg {
     remove_from_db(id).await;
     DownMsg::ArticleRemoved
 }
 
+/// Deletes an article from the ArangoDB database using Aragog crate.
+///
+/// # Arguments
+/// * `id` - An u32 value holding the id of the article to delete.
 async fn remove_from_db(id: u32) {
     let conn = crate::init_db().await;
 

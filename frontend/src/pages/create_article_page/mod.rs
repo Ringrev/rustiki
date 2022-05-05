@@ -1,3 +1,4 @@
+//! Defines the content and operations for create create article page.
 use crate::elements::button;
 use crate::elements::dialogs;
 use crate::elements::panel;
@@ -14,16 +15,19 @@ mod view;
 //    States
 // ------ ------
 
+/// Error message shown to user. Initialized with an empty String.
 #[static_ref]
 fn error_message() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
+/// Title text for new article. Initialized with an empty String.
 #[static_ref]
 fn title_text() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
+/// Content text for new article. Initialized with an empty String.
 #[static_ref]
 fn content_text() -> &'static Mutable<String> {
     Mutable::new("".to_string())
@@ -33,11 +37,12 @@ fn content_text() -> &'static Mutable<String> {
 //    Commands
 // ------ ------
 
+/// Starts an async Task that tells backend handler "add_article" to add an article to DB.
+/// Dialog shown if there's an error in connection between frontend and backend.
 pub fn add_article() {
     Task::start(async {
         let msg = UpMsg::AddArticle {
             title: title_text().get_cloned(),
-            // TODO: change content when implemented in frontend with js quill.
             content: content_text().get_cloned(),
             author: app::logged_in_user().get_cloned().unwrap().username,
             tags: tags::tags().lock_mut().to_vec(),
@@ -48,28 +53,16 @@ pub fn add_article() {
     });
 }
 
-fn cancel() {
-    if dialogs::confirm_dialog(
-        "Your article will not be saved. Are you sure you want to leave the page?",
-    ) {
-        router().go(Route::Home);
-    } else {
-        return;
-    }
-}
-
 // ------ ------
 //     Helpers
 // ------ ------
 
-// pub fn set_error_msg(msg: String) {
-//     error_message().set(msg);
-// }
-
+/// Sets text of content_text()
 fn set_content_text(content: String) {
     content_text().set(content);
 }
 
+// Sets text of title_text()
 fn set_title(title: String) {
     title_text().set(title);
 }
@@ -83,6 +76,7 @@ fn set_title(title: String) {
 //     view::page().into_raw_element()
 // }
 
+/// Returns a Column representing the whole create article page.
 pub fn page() -> impl Element {
     title_text().set("".to_string());
     content_text().set("".to_string());
@@ -93,7 +87,6 @@ pub fn page() -> impl Element {
         .s(Background::new().color(GRAY_0))
         .item(
             Column::new()
-                .s(Align::left(Default::default()))
                 .s(Align::center())
                 .s(Padding::new().x(100).y(20))
                 .item(
@@ -110,8 +103,9 @@ pub fn page() -> impl Element {
         .item(button_panel())
 }
 
+/// Returns a single-line TextInput element as defined in "elements::panel" module.
 fn title_panel() -> impl Element {
-    let id = "title_input";
+    let id = "title_input_create_article";
     panel::input_panel(
         id,
         "Title:",
@@ -123,6 +117,7 @@ fn title_panel() -> impl Element {
     )
 }
 
+/// Returns a multiline TextArea element as defined in "elements::panel" module.
 fn content_text_panel() -> impl Element {
     panel::textarea_panel(
         "textarea_create_article",
@@ -131,6 +126,7 @@ fn content_text_panel() -> impl Element {
     )
 }
 
+/// Returns a Row containing cancel_button and publish_button.
 fn button_panel() -> impl Element {
     Row::new()
         .item(cancel_button())
@@ -139,12 +135,14 @@ fn button_panel() -> impl Element {
         .s(Align::center())
 }
 
+/// Returns a Button element as defined in "elements::button" module.
 fn publish_button() -> impl Element {
     button::button("publish", "Publish", add_article)
 }
 
+/// Returns a Button element as defined in "elements::button" module.
 fn cancel_button() -> impl Element {
-    button::button("cancel", "Cancel", cancel)
+    button::button("cancel", "Cancel", dialogs::cancel)
 }
 
 

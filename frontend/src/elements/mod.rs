@@ -1,3 +1,4 @@
+//! Defines modules within elements module.
 pub mod button;
 pub mod dialogs;
 pub mod footer;

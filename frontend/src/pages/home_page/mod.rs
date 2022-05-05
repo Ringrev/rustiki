@@ -1,3 +1,4 @@
+//! Defines the content and operations for front page.
 use crate::app::is_user_logged_signal;
 use crate::connection::connection;
 use crate::elements::dialogs::message_dialog;
@@ -15,11 +16,13 @@ mod view;
 //    States
 // ------ ------
 
+/// Currently displayed articles.
 #[static_ref]
 pub fn articles() -> &'static MutableVec<LocalArticle> {
     MutableVec::new()
 }
 
+/// Original vector of articles.
 #[static_ref]
 pub fn original_articles() -> &'static MutableVec<LocalArticle> {
     MutableVec::new()
@@ -29,6 +32,8 @@ pub fn original_articles() -> &'static MutableVec<LocalArticle> {
 //     Commands
 // ------ ------
 
+/// Returns the article that should be displayed at current route (Ex. /article/9324347283423)
+/// Gets the current route and collects the LocalArticle with corresponding id from articles() vector.
 pub fn get_article_from_route() -> LocalArticle {
     let route = router::route_history()
         .deref()
@@ -44,12 +49,20 @@ pub fn get_article_from_route() -> LocalArticle {
     articles_vec.get(0).unwrap().clone()
 }
 
+/// Directs user to view article page and sets the article that will be viewed to the one that was clicked.
+///
+/// # Arguments
+/// * `article` - The article that was clicked/pressed.
 pub fn view_article(article: LocalArticle) {
     router().go(Route::ViewArticle {
         article_id: article.id.to_string(),
     });
 }
 
+/// Sets the content of articles() and original_articles() to vector received from backend.
+///
+/// # Arguments
+/// * `vector` - The vector of LocalArticle received from backend.
 pub fn set_articles(vector: Vec<LocalArticle>) {
     let mut vec = VecDeque::new();
     for article in vector {
@@ -65,6 +78,7 @@ pub fn set_articles(vector: Vec<LocalArticle>) {
     })
 }
 
+/// Starts an async task that asks backend handler "article" to get all articles from db.
 pub fn get_articles() {
     Task::start(async {
         let msg = UpMsg::GetArticles;
@@ -74,6 +88,7 @@ pub fn get_articles() {
     })
 }
 
+/// Sets the articles() vector back to the original articles collected from db.
 pub fn reset_articles() {
     articles().update_mut(|art| {
         art.clear();
@@ -85,16 +100,21 @@ pub fn reset_articles() {
 //     Signals
 // ------ ------
 
+/// Returns LocalArticle from articles() vector.
 fn filtered_articles() -> impl SignalVec<Item = LocalArticle> {
     articles()
         .signal_vec_cloned()
         .map(|article| article.clone())
 }
 
+/// Returns a usize count of items in articles()
 fn articles_count() -> impl Signal<Item = usize> {
     articles().signal_vec_cloned().len()
 }
 
+/// Returns a boolean.
+/// Returns <code>true</code> if count is not 0.
+/// Returns <code>false</code> if count is 0.
 fn articles_exist() -> impl Signal<Item = bool> {
     articles_count().map(|count| count != 0).dedupe()
 }
@@ -108,6 +128,7 @@ fn articles_exist() -> impl Signal<Item = bool> {
 //     view::page().into_raw_element()
 // }
 
+/// Returns a Column representing the whole front page.
 pub fn page() -> impl Element {
     Column::new()
         .s(Padding::new().top(50))
@@ -115,6 +136,9 @@ pub fn page() -> impl Element {
         .item(panel())
 }
 
+/// Returns a multiline Row displaying all articles from articles() vector.
+/// Button for creating new article is displayed using empty_card() element.
+/// Each of the articles are displayed using a card element.
 fn articles_view() -> impl Element {
     Row::new()
         .item_signal(is_user_logged_signal().map_true(empty_card))
@@ -124,12 +148,17 @@ fn articles_view() -> impl Element {
         .s(Width::fill())
 }
 
+/// Returns a Column containing articles_view() if there are existing articles in articles() vector.
 fn panel() -> impl Element {
     Column::new()
         .item_signal(articles_exist().map_true(articles_view))
         .s(Padding::new().left(50))
 }
 
+/// Returns a button which visually represents an article.
+///
+/// # Arguments
+/// * `article` - The LocalArticle to be displayed.
 fn card(article: LocalArticle) -> impl Element {
     let extra_article = article.clone();
     let mut id = article.clone().title + article.clone().created_time.as_str();
@@ -151,6 +180,9 @@ fn card(article: LocalArticle) -> impl Element {
         .s(Align::new().top())
 }
 
+/// Returns a button which is visually similar to an article,
+/// but with the text "Create new article" instead of a title,
+/// and a plus sign instead of a thumbnail image.
 fn empty_card() -> impl Element {
     let id = "create_new_article";
     Button::new()
@@ -174,6 +206,11 @@ fn empty_card() -> impl Element {
         .s(Align::new().top())
 }
 
+/// Returns a Column representing the attributes in common for card and empty_card.
+///
+/// # Arguments
+/// * `element` - An element to show above the text.
+/// * `text` - The text the card should show.
 fn card_template(element: impl Element, text: String) -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);
     Column::new()

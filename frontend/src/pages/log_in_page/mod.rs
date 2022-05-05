@@ -1,3 +1,4 @@
+//! Defines the content and operations for login page.
 use crate::connection;
 use crate::elements::button;
 use crate::elements::panel;
@@ -11,16 +12,19 @@ mod view;
 //     States
 // ------ ------
 
+/// Login error to display.
 #[static_ref]
 fn login_error() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
+/// User's password.
 #[static_ref]
 fn password_text() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
+/// User's email.
 #[static_ref]
 fn email_text() -> &'static Mutable<String> {
     Mutable::new("".to_string())
@@ -30,6 +34,8 @@ fn email_text() -> &'static Mutable<String> {
 //     Commands
 // ------ ------
 
+/// Starts an async Task that tells backend handler "login" to log user into Firebase.
+/// /// Dialog shown if there's an error in connection between frontend and backend.
 pub fn login() {
     Task::start(async {
         set_login_error("".to_string());
@@ -49,14 +55,17 @@ pub fn login() {
 //     Helpers
 // ------ ------
 
+/// Sets password_text().
 fn set_password(password: String) {
     password_text().set(password);
 }
 
+/// Sets email_text().
 fn set_email(email: String) {
     email_text().set(email);
 }
 
+/// Sets login_error().
 pub fn set_login_error(err: String) {
     login_error().set(err);
 }
@@ -70,6 +79,7 @@ pub fn set_login_error(err: String) {
 //     view::page().into_raw_element()
 // }
 
+/// Returns a Column representing the whole login page.
 pub fn page() -> impl Element {
     email_text().set("".to_string());
     password_text().set("".to_string());
@@ -94,6 +104,7 @@ pub fn page() -> impl Element {
         .item(button_panel())
 }
 
+/// Returns a Column containing a label and TextInput element as defined in "elements::panel" module.
 fn email_panel() -> impl Element {
     let id = "user_name_input";
     panel::input_panel(
@@ -107,6 +118,7 @@ fn email_panel() -> impl Element {
     )
 }
 
+/// Returns a Column containing a label and TextInput element as defined in "elements::panel" module.
 fn password_panel() -> impl Element {
     let id = "password_input";
     panel::input_panel(
@@ -120,6 +132,7 @@ fn password_panel() -> impl Element {
     )
 }
 
+/// Returns a Row containing log_in_button().
 fn button_panel() -> impl Element {
     Row::new()
         .item(log_in_button())
@@ -127,6 +140,7 @@ fn button_panel() -> impl Element {
         .s(Align::center())
 }
 
+/// Returns a Button element as defined in "elements::button" module.
 fn log_in_button() -> impl Element {
     button::button("log_in", "Log in", login)
 }

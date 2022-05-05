@@ -1,19 +1,22 @@
+//! Defines frontend modules and the entry point of the app.
+
 use zoon::*;
 
 // ------ ------
 //    Modules
 // ------ ------
 
-mod app;
-mod connection;
-mod elements;
-mod pages;
-mod router;
+pub mod app;
+pub mod connection;
+pub mod elements;
+pub mod pages;
+pub mod router;
 
 // ------ ------
 //     Start
 // ------ ------
 
+/// Starts app.
 #[wasm_bindgen(start)]
 pub fn start() {
     router::router();

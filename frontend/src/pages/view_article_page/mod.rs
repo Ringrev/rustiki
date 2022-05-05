@@ -1,3 +1,4 @@
+//! Defines the content and operations for view edit article page.
 use crate::elements::button;
 use crate::pages::edit_article_page;
 use crate::router::{router, Route};
@@ -12,21 +13,25 @@ mod view;
 //     States
 // ------ ------
 
+/// Current article. Initialized with an empty LocalArticle.
 #[static_ref]
 pub fn view_article() -> &'static Mutable<LocalArticle> {
     Mutable::new(LocalArticle::new_empty())
 }
 
+/// Current article's id. Initialized with 0.
 #[static_ref]
 fn article_id() -> &'static Mutable<u32> {
     Mutable::new(0)
 }
 
+/// Current article's tags.
 #[static_ref]
 fn tags() -> &'static MutableVec<String> {
     MutableVec::new()
 }
 
+/// Current article's contributors.
 #[static_ref]
 fn contributors() -> &'static MutableVec<String> {
     MutableVec::new()
@@ -36,11 +41,16 @@ fn contributors() -> &'static MutableVec<String> {
 //     Commands
 // ------ ------
 
+/// Sets the article to be edited to the one being viewed, and directs user to edit page.
 pub fn edit_article() {
     edit_article_page::set_edit_article(view_article().get_cloned());
     router().go(Route::EditArticle);
 }
 
+/// Sets which LocalArticle should be viewed.
+///
+/// # Arguments
+/// * `art` - The LocalArticle to be viewed.
 pub fn set_view_article(art: LocalArticle) {
     tags().lock_mut().replace_cloned(art.tags.to_vec());
     view_article().set(art.clone().to_owned());
@@ -50,6 +60,7 @@ pub fn set_view_article(art: LocalArticle) {
         .replace_cloned(art.contributors.clone())
 }
 
+/// Deletes an article from database as defined in pages::mod module.
 pub fn delete_article() {
     super::delete_article(
         view_article().get_cloned().author.as_str(),
@@ -66,6 +77,7 @@ pub fn delete_article() {
 //     view::page().into_raw_element()
 // }
 
+/// Returns a Column representing the whole view article page.
 pub fn page() -> impl Element {
     Column::new()
         .s(Align::center())
@@ -75,15 +87,9 @@ pub fn page() -> impl Element {
         .item(button_panel())
 }
 
-fn labels_view(text: &str, item: impl Element) -> impl Element {
-    Row::new()
-        .item(Paragraph::new().content(text).s(Font::new().size(12)))
-        .item(item)
-}
-
+/// Returns a Column containing the visual display of an article.
 fn article_view() -> impl Element {
     Column::new()
-        .s(Align::left(Default::default()))
         .s(Align::center())
         .s(Padding::new().x(100).y(20))
         .item(labels_view("Author:", author_view()))
@@ -94,6 +100,7 @@ fn article_view() -> impl Element {
         .item(time_view())
 }
 
+/// Returns a Paragraph element containing the visual display of the article's title.
 fn title_view() -> impl Element {
     Paragraph::new()
         .content(view_article().get_cloned().title)
@@ -101,12 +108,14 @@ fn title_view() -> impl Element {
         .s(Padding::new().top(20))
 }
 
+/// Returns a Paragraph element containing the visual display of the article's content.
 fn content_view() -> impl Element {
     Paragraph::new()
         .content(view_article().get_cloned().content)
         .s(Padding::new().bottom(20).top(10))
 }
 
+/// Returns a Row containing edit_button and delete_button.
 fn button_panel() -> impl Element {
     Row::new()
         .item_signal(app::is_user_logged_signal().map_true(edit_button))
@@ -115,67 +124,27 @@ fn button_panel() -> impl Element {
         .s(Align::center())
 }
 
+/// Returns a Button element as defined in "elements::button" module.
 fn edit_button() -> impl Element {
     button::button("edit_article", "Edit", edit_article)
 }
 
+/// Returns a Button element as defined in "elements::button" module.
 fn delete_button() -> impl Element {
     button::button("delete_article", "Delete", delete_article)
 }
 
-fn time_view() -> impl Element {
-    Column::new()
-        .item(
-            Paragraph::new()
-                .content(
-                    "Last updated: ".to_string()
-                        + view_article().get_cloned().updated_time.as_str(),
-                )
-                .s(Font::new().size(12)),
-        )
-        .s(Padding::new().bottom(5))
-        .item(
-            Paragraph::new()
-                .content(
-                    "Created: ".to_string() + view_article().get_cloned().created_time.as_str(),
-                )
-                .s(Font::new().size(12))
-                .lang(Lang::English),
-        )
-        .s(Align::left(Default::default()))
-}
-
-fn contributors_view() -> impl Element {
-    Row::new()
-        .multiline()
-        .items_signal_vec(contributors().signal_vec_cloned().map(contributor))
-        .s(Spacing::new(10))
-}
-
-fn contributor(cont: String) -> impl Element {
-    Row::new().item(
-        Label::new()
-            .label(cont.clone().to_string())
-            .s(Font::new().size(12))
-            .s(Padding::new().x(10))
-            .s(Background::new().color(GRAY_2))
-            .s(RoundedCorners::all(10)),
-    )
-}
-
+/// Returns a Row representing the visual display of the author.
 fn author_view() -> impl Element {
-    Row::new()
-        .item(
-            Label::new()
-                .label(view_article().get_cloned().author)
-                .s(Font::new().size(12))
-                .s(Padding::new().x(10))
-                .s(Background::new().color(GRAY_2))
-                .s(RoundedCorners::all(10)),
-        )
-        .s(Padding::new().bottom(5))
+    label_template(view_article().get_cloned().author)
 }
 
+/// Returns a Row representing the visual display of one single tag.
+fn tag(tag: String) -> impl Element {
+    label_template(tag.clone().to_string())
+}
+
+/// Returns a Row representing the visual display of all of the article's tags.
 fn tags_view() -> impl Element {
     Row::new()
         .items_signal_vec(tags().signal_vec_cloned().map(tag))
@@ -183,15 +152,66 @@ fn tags_view() -> impl Element {
         .s(Padding::new().y(5))
 }
 
-fn tag(tag: String) -> impl Element {
-    // let (hovered, hovered_signal) = Mutable::new_and_signal(false);
+/// Returns a Row representing the visual display of one single contributor.
+fn contributor(cont: String) -> impl Element {
+    label_template(cont.clone().to_string())
+}
 
-    Row::new().item(
+/// Returns a Row representing the visual display of all of the article's contributors.
+fn contributors_view() -> impl Element {
+    Row::new()
+        .multiline()
+        .items_signal_vec(contributors().signal_vec_cloned().map(contributor))
+        .s(Spacing::new(10))
+}
+
+/// Returns a Row representing the visual design of a single author/tag/contributor.
+fn label_template(text: String) -> impl Element {
+    Row::new()
+        .item(
         Label::new()
-            .label(tag.clone().to_string())
+            .label(text)
             .s(Padding::new().x(10))
             .s(Font::new().size(12))
             .s(Background::new().color(GRAY_2))
             .s(RoundedCorners::all(10)),
     )
+}
+
+/// Returns a Row containing a text label and an element displaying either
+/// author, contributors or tags.
+///
+/// # Arguments
+/// * `text` - The text to display.
+/// * `item` - The element to display.
+fn labels_view(text: &str, item: impl Element) -> impl Element {
+    Row::new()
+        .item(Paragraph::new().content(text).s(Font::new().size(12)))
+        .item(item)
+        .s(Padding::new().bottom(5))
+}
+
+/// Returns a Column representing visual display of time article was created and updated.
+fn time_view() -> impl Element {
+    Column::new()
+        .item(
+            time_text("Last updated: ", view_article().get_cloned().updated_time.as_str())
+        )
+        .s(Padding::new().bottom(5))
+        .item(
+            time_text("Created: ", view_article().get_cloned().created_time.as_str())
+        )
+        .s(Align::left(Default::default()))
+}
+
+/// Returns a Paragraph representing visual display of a date and time.
+///
+/// # Arguments
+/// * `label` - The text to display.
+/// * `time` - The time to display.
+fn time_text(label: &str, time: &str) -> impl Element {
+    Paragraph::new()
+        .content(label.to_string()
+            + time)
+        .s(Font::new().size(12))
 }

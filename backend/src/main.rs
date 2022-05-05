@@ -1,9 +1,18 @@
+//! Defines main entry point, forwards requests to handlers, and defines structs.
 mod firebase;
 mod up_msg_handler;
 use aragog::{DatabaseConnection, Record};
 use moon::*;
 use shared::UpMsg;
 
+/// Starts backend app.
+#[moon::main]
+async fn main() -> std::io::Result<()> {
+    start(frontend, up_msg_handler, |_| {}).await?;
+    Ok(())
+}
+
+/// Returns a Frontend element.
 async fn frontend() -> Frontend {
     Frontend::new()
         .lang(Lang::English)
@@ -21,6 +30,10 @@ async fn frontend() -> Frontend {
     )
 }
 
+/// Forwards UpMsgRequests received from frontend to "up_msg_handler" module.
+///
+/// # Arguments
+/// * `req` - An UpMsgRequest containing the UpMsg from frontend crate.
 async fn up_msg_handler(req: UpMsgRequest<UpMsg>) {
     let (session_id, cor_id) = (req.session_id, req.cor_id);
 
@@ -36,13 +49,7 @@ async fn up_msg_handler(req: UpMsgRequest<UpMsg>) {
     println!("Cannot find the session with id `{}`", session_id);
 }
 
-#[moon::main]
-async fn main() -> std::io::Result<()> {
-    start(frontend, up_msg_handler, |_| {}).await?;
-    Ok(())
-}
-
-//ArangoDb connection
+/// Returns a connection to ArangoDB.
 async fn init_db() -> DatabaseConnection {
     DatabaseConnection::builder().build().await.unwrap()
 }
@@ -65,6 +72,7 @@ pub struct Article {
 }
 
 impl Article {
+    /// Creates a new Article object using the Article struct.
     pub fn new(
         id: u32,
         title: String,
@@ -101,6 +109,7 @@ pub struct User {
 }
 
 impl User {
+    /// Creates a new User object using the User struct.
     pub fn new(id: String, email: String, username: String) -> Self {
         Self {
             id,

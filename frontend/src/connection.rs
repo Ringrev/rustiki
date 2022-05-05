@@ -1,9 +1,13 @@
+//! Represents the connection between frontend and backend.
+//! Defines what happens when frontend receives messages from backend.
 use crate::pages::{home_page, log_in_page, registration_page};
 use crate::router::Route;
 use crate::*;
 use router::router;
 use shared::{DownMsg, UpMsg};
 
+/// State of Connection to backend.
+/// Defines what to do when messages are received from backend.
 #[static_ref]
 pub fn connection() -> &'static Connection<UpMsg, DownMsg> {
     Connection::new(|down_msg, _cor_id| {

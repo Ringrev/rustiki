@@ -1,3 +1,4 @@
+//! Defines functions used for creating a new user.
 use crate::up_msg_handler::login::login;
 use crate::{firebase, init_db, User};
 use aragog::query::{Comparison, Filter};
@@ -5,6 +6,14 @@ use aragog::{DatabaseRecord, Record};
 use fireauth::FireAuth;
 use shared::{DownMsg, LocalUser};
 
+/// The handler for creating a new user. Returns a DownMsg containing a user if successful.
+/// If unsuccessful it returns a DownMsg containing an error message as a String.
+///
+/// # Arguments
+/// * `auth` - A FireAuth object holding the connection to Firebase as defined in "firebase" module.
+/// * `email` - A String holding the user's email.
+/// * `password` - A String holding the user's password.
+/// * `username` - A String holding the user's username.
 pub async fn handler(auth: FireAuth, email: String, password: String, username: String) -> DownMsg {
     if !check_username_unique(username.clone()).await {
         return DownMsg::RegistrationError("Invalid username".to_string());
@@ -23,6 +32,14 @@ pub async fn handler(auth: FireAuth, email: String, password: String, username: 
     }
 }
 
+/// Creates new user in Firebase using FireAuth crate.
+/// Returns a tuple consisting of a String message and a LocalUser object if successful,
+/// and a message if unsuccessful.
+///
+/// # Arguments
+/// * `auth` - A FireAuth object holding the connection to Firebase as defined in "firebase" module.
+/// * `email` - A String holding the user's email.
+/// * `password` - A String holding the user's password.
 pub async fn register(auth: FireAuth, email: String, password: String) -> (String, LocalUser) {
     let mut user = LocalUser::new_empty();
     let mut res: String = "".to_string();
@@ -40,12 +57,23 @@ pub async fn register(auth: FireAuth, email: String, password: String) -> (Strin
     (res, user)
 }
 
+/// Creates the user in ArangoDB database using Aragog crate.
+///
+/// # Arguments
+/// * `id` - A String holding the user's id that was generated in Firebase.
+/// * `email` - A String holding the user's email.
+/// * `username` - A String holding the user's username.
 async fn create_user_in_db(id: String, email: String, username: String) {
     let conn = crate::init_db().await;
     let db_user = User::new(id, email, username);
     DatabaseRecord::create(db_user, &conn).await.unwrap();
 }
 
+/// Returns <code>true</code> if the username is unique.
+/// Returns <code>false</code> if the username is taken.
+///
+/// # Arguments
+/// * `username` - A String holding the username the user wants.
 async fn check_username_unique(username: String) -> bool {
     let conn = init_db().await;
     let query = User::query().filter(Filter::new(
