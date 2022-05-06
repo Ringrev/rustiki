@@ -42,7 +42,7 @@ pub async fn login(
     match auth.sign_in_email(&*email, &*password, true).await {
         Ok(response) => {
             res = String::from("Ok");
-            println!("{:?}", response);
+            // println!("{:?}", response);
             user.id = response.local_id.to_string();
             user.email = response.email.to_string();
             user.username = get_username(user.id.clone(), db_conn).await;
@@ -111,7 +111,6 @@ mod login_test {
                 .unwrap()
         });
         let firebase = aw!(firebase::init());
-        thread::sleep(Duration::from_millis(1000));
         let (result, user) = aw!(login::login(
             firebase,
             "test@testing.com".to_string(),
