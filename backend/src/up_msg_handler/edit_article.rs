@@ -1,7 +1,7 @@
 //! Defines functions used for editing articles in database.
 use crate::Article;
 use aragog::query::{Comparison, Filter};
-use aragog::Record;
+use aragog::{DatabaseConnection, Record};
 use shared::DownMsg;
 
 /// The handler for updating an article in DB. Returns a DownMsg indicating the article was updated.
@@ -18,8 +18,17 @@ pub async fn handler(
     new_content: String,
     new_contributors: Vec<String>,
     new_tags: Vec<String>,
+    db_conn: &DatabaseConnection,
 ) -> DownMsg {
-    update_in_db(id, new_title, new_content, new_contributors, new_tags).await;
+    update_in_db(
+        id,
+        new_title,
+        new_content,
+        new_contributors,
+        new_tags,
+        db_conn,
+    )
+    .await;
     DownMsg::ArticleUpdated
 }
 
@@ -37,15 +46,14 @@ async fn update_in_db(
     new_content: String,
     new_contributors: Vec<String>,
     new_tags: Vec<String>,
+    db_conn: &DatabaseConnection,
 ) {
-    let conn = crate::init_db().await;
-
     let query = Article::query().filter(Filter::new(Comparison::field("id").equals(id)));
-    let mut art = Article::get(query, &conn).await.unwrap().uniq().unwrap();
+    let mut art = Article::get(query, db_conn).await.unwrap().uniq().unwrap();
     art.title = new_title;
     art.content = new_content;
     art.tags = new_tags;
     art.contributors = new_contributors;
     art.updated_time = super::get_time();
-    let result = art.save(&conn).await.unwrap();
+    let result = art.save(db_conn).await.unwrap();
 }

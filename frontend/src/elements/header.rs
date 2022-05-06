@@ -1,5 +1,5 @@
 //! Defines the header of the website.
-use crate::app::{logged_user_name};
+use crate::app::logged_user_name;
 use crate::elements::button;
 use crate::pages::home_page;
 use crate::router::router;

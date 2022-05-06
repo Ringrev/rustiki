@@ -1,9 +1,9 @@
 //! Defines the content and operations for view edit article page.
+use crate::app;
 use crate::elements::button;
 use crate::pages::edit_article_page;
 use crate::router::{router, Route};
-use crate::app;
-use shared::{LocalArticle};
+use shared::LocalArticle;
 use zoon::named_color::*;
 use zoon::*;
 
@@ -167,8 +167,7 @@ fn contributors_view() -> impl Element {
 
 /// Returns a Row representing the visual design of a single author/tag/contributor.
 fn label_template(text: String) -> impl Element {
-    Row::new()
-        .item(
+    Row::new().item(
         Label::new()
             .label(text)
             .s(Padding::new().x(10))
@@ -194,13 +193,15 @@ fn labels_view(text: &str, item: impl Element) -> impl Element {
 /// Returns a Column representing visual display of time article was created and updated.
 fn time_view() -> impl Element {
     Column::new()
-        .item(
-            time_text("Last updated: ", view_article().get_cloned().updated_time.as_str())
-        )
+        .item(time_text(
+            "Last updated: ",
+            view_article().get_cloned().updated_time.as_str(),
+        ))
         .s(Padding::new().bottom(5))
-        .item(
-            time_text("Created: ", view_article().get_cloned().created_time.as_str())
-        )
+        .item(time_text(
+            "Created: ",
+            view_article().get_cloned().created_time.as_str(),
+        ))
         .s(Align::left(Default::default()))
 }
 
@@ -211,7 +212,6 @@ fn time_view() -> impl Element {
 /// * `time` - The time to display.
 fn time_text(label: &str, time: &str) -> impl Element {
     Paragraph::new()
-        .content(label.to_string()
-            + time)
+        .content(label.to_string() + time)
         .s(Font::new().size(12))
 }

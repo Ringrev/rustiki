@@ -25,7 +25,6 @@ pub enum UpMsg {
         author: String,
         tags: Vec<String>,
     },
-    // org_title input needs to be replaced with ID when the Article object is expanded to include ID
     EditArticle {
         id: u32,
         new_title: String,
@@ -33,7 +32,6 @@ pub enum UpMsg {
         new_contributors: Vec<String>,
         new_tags: Vec<String>,
     },
-    // This input needs to be replaced with ID when the Article object is expanded to include ID
     RemoveArticle {
         id: u32,
     },

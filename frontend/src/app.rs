@@ -105,11 +105,13 @@ pub fn root() -> impl Element {
         .s(Height::screen())
         .s(Width::fill())
         .item(header())
-        .item(Column::new()
-            .s(Height::fill())
-            .s(Scrollbars::both())
-            .item(page())
-            .item(footer()))
+        .item(
+            Column::new()
+                .s(Height::fill())
+                .s(Scrollbars::both())
+                .item(page())
+                .item(footer()),
+        )
 }
 
 /// When the route changes, this function changes the displayed page.

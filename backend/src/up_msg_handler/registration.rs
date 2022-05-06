@@ -1,8 +1,8 @@
 //! Defines functions used for creating a new user.
 use crate::up_msg_handler::login::login;
-use crate::{firebase, init_db, User};
+use crate::{firebase, User};
 use aragog::query::{Comparison, Filter};
-use aragog::{DatabaseRecord, Record};
+use aragog::{DatabaseConnection, DatabaseRecord, Record};
 use fireauth::FireAuth;
 use shared::{DownMsg, LocalUser};
 
@@ -14,14 +14,20 @@ use shared::{DownMsg, LocalUser};
 /// * `email` - A String holding the user's email.
 /// * `password` - A String holding the user's password.
 /// * `username` - A String holding the user's username.
-pub async fn handler(auth: FireAuth, email: String, password: String, username: String) -> DownMsg {
-    if !check_username_unique(username.clone()).await {
+pub async fn handler(
+    auth: FireAuth,
+    email: String,
+    password: String,
+    username: String,
+    db_conn: &DatabaseConnection,
+) -> DownMsg {
+    if !check_username_unique(username.clone(), db_conn).await {
         return DownMsg::RegistrationError("Invalid username".to_string());
     }
     let (res, user) = register(auth, email.clone(), password.clone()).await;
     if res.eq("Ok") {
-        create_user_in_db(user.id, email.clone(), username).await;
-        let (result, user) = login(firebase::init().await, email.clone(), password).await;
+        create_user_in_db(user.id, email.clone(), username, db_conn).await;
+        let (result, user) = login(firebase::init().await, email.clone(), password, db_conn).await;
         if result.eq("Ok") {
             DownMsg::LoggedIn(user.clone())
         } else {
@@ -63,10 +69,14 @@ pub async fn register(auth: FireAuth, email: String, password: String) -> (Strin
 /// * `id` - A String holding the user's id that was generated in Firebase.
 /// * `email` - A String holding the user's email.
 /// * `username` - A String holding the user's username.
-async fn create_user_in_db(id: String, email: String, username: String) {
-    let conn = crate::init_db().await;
+async fn create_user_in_db(
+    id: String,
+    email: String,
+    username: String,
+    db_conn: &DatabaseConnection,
+) {
     let db_user = User::new(id, email, username);
-    DatabaseRecord::create(db_user, &conn).await.unwrap();
+    DatabaseRecord::create(db_user, db_conn).await.unwrap();
 }
 
 /// Returns <code>true</code> if the username is unique.
@@ -74,12 +84,11 @@ async fn create_user_in_db(id: String, email: String, username: String) {
 ///
 /// # Arguments
 /// * `username` - A String holding the username the user wants.
-async fn check_username_unique(username: String) -> bool {
-    let conn = init_db().await;
+async fn check_username_unique(username: String, db_conn: &DatabaseConnection) -> bool {
     let query = User::query().filter(Filter::new(
         Comparison::field("username").equals_str(username.as_str()),
     ));
-    let user_record = User::get(query, &conn).await.unwrap();
+    let user_record = User::get(query, db_conn).await.unwrap();
     if user_record.is_empty() {
         true
     } else {

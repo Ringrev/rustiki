@@ -1,7 +1,7 @@
 //! Defines functions used for adding an article to database.
 use crate::Article;
 use aragog::query::{Comparison, Filter};
-use aragog::{DatabaseRecord, Record};
+use aragog::{DatabaseConnection, DatabaseRecord, Record};
 use rand::Rng;
 use shared::DownMsg;
 
@@ -12,8 +12,14 @@ use shared::DownMsg;
 /// * `content` - A String holding the content of the article.
 /// * `author` - A String holding the author of the article.
 /// * `tags` - A vector of Strings holding the article's tags.
-pub async fn handler(title: String, content: String, author: String, tags: Vec<String>) -> DownMsg {
-    create_article_in_db(title, content, author, tags).await;
+pub async fn handler(
+    title: String,
+    content: String,
+    author: String,
+    tags: Vec<String>,
+    db_conn: &DatabaseConnection,
+) -> DownMsg {
+    create_article_in_db(title, content, author, tags, db_conn).await;
     // TODO: ArticleAdded enum might as well not return any arguments.
     DownMsg::ArticleAdded("".to_string())
 }
@@ -30,10 +36,10 @@ pub async fn create_article_in_db(
     content: String,
     author: String,
     tags: Vec<String>,
+    db_conn: &DatabaseConnection,
 ) {
-    let conn = crate::init_db().await;
     let db_article = Article::new(
-        generate_id().await,
+        generate_id(db_conn).await,
         title,
         content,
         vec![],
@@ -42,17 +48,17 @@ pub async fn create_article_in_db(
         super::get_time(),
         super::get_time(),
     );
-    DatabaseRecord::create(db_article, &conn).await.unwrap();
+    DatabaseRecord::create(db_article, db_conn).await.unwrap();
 }
 
 /// Returns an id as u32 when the generated id is unique.
-async fn generate_id() -> u32 {
+async fn generate_id(db_conn: &DatabaseConnection) -> u32 {
     let mut rand = rand::thread_rng();
     let mut id: u32 = 0;
     let mut checking = true;
     while checking {
         id = rand.gen::<u32>();
-        if check_id_unique(id.clone()).await {
+        if check_id_unique(id.clone(), db_conn).await {
             checking = false;
         }
     }
@@ -64,11 +70,9 @@ async fn generate_id() -> u32 {
 ///
 /// # Arguments
 /// * `id` - A u32 value holding an id.
-async fn check_id_unique(id: u32) -> bool {
-    let conn = crate::init_db().await;
-
+async fn check_id_unique(id: u32, db_conn: &DatabaseConnection) -> bool {
     let query = Article::query().filter(Filter::new(Comparison::field("id").equals(id)));
-    let art = Article::get(query, &conn).await.unwrap();
+    let art = Article::get(query, db_conn).await.unwrap();
     if art.is_empty() {
         true
     } else {

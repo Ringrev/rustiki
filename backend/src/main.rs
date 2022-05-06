@@ -1,16 +1,30 @@
 //! Defines main entry point, forwards requests to handlers, and defines structs.
 mod firebase;
 mod up_msg_handler;
+use crate::futures::stream::Once;
 use aragog::{DatabaseConnection, Record};
 use moon::*;
+use once_cell::sync::OnceCell;
 use shared::UpMsg;
+
+pub static DB: OnceCell<DatabaseConnection> = OnceCell::new();
+
+// ------ ------
+//     Start
+// ------ ------
 
 /// Starts backend app.
 #[moon::main]
 async fn main() -> std::io::Result<()> {
+    let db = DatabaseConnection::builder().build().await.unwrap();
+    DB.set(db).unwrap();
     start(frontend, up_msg_handler, |_| {}).await?;
     Ok(())
 }
+
+// ------ ------
+//     Commands
+// ------ ------
 
 /// Returns a Frontend element.
 async fn frontend() -> Frontend {
@@ -18,7 +32,7 @@ async fn frontend() -> Frontend {
         .lang(Lang::English)
         .title("Rustiki")
         .append_to_head(
-        "
+            "
         <style>
             html {
                 background-color: white;
@@ -27,7 +41,7 @@ async fn frontend() -> Frontend {
 
         </style>
    ",
-    )
+        )
 }
 
 /// Forwards UpMsgRequests received from frontend to "up_msg_handler" module.
@@ -49,10 +63,9 @@ async fn up_msg_handler(req: UpMsgRequest<UpMsg>) {
     println!("Cannot find the session with id `{}`", session_id);
 }
 
-/// Returns a connection to ArangoDB.
-async fn init_db() -> DatabaseConnection {
-    DatabaseConnection::builder().build().await.unwrap()
-}
+// ------ ------
+//     Types
+// ------ ------
 
 /// This struct must be used to send and receive objects to and from database
 /// instead of LocalArticle struct in shared folder. This is

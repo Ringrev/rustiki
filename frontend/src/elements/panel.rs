@@ -49,7 +49,6 @@ pub fn input_label(id: &str, label_text: &str) -> impl Element {
         .label(label_text)
 }
 
-
 /// Returns a single-line TextInput element.
 ///
 /// # Arguments

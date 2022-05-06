@@ -1,10 +1,5 @@
 //! Defines frontend modules and the entry point of the app.
-
 use zoon::*;
-
-// ------ ------
-//    Modules
-// ------ ------
 
 mod app;
 mod connection;

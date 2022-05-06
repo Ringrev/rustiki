@@ -1,6 +1,6 @@
 //! Defines different reusable dialogs.
+use crate::router::{router, Route};
 use zoon::*;
-use crate::router::{Route, router};
 
 /// Makes a dialog pop up on the screen
 ///
@@ -25,9 +25,7 @@ pub fn confirm_dialog(text: &str) -> bool {
 /// If user confirms they want to cancel, they are sent to front page.
 /// If user cancels the operation, they stay on current page.
 pub fn cancel() {
-    if confirm_dialog(
-        "Your changes will not be saved. Are you sure you want to leave the page?",
-    ) {
+    if confirm_dialog("Your changes will not be saved. Are you sure you want to leave the page?") {
         router().go(Route::Home);
     } else {
         return;

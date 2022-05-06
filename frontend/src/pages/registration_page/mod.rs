@@ -1,11 +1,11 @@
 //! Defines the content and operations for registration page.
 use crate::connection;
 use crate::elements::button;
+use crate::elements::layouts;
 use crate::elements::panel;
 use shared::UpMsg;
 use zoon::named_color::GRAY_0;
 use zoon::*;
-use crate::elements::layouts;
 
 mod view;
 

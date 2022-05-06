@@ -144,5 +144,3 @@ fn publish_button() -> impl Element {
 fn cancel_button() -> impl Element {
     button::button("cancel", "Cancel", dialogs::cancel)
 }
-
-
