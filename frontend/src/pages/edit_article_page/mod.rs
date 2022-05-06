@@ -3,7 +3,6 @@ use crate::app::logged_user_name;
 use crate::connection;
 use crate::elements::dialogs::*;
 use crate::elements::{button, dialogs, panel, tags};
-use crate::router::{router, Route};
 use shared::{LocalArticle, UpMsg};
 use zoon::named_color::GRAY_0;
 use zoon::*;

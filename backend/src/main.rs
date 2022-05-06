@@ -1,7 +1,6 @@
 //! Defines main entry point, forwards requests to handlers, and defines structs.
 mod firebase;
 mod up_msg_handler;
-use crate::futures::stream::Once;
 use aragog::{DatabaseConnection, Record};
 use moon::*;
 use once_cell::sync::OnceCell;

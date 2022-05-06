@@ -71,12 +71,9 @@ async fn get_username(id: String, db_conn: &DatabaseConnection) -> String {
 #[cfg(test)]
 mod login_test {
     use crate::firebase;
-    use crate::up_msg_handler::login;
+    use super::*;
     use aragog::DatabaseConnection;
     use fireauth::FireAuth;
-    use moon::tokio::task::futures::TaskLocalFuture;
-    use std::thread;
-    use std::time::Duration;
 
     macro_rules! aw {
         ($e:expr) => {
@@ -93,7 +90,7 @@ mod login_test {
                 .await
                 .unwrap()
         });
-        let username = aw!(login::get_username(
+        let username = aw!(get_username(
             "ILyhoFJJRHUoivxKyyCZvL04aj63".to_string(),
             &conn
         ));
@@ -111,7 +108,7 @@ mod login_test {
                 .unwrap()
         });
         let firebase = aw!(firebase::init());
-        let (result, user) = aw!(login::login(
+        let (result, user) = aw!(login(
             firebase,
             "test@testing.com".to_string(),
             "password".to_string(),

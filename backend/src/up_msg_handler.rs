@@ -1,7 +1,5 @@
 //! Handles requests received from frontend crate.
 use crate::firebase::init;
-use aragog::DatabaseConnection;
-use moon::parking_lot::RwLock;
 use moon::*;
 use shared::{DownMsg, UpMsg};
 use std::time::SystemTime;

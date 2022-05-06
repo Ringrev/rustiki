@@ -3,7 +3,6 @@ use crate::elements::button;
 use crate::elements::dialogs;
 use crate::elements::panel;
 use crate::elements::tags;
-use crate::router::{router, Route};
 use crate::{app, connection};
 use shared::UpMsg;
 use zoon::named_color::GRAY_0;
