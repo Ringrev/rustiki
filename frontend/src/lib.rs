@@ -6,11 +6,11 @@ use zoon::*;
 //    Modules
 // ------ ------
 
-pub mod app;
-pub mod connection;
-pub mod elements;
-pub mod pages;
-pub mod router;
+mod app;
+mod connection;
+mod elements;
+mod pages;
+mod router;
 
 // ------ ------
 //     Start
