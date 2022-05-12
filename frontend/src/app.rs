@@ -30,11 +30,13 @@ pub fn logged_user_name() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
-/// The state of authentication token. Initialized with no value.
-/// Set to a String token when a user is logged in.
-#[static_ref]
-pub fn auth_token() -> &'static Mutable<Option<String>> {
-    Mutable::new(None)
+/// Authentication token.
+pub fn auth_token() -> Option<AuthToken> {
+    if logged_in_user().get_cloned().is_some() {
+        Some(AuthToken::new(logged_in_user().get_cloned().unwrap().auth_token))
+    } else {
+        None
+    }
 }
 
 // The state of the current page. Initialized with unknown page.
@@ -58,7 +60,7 @@ pub fn is_user_logged_signal() -> impl Signal<Item = bool> {
 
 /// Removes token and user info so the user is logged out of the site
 pub fn log_out() {
-    auth_token().set(None);
+    // auth_token().set(None);
     logged_in_user().set(None);
     logged_user_name().set("".to_string());
 }
@@ -67,7 +69,7 @@ pub fn log_out() {
 pub fn set_logged_in_user_and_token(user: LocalUser) {
     logged_in_user().set(Some(user.clone()));
     logged_user_name().set(Some(user.clone()).unwrap().username);
-    auth_token().set(Some(user.clone().auth_token));
+    // auth_token().set(Some(user.clone().auth_token));
     router().go(Route::Home);
 }
 
