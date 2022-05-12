@@ -100,7 +100,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "465a6172cf69b960917811022d8f29bc0b7fa1398bc4f78b3c466673db1213b6"
 dependencies = [
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
@@ -233,7 +233,7 @@ dependencies = [
  "actix-router",
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
@@ -296,7 +296,7 @@ dependencies = [
  "proc-macro-error",
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
@@ -328,9 +328,9 @@ checksum = "619743e34b5ba4e9703bba34deac3427c72507c7159f5fd030aea8cac0cfe341"
 
 [[package]]
 name = "async-compression"
-version = "0.3.13"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8589c784ff02ac80dafc5e4116c3a2a3743ac5e0c902483518a88eec6559cf99"
+checksum = "f2bf394cfbbe876f0ac67b13b6ca819f9c9f2fb9ec67223cceb1555fbab1c31a"
 dependencies = [
  "flate2",
  "futures-core",
@@ -357,7 +357,7 @@ checksum = "10f203db73a71dfa2fb6dd22763990fa26f3d2625a6da2da900d23b87d26be27"
 dependencies = [
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
@@ -368,7 +368,7 @@ checksum = "ed6aa3524a2dfcf9fe180c51eae2b58738348d819517ceadf95789c51fff7600"
 dependencies = [
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
@@ -599,7 +599,7 @@ dependencies = [
  "proc-macro2 1.0.38",
  "quote 1.0.18",
  "rustc_version",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
@@ -814,14 +814,14 @@ checksum = "33c1e13800337f4d4d7a316bf45a567dbcb6ffe087f16424852d97e97a91f512"
 dependencies = [
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
 name = "futures-signals"
-version = "0.3.27"
+version = "0.3.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5be068e31e89c6c79c1c35450f94223779d647c20578d602d8651f7a14a5602e"
+checksum = "e18281f1d9030f82f599f44e3d7f4be7f46dc8e58aef09d054004e6c079d2373"
 dependencies = [
  "discard",
  "futures-channel",
@@ -952,7 +952,7 @@ version = "0.1.0"
 source = "git+https://github.com/MoonZoon/MoonZoon?rev=5769c15#5769c15d6376ce591120c994764809c1a65ed7bd"
 dependencies = [
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
@@ -1183,7 +1183,7 @@ checksum = "6007f9dad048e0a224f27ca599d669fca8cfa0dac804725aab542b2eb032bce6"
 dependencies = [
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
@@ -1458,7 +1458,7 @@ checksum = "b501e44f11665960c7e7fcf062c7d96a14ade4aa98116c004b2e37b5be7d736c"
 dependencies = [
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
@@ -1588,7 +1588,7 @@ checksum = "744b6f092ba29c3650faf274db506afd39944f48420f6c86b17cfe0ee1cb36bb"
 dependencies = [
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
@@ -1624,7 +1624,7 @@ dependencies = [
  "proc-macro-error-attr",
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
  "version_check",
 ]
 
@@ -1937,7 +1937,7 @@ source = "git+https://github.com/MoonZoon/MoonZoon?rev=5769c15#5769c15d6376ce591
 dependencies = [
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
  "urlencoding",
 ]
 
@@ -2078,7 +2078,7 @@ checksum = "1f26faba0c3959972377d3b2d306ee9f71faee9714294e41bb777f83f88578be"
 dependencies = [
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
@@ -2177,12 +2177,12 @@ checksum = "f2dd574626839106c320a323308629dcb1acfc96e32a8cba364ddc61ac23ee83"
 
 [[package]]
 name = "socket2"
-version = "0.4.4"
+version = "0.4.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "66d72b759436ae32898a2af0a14218dbf55efde3feeb170eb623637db85ee1e0"
+checksum = "ca642ba17f8b2995138b1d7711829c92e98c0a25ea019de790f4f09279c4e296"
 dependencies = [
  "libc",
- "winapi",
+ "windows-sys",
 ]
 
 [[package]]
@@ -2204,7 +2204,7 @@ source = "git+https://github.com/MoonZoon/MoonZoon?rev=5769c15#5769c15d6376ce591
 dependencies = [
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
@@ -2226,7 +2226,7 @@ dependencies = [
  "proc-macro2 1.0.38",
  "quote 1.0.18",
  "rustversion",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
@@ -2242,9 +2242,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "1.0.93"
+version = "1.0.92"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "04066589568b72ec65f42d65a1a52436e954b168773148893c020269563decf2"
+checksum = "7ff7c592601f11445996a06f8ad0c27f094a58857c2f89e97974ab9235b92c52"
 dependencies = [
  "proc-macro2 1.0.38",
  "quote 1.0.18",
@@ -2291,7 +2291,7 @@ checksum = "0396bc89e626244658bef819e22d0cc459e795a5ebe878e6ec336d1674a8d79a"
 dependencies = [
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
@@ -2449,7 +2449,7 @@ checksum = "cc6b8ad3567499f98a1db7a752b07a7c8c7c7c34c332ec00effb2b0027974b7c"
 dependencies = [
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
@@ -2469,7 +2469,7 @@ checksum = "875c4c873cc824e362fa9a9419ffa59807244824275a44ad06fec9684fff08f2"
 dependencies = [
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
@@ -2486,7 +2486,7 @@ checksum = "a46ee5bd706ff79131be9c94e7edcb82b703c487766a114434e5790361cf08c5"
 dependencies = [
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
 ]
 
 [[package]]
@@ -2630,7 +2630,7 @@ dependencies = [
  "log",
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
  "wasm-bindgen-shared",
 ]
 
@@ -2664,7 +2664,7 @@ checksum = "99ec0dc7a4756fffc231aab1b9f2f578d23cd391390ab27f952ae0c9b3ece20b"
 dependencies = [
  "proc-macro2 1.0.38",
  "quote 1.0.18",
- "syn 1.0.93",
+ "syn 1.0.92",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
@@ -2801,7 +2801,7 @@ version = "0.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "58acfb8832e9f707f8997bd161e537a1c1f603e60a5bd9c3cf53484fdcc998f3"
 dependencies = [
- "syn 1.0.93",
+ "syn 1.0.92",
  "windows_gen",
 ]
 
