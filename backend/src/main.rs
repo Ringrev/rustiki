@@ -1,7 +1,7 @@
 //! Defines main entry point, forwards requests to handlers, and defines structs.
 mod firebase;
 mod up_msg_handler;
-use aragog::{DatabaseConnection, Record};
+use aragog::{AuthMode, DatabaseConnection, Record};
 use moon::*;
 use once_cell::sync::OnceCell;
 use shared::UpMsg;
@@ -15,7 +15,7 @@ pub static DB: OnceCell<DatabaseConnection> = OnceCell::new();
 /// Starts backend app.
 #[moon::main]
 async fn main() -> std::io::Result<()> {
-    let db = DatabaseConnection::builder().build().await.unwrap();
+    let db = DatabaseConnection::builder().with_auth_mode(AuthMode::Jwt).build().await.unwrap();
     DB.set(db).unwrap();
     start(frontend, up_msg_handler, |_| {}).await?;
     Ok(())

@@ -13,9 +13,7 @@ edition = "2021"
 moon = { git = "https://github.com/MoonZoon/MoonZoon", rev="5769c15" }
 shared = { path = "../shared" }
 fireauth = "0.1.5"
-anyhow = "1.0.56"
 aragog = "0.16.1"
-rust_arango = { version = "0.1" }
 serde = "1.0.136"
 rand = "0.8.5"
 tokio-test = "0.4.2"
