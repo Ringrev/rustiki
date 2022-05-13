@@ -3,7 +3,6 @@ use crate::elements::button;
 use crate::elements::layouts::common_layout;
 use crate::elements::{layouts, panel};
 use crate::pages::registration_page;
-use zoon::named_color::GRAY_0;
 use zoon::*;
 
 /// Returns a Column representing the whole registration page.

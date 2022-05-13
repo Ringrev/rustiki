@@ -4,7 +4,6 @@ use crate::elements::dialogs;
 use crate::elements::layouts::{common_layout, edit_layout};
 use crate::elements::panel;
 use crate::elements::tags;
-use zoon::named_color::GRAY_0;
 use zoon::*;
 
 /// Returns a Column representing the whole create article page.

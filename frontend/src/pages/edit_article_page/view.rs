@@ -1,7 +1,6 @@
 //! Defines the visual content for create edit article page.
 use crate::elements::layouts::{common_layout, edit_layout};
 use crate::elements::{button, dialogs, panel};
-use zoon::named_color::GRAY_0;
 use zoon::*;
 
 /// Returns a Column representing the whole edit article page.

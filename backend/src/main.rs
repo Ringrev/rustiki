@@ -2,7 +2,7 @@
 mod firebase;
 mod models;
 mod up_msg_handler;
-use aragog::{AuthMode, DatabaseConnection};
+use aragog::DatabaseConnection;
 use moon::*;
 use once_cell::sync::OnceCell;
 use shared::UpMsg;
@@ -21,10 +21,6 @@ async fn main() -> std::io::Result<()> {
     start(frontend, up_msg_handler, |_| {}).await?;
     Ok(())
 }
-
-// ------ ------
-//     Init
-// ------ ------
 
 /// Returns a Frontend element.
 async fn frontend() -> Frontend {

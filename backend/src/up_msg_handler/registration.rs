@@ -53,8 +53,6 @@ pub async fn register(auth: FireAuth, email: String, password: String) -> (Strin
     match auth.sign_up_email(&*email, &*password, true).await {
         Ok(response) => {
             res = String::from("Ok");
-            println!("{:?}", response);
-
             user.id = response.local_id.to_string().clone();
             user.email = response.email.to_string();
             user.auth_token = response.id_token.to_string();
@@ -94,5 +92,45 @@ async fn check_username_unique(username: String, db_conn: &DatabaseConnection) -
         true
     } else {
         false
+    }
+}
+
+// ------ ------
+//     Tests
+// ------ ------
+
+#[cfg(test)]
+mod registration_test {
+    use super::*;
+    use crate::firebase;
+    use aragog::DatabaseConnection;
+    use fireauth::FireAuth;
+
+    macro_rules! aw {
+        ($e:expr) => {
+            tokio_test::block_on($e)
+        };
+    }
+
+    #[test]
+    fn test_username_unique() {
+        let conn = aw!(async {
+            DatabaseConnection::builder()
+                .with_schema_path("config/db/schema.yaml")
+                .build()
+                .await
+                .unwrap()
+        });
+        let res = aw!(check_username_unique("test".to_string(), &conn));
+        assert_eq!(res.clone(), false);
+        println!("Expected 'false', got {}", res);
+    }
+
+    #[test]
+    fn test_register() {
+        let firebase = aw!(firebase::init());
+        let (res, user) = aw!(register(firebase, "test@test.com".to_string(), "password".to_string()));
+        assert_eq!(res.clone(), "Invalid email".to_string());
+        println!("Expected 'Invalid email', got {}", res);
     }
 }
