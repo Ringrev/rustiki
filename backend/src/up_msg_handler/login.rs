@@ -1,5 +1,5 @@
 //! Defines functions used for logging in user.
-use crate::User;
+use crate::models::User;
 use aragog::query::{Comparison, Filter};
 use aragog::{DatabaseConnection, Record};
 use fireauth::FireAuth;
@@ -70,8 +70,8 @@ async fn get_username(id: String, db_conn: &DatabaseConnection) -> String {
 
 #[cfg(test)]
 mod login_test {
-    use crate::firebase;
     use super::*;
+    use crate::firebase;
     use aragog::DatabaseConnection;
     use fireauth::FireAuth;
 

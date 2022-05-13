@@ -32,5 +32,6 @@ pub fn connection() -> &'static Connection<UpMsg, DownMsg> {
                 router().go(Route::Home);
             }
         }
-    }).auth_token_getter(app::auth_token)
+    })
+    .auth_token_getter(app::auth_token)
 }

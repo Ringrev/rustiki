@@ -1,10 +1,6 @@
-//! Defines the content and operations for registration page.
+//! Defines the non-visual content and operations for registration page.
 use crate::connection;
-use crate::elements::button;
-use crate::elements::layouts;
-use crate::elements::panel;
 use shared::UpMsg;
-use zoon::named_color::GRAY_0;
 use zoon::*;
 
 mod view;
@@ -76,6 +72,14 @@ fn set_retyped_password(retyped_password: String) {
 //     Commands
 // ------ ------
 
+/// Makes sure input fields are cleared.
+fn clear_inputs() {
+    email_text().set("".to_string());
+    user_name_text().set("".to_string());
+    password_text().set("".to_string());
+    retyped_password_text().set("".to_string());
+}
+
 /// Returns <code>true</code> if passwords are the same.
 /// Returns <code>false</code> if passwords are different.
 fn passwords_match() -> bool {
@@ -124,102 +128,6 @@ fn register_user() {
 //     View
 // ------ ------
 
-// TODO: Use when moving view functions into view module
-// pub fn view() -> RawElement {
-//     view::page().into_raw_element()
-// }
-
-/// Makes sure input fields are cleared.
-fn clear_inputs() {
-    email_text().set("".to_string());
-    user_name_text().set("".to_string());
-    password_text().set("".to_string());
-    retyped_password_text().set("".to_string());
-}
-
-/// Returns a Column representing the whole registration page.
-pub fn page() -> impl Element {
-    clear_inputs();
-    Column::new()
-        .s(Align::center())
-        .s(Width::new(800))
-        .s(Background::new().color(GRAY_0))
-        .item(
-            Column::new()
-                .s(Align::center())
-                .s(Padding::new().x(100).y(20))
-                .item(layouts::title_view("Create a user account"))
-                .item(email_panel())
-                .item(user_name_panel())
-                .item(password_panel())
-                .item(retyped_password_panel())
-                .item(Text::with_signal(error_message().signal_cloned())),
-        )
-        .item(button_panel())
-}
-
-/// Returns a Column containing a label and TextInput element as defined in "elements::panel" module.
-fn email_panel() -> impl Element {
-    let id = "user_name_input";
-    panel::input_panel(
-        id,
-        "Email address:",
-        set_email,
-        "Your email address ",
-        InputType::text(),
-        email_text().signal_cloned(),
-        None,
-    )
-}
-
-/// Returns a Column containing a label and TextInput element as defined in "elements::panel" module.
-fn user_name_panel() -> impl Element {
-    let id = "user_name_input";
-    panel::input_panel(
-        id,
-        "Username:",
-        set_user_name,
-        "Choose a username",
-        InputType::text(),
-        user_name_text().signal_cloned(),
-        None,
-    )
-}
-
-/// Returns a Column containing a label and TextInput element as defined in "elements::panel" module.
-fn password_panel() -> impl Element {
-    let id = "password_input";
-    panel::input_panel(
-        id,
-        "Password:",
-        set_password,
-        "Your password",
-        InputType::password(),
-        password_text().signal_cloned(),
-        None,
-    )
-}
-
-/// Returns a Column containing a label and TextInput element as defined in "elements::panel" module.
-fn retyped_password_panel() -> impl Element {
-    let id = "retyped_password_input";
-    panel::input_panel(
-        id,
-        "Confirm password:",
-        set_retyped_password,
-        "Type password again",
-        InputType::password(),
-        retyped_password_text().signal_cloned(),
-        Some(register_user),
-    )
-}
-
-/// Returns a Row containing register_button().
-fn button_panel() -> impl Element {
-    Row::new().item(register_button()).s(Align::center())
-}
-
-/// Returns a Button element as defined in "elements::button" module.
-fn register_button() -> impl Element {
-    button::button("register_user", "Register", register_user)
+pub fn view() -> RawElement {
+    view::page().into_raw_element()
 }

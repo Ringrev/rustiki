@@ -1,5 +1,5 @@
 //! Defines functions used for getting articles from database.
-use crate::Article;
+use crate::models::Article;
 use aragog::*;
 use shared::{DownMsg, LocalArticle};
 use std::u32;

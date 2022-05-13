@@ -55,6 +55,10 @@ pub async fn handler(req: UpMsgRequest<UpMsg>) -> Result<DownMsg, Option<DownMsg
     })
 }
 
+// ------ ------
+//     Helpers
+// ------ ------
+
 /// Returns current time as a String.
 fn get_time() -> String {
     let system_time = SystemTime::now();

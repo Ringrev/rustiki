@@ -1,5 +1,5 @@
 //! Defines functions used for adding an article to database.
-use crate::Article;
+use crate::models::Article;
 use aragog::query::{Comparison, Filter};
 use aragog::{DatabaseConnection, DatabaseRecord, Record};
 use rand::Rng;

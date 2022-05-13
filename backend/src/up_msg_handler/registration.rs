@@ -1,6 +1,7 @@
 //! Defines functions used for creating a new user.
+use crate::firebase;
+use crate::models::User;
 use crate::up_msg_handler::login::login;
-use crate::{firebase, User};
 use aragog::query::{Comparison, Filter};
 use aragog::{DatabaseConnection, DatabaseRecord, Record};
 use fireauth::FireAuth;

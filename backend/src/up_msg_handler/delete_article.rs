@@ -1,5 +1,5 @@
 //! Defines functions used for deleting articles from database.
-use crate::Article;
+use crate::models::Article;
 use aragog::query::{Comparison, Filter};
 use aragog::{DatabaseConnection, Record};
 use shared::DownMsg;

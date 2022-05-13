@@ -15,7 +15,6 @@ pub enum UpMsg {
         password: String,
         username: String,
     },
-    // Logout,
 
     //---- Article -----
     GetArticles,
@@ -46,7 +45,6 @@ pub enum DownMsg {
     LoginError(String),
     RegistrationError(String),
     LoggedIn(LocalUser),
-    // LoggedOut,
     // ------Article-----
     Articles(Vec<LocalArticle>),
     ArticleAdded(String),

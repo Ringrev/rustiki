@@ -79,7 +79,13 @@ pub fn text_input(
         .placeholder(Placeholder::new(placeholder))
         .input_type(input_type)
         .text_signal(text_signal)
-        .on_key_down_event(move |event| event.if_key(Key::Enter, on_key.unwrap()))
+        .on_key_down_event(move |event| {
+            event.if_key(Key::Enter, on_key.unwrap_or_else(|| on_key_do_nothing))
+        })
+}
+
+pub fn on_key_do_nothing() {
+    return;
 }
 
 /// Returns a column containing input_label and textarea_input.

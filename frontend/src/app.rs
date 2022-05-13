@@ -33,7 +33,9 @@ pub fn logged_user_name() -> &'static Mutable<String> {
 /// Authentication token.
 pub fn auth_token() -> Option<AuthToken> {
     if logged_in_user().get_cloned().is_some() {
-        Some(AuthToken::new(logged_in_user().get_cloned().unwrap().auth_token))
+        Some(AuthToken::new(
+            logged_in_user().get_cloned().unwrap().auth_token,
+        ))
     } else {
         None
     }
@@ -119,15 +121,15 @@ pub fn root() -> impl Element {
 /// When the route changes, this function changes the displayed page.
 fn page() -> impl Element {
     El::new().child_signal(page_name().signal().map(|page_name| match page_name {
-        PageName::Home => home_page::page().into_raw_element(),
+        PageName::Home => home_page::view(),
         PageName::Unknown => El::new().child("404").into_raw_element(),
-        PageName::EditArticle => edit_article_page::page().into_raw_element(),
-        PageName::NewArticle => create_article_page::page().into_raw_element(),
-        PageName::Registration => registration_page::page().into_raw_element(),
-        PageName::LogIn => log_in_page::page().into_raw_element(),
+        PageName::EditArticle => edit_article_page::view(),
+        PageName::NewArticle => create_article_page::view(),
+        PageName::Registration => registration_page::view(),
+        PageName::LogIn => log_in_page::view(),
         PageName::ViewArticle => {
             view_article_page::set_view_article(get_article_from_route());
-            view_article_page::page().into_raw_element()
+            view_article_page::view()
         }
     }))
 }
