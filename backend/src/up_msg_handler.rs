@@ -5,7 +5,7 @@ use shared::{DownMsg, UpMsg};
 use std::time::SystemTime;
 
 mod add_article;
-mod article;
+mod get_articles;
 mod delete_article;
 mod edit_article;
 mod login;
@@ -19,7 +19,7 @@ mod registration;
 pub async fn handler(req: UpMsgRequest<UpMsg>) -> Result<DownMsg, Option<DownMsg>> {
     let connection = &super::DB.get().unwrap();
     Ok(match req.up_msg {
-        UpMsg::GetArticles => article::handler(connection).await,
+        UpMsg::GetArticles => get_articles::handler(connection).await,
         UpMsg::Login { email, password } => {
             login::handler(init().await, email, password, connection).await
         }
