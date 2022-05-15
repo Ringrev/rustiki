@@ -1,5 +1,5 @@
 //! Defines functions used for logging in user.
-use crate::models::User;
+use crate::models::user::User;
 use aragog::query::{Comparison, Filter};
 use aragog::{DatabaseConnection, Record};
 use fireauth::FireAuth;

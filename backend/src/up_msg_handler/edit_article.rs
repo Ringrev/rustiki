@@ -1,5 +1,5 @@
 //! Defines functions used for editing articles in database.
-use crate::models::Article;
+use crate::models::article::Article;
 use aragog::query::{Comparison, Filter};
 use aragog::{DatabaseConnection, Record};
 use shared::DownMsg;

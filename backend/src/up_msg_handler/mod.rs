@@ -49,7 +49,7 @@ pub async fn handler(req: UpMsgRequest<UpMsg>) -> Result<DownMsg, Option<DownMsg
                 new_tags,
                 connection,
             )
-            .await
+                .await
         }
         UpMsg::RemoveArticle { id } => delete_article::handler(id, connection).await,
     })

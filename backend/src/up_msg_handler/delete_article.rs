@@ -1,5 +1,5 @@
 //! Defines functions used for deleting articles from database.
-use crate::models::Article;
+use crate::models::article::Article;
 use aragog::query::{Comparison, Filter};
 use aragog::{DatabaseConnection, Record};
 use shared::DownMsg;
@@ -20,6 +20,5 @@ pub async fn handler(id: u32, db_conn: &DatabaseConnection) -> DownMsg {
 async fn remove_from_db(id: u32, db_conn: &DatabaseConnection) {
     let query = Article::query().filter(Filter::new(Comparison::field("id").equals(id)));
     let mut art = Article::get(query, db_conn).await.unwrap().uniq().unwrap();
-    let result = art.delete(db_conn).await.unwrap();
-    result
+    art.delete(db_conn).await;
 }

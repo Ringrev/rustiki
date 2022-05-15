@@ -1,5 +1,5 @@
 //! Defines functions used for adding an article to database.
-use crate::models::Article;
+use crate::models::article::Article;
 use aragog::query::{Comparison, Filter};
 use aragog::{DatabaseConnection, DatabaseRecord, Record};
 use rand::Rng;
@@ -31,7 +31,7 @@ pub async fn handler(
 /// * `content` - A String holding the content of the article.
 /// * `author` - A String holding the author of the article.
 /// * `tags` - A vector of Strings holding the article's tags.
-pub async fn create_article_in_db(
+async fn create_article_in_db(
     title: String,
     content: String,
     author: String,

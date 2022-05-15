@@ -1,6 +1,6 @@
 //! Defines functions used for creating a new user.
 use crate::firebase;
-use crate::models::User;
+use crate::models::user::User;
 use crate::up_msg_handler::login::login;
 use aragog::query::{Comparison, Filter};
 use aragog::{DatabaseConnection, DatabaseRecord, Record};
@@ -47,7 +47,7 @@ pub async fn handler(
 /// * `auth` - A FireAuth object holding the connection to Firebase as defined in "firebase" module.
 /// * `email` - A String holding the user's email.
 /// * `password` - A String holding the user's password.
-pub async fn register(auth: FireAuth, email: String, password: String) -> (String, LocalUser) {
+async fn register(auth: FireAuth, email: String, password: String) -> (String, LocalUser) {
     let mut user = LocalUser::new_empty();
     let mut res: String = "".to_string();
     match auth.sign_up_email(&*email, &*password, true).await {
