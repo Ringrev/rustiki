@@ -15,6 +15,7 @@ pub fn connection() -> &'static Connection<UpMsg, DownMsg> {
             // ------ Auth ------
             DownMsg::LoggedIn(user) => app::set_logged_in_user_and_token(user),
             DownMsg::LoginError(string) => log_in_page::set_login_error(string),
+            DownMsg::RegistrationError(string) => registration_page::set_error_msg(string),
 
             // ----- Article -------
             DownMsg::Articles(vec) => home_page::set_articles(vec),
@@ -22,7 +23,6 @@ pub fn connection() -> &'static Connection<UpMsg, DownMsg> {
                 home_page::get_articles();
                 router().go(Route::Home);
             }
-            DownMsg::RegistrationError(string) => registration_page::set_error_msg(string),
             DownMsg::ArticleUpdated => {
                 home_page::get_articles();
                 router().go(Route::Home);

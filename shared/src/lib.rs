@@ -42,9 +42,9 @@ pub enum UpMsg {
 #[serde(crate = "serde")]
 pub enum DownMsg {
     // ------ Auth ------
+    LoggedIn(LocalUser),
     LoginError(String),
     RegistrationError(String),
-    LoggedIn(LocalUser),
     // ------Article-----
     Articles(Vec<LocalArticle>),
     ArticleAdded(String),

@@ -129,7 +129,11 @@ mod registration_test {
     #[test]
     fn test_register() {
         let firebase = aw!(firebase::init());
-        let (res, user) = aw!(register(firebase, "test@test.com".to_string(), "password".to_string()));
+        let (res, user) = aw!(register(
+            firebase,
+            "test@test.com".to_string(),
+            "password".to_string()
+        ));
         assert_eq!(res.clone(), "Invalid email".to_string());
         println!("Expected 'Invalid email', got {}", res);
     }

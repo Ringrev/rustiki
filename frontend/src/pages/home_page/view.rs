@@ -42,12 +42,13 @@ fn card(article: LocalArticle) -> impl Element {
     Button::new()
         .id(id)
         .label(card_template(
-            Image::new()
-                .url("https://rustacean.net/assets/rustacean-flat-happy.png")
-                .description("Placeholder picture")
-                .s(Width::new(200))
-                .s(Height::new(130))
-                .s(Background::new().color(GRAY_3)),
+            Row::new().s(Width::new(200)).s(Height::new(130)).item(
+                Image::new()
+                    .url("_api/public/images/rustacean-flat-happy.png")
+                    .description("Placeholder picture")
+                    .s(Width::new(200))
+                    .s(Background::new().color(GRAY_3)),
+            ),
             article.clone().title,
         ))
         .on_click(move || super::view_article(article))

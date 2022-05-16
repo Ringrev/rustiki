@@ -5,9 +5,9 @@ use shared::{DownMsg, UpMsg};
 use std::time::SystemTime;
 
 mod add_article;
-mod get_articles;
 mod delete_article;
 mod edit_article;
+mod get_articles;
 mod login;
 mod registration;
 
@@ -49,7 +49,7 @@ pub async fn handler(req: UpMsgRequest<UpMsg>) -> Result<DownMsg, Option<DownMsg
                 new_tags,
                 connection,
             )
-                .await
+            .await
         }
         UpMsg::RemoveArticle { id } => delete_article::handler(id, connection).await,
     })

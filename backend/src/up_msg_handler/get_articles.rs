@@ -41,5 +41,3 @@ async fn get_articles_from_db(db_conn: &DatabaseConnection) -> Vec<DatabaseRecor
     let records: Vec<DatabaseRecord<Article>> = article_records.to_vec();
     records
 }
-
-
