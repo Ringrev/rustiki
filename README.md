@@ -61,6 +61,7 @@ This framework uses ArangoDB to store articles and users.
    
 ### Firebase
 This framework uses Firebase Auth for registration and login. 
+
 #### Necessary steps:
 1. [Sign up to firebase](https://firebase.google.com/).
 2. In the console, create a new project.
@@ -90,7 +91,7 @@ Assuming all previous steps were set up correctly, the build should result in a 
 Since Rustiki uses the Rust fullstack framework [MoonZoon](https://github.com/MoonZoon/MoonZoon), you should get familiar with how it works by looking at [its GitHub](https://github.com/MoonZoon/MoonZoon).  
 
 ### Some tips for contributors
-####How to implement new handlers in backend, responding to a request from frontend:
+#### How to implement new handlers in backend, responding to a request from frontend:
 - Create a new constant for UpMsg in shared/lib.rs, which is the contents of the request sent from frontend to backend. 
 - In backend/up_msg_handler/mod.rs, add the missing UpMsg constant you just made to the match expression (compiler probably already told you to do this)
 - Create a new constant for DownMsg in shared/lib.rs, which is the contents of the response sent from backend to frontend. 
