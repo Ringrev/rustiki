@@ -1,4 +1,4 @@
-//* Defines different reusable buttons.
+//! Defines different reusable buttons.
 use crate::router::router;
 use crate::router::Route;
 use zoon::named_color::*;
@@ -7,8 +7,8 @@ use zoon::*;
 /// Returns a Button element
 ///
 /// # Arguments
-/// * `id` - A string slice that decides the (unique) HTML id of the element
-/// * `label_text` - A string slice that holds the text to be shown on the button label
+/// * `id` - A string slice that decides the (unique) HTML id of the element.
+/// * `label_text` - A string slice that holds the text to be shown on the button label.
 /// * `function` - A function to be called on key down. Function takes no arguments.
 pub fn button(id: &str, label_text: &str, function: fn()) -> impl Element {
     let (hovered, hovered_signal) = Mutable::new_and_signal(false);

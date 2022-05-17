@@ -99,6 +99,9 @@ async fn check_username_unique(username: String, db_conn: &DatabaseConnection) -
 //     Tests
 // ------ ------
 
+/// Tests for the test_username_unique and register functions.
+/// For someone using the Rustiki framework, the values in these
+/// tests must be customized to your own existing users in Firebase and ArangoDB.
 #[cfg(test)]
 mod registration_test {
     use super::*;
@@ -106,6 +109,8 @@ mod registration_test {
     use aragog::DatabaseConnection;
     use fireauth::FireAuth;
 
+    /// Allows for async tests.
+    /// Instead of using .await on a function, wrap in in aw!() instead.
     macro_rules! aw {
         ($e:expr) => {
             tokio_test::block_on($e)

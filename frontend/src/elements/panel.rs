@@ -92,7 +92,7 @@ pub fn on_key_do_nothing() {
 ///
 /// # Arguments
 /// * `id` - A String slice that holds the element's unique HTML id.
-/// * `function` - A function that takes String as an argument.
+/// * `function` - A function that takes a String as an argument.
 /// * `text_signal` - The cloned signal of a function that holds the state of a String.
 pub fn textarea_panel(
     id: &str,
