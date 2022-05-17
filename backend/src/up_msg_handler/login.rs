@@ -68,6 +68,9 @@ async fn get_username(id: String, db_conn: &DatabaseConnection) -> String {
 //     Tests
 // ------ ------
 
+/// Tests for the get_username and login functions.
+/// For someone using the Rustiki framework, the values in these
+/// tests must be customized to your own existing users in Firebase and ArangoDB.
 #[cfg(test)]
 mod login_test {
     use super::*;
@@ -75,6 +78,8 @@ mod login_test {
     use aragog::DatabaseConnection;
     use fireauth::FireAuth;
 
+    /// Allows for async tests.
+    /// Instead of using .await on a function, wrap in in aw!() instead.
     macro_rules! aw {
         ($e:expr) => {
             tokio_test::block_on($e)
