@@ -1,12 +1,12 @@
-use zoon::*;
-use shared::UpMsg;
-use crate::{app, connection};
+//! Defines the non-visual content and operations for create create article page.
 use crate::elements::dialogs;
-use crate::router::{Route, router};
 use crate::elements::tags;
 use crate::elements::panel;
 use crate::elements::button;
 use crate::rich_text::TextEditor;
+use crate::{app, connection};
+use shared::UpMsg;
+use zoon::*;
 
 mod view;
 
@@ -38,53 +38,30 @@ fn contents() -> &'static Mutable<String> {
 //    States
 // ------ ------
 
+/// Error message shown to user. Initialized with an empty String.
 #[static_ref]
 fn error_message() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
-// ------ state of title
-
+/// Title text for new article. Initialized with an empty String.
 #[static_ref]
 fn title_text() -> &'static Mutable<String> {
     Mutable::new("".to_string())
 }
 
-// ------ state: content text
+/// Content text for new article. Initialized with an empty String.
 #[static_ref]
 fn content_text() -> &'static Mutable<String> {
     Mutable::new("".to_string())
-}
-
-
-
-pub fn page() -> impl Element {
-    title_text().set("".to_string());
-    content_text().set("".to_string());
-    tags::tags().lock_mut().clear();
-    Column::new()
-        .s(Align::center())
-        .s(Width::new(800))
-        .s(Background::new().color(hsluv!(0,0,0,5)))
-        .item(Column::new()
-            .s(Align::left(Default::default()))
-            .s(Align::center())
-            .s(Padding::new().x(100).y(20))
-            .item(Paragraph::new().content("Create new article").s(Font::new().size(20)).s(Padding::bottom(Default::default(), 20)))
-            .item(title_panel())
-            .item(rich_text_editor())
-            .item(contents_display())
-            // .item(content_text_panel())
-            .item(tags::tag_panel())
-            .item(tags::tags_view())
-        )
-        .item(button_panel())
 }
 
 // ------ ------
 //    Commands
 // ------ ------
 
+/// Starts an async Task that tells backend handler "add_article" to add an article to DB.
+/// Dialog shown if there's an error in connection between frontend and backend.
 pub fn add_article() {
     Task::start(async {
         let msg = UpMsg::AddArticle {
@@ -100,59 +77,24 @@ pub fn add_article() {
     });
 }
 
-fn cancel() {
-    if dialogs::confirm_dialog("Your article will not be saved. Are you sure you want to leave the page?") {
-        router().go(Route::Home);
-    } else {
-        return;
-    }
+// ------ ------
+//     Helpers
+// ------ ------
+
+/// Sets text of content_text()
+fn set_content_text(content: String) {
+    content_text().set(content);
+}
+
+// Sets text of title_text()
+fn set_title(title: String) {
+    title_text().set(title);
 }
 
 // ------ ------
 //     View
 // ------ ------
 
-// ------ title label and input
-
-fn title_panel() -> impl Element {
-    let id = "title_input";
-    panel::input_panel(id, "Title:", set_title, "Title of your article", InputType::text(), title_text().signal_cloned(), None)
-}
-
-// ------ content label and input
-
-fn content_text_panel() -> impl Element {
-    panel::textarea_panel(set_content_text, content_text().signal_cloned())
-}
-
-fn button_panel() -> impl Element {
-    Row::new()
-        .item(cancel_button())
-        .item(publish_button())
-        .s(Spacing::new(10))
-        .s(Align::center())
-}
-
-fn publish_button() -> impl Element {
-    button::button("publish","Publish", add_article)
-}
-
-fn cancel_button() -> impl Element {
-    button::button("cancel","Cancel", cancel)
-}
-
-// ------ ------
-//     Helpers
-// ------ ------
-
-// pub fn set_error_msg(msg: String) {
-//     error_message().set(msg);
-// }
-
-fn set_content_text(content: String) {
-    content_text().set(content);
-}
-
-fn set_title(title: String) {
-    title_text().set(title);
+pub fn view() -> RawElement {
+    view::page().into_raw_element()
 }

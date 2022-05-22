@@ -1,25 +1,20 @@
+//! Defines the footer of the website.
 use zoon::{named_color::*, *};
 
-// ------ ------
-//     View
-// ------ -----
-
+/// Returns a Row element user as a footer.
 pub fn footer() -> impl Element {
     Row::new()
         .s(Background::new().color(GRAY_4))
-
-        //.s(Font::new().size(100).color(hsluv!(18,100,48,100)))
         .s(Spacing::new(10))
         .s(Padding::all(20))
         .s(Borders::new())
         .s(Align::new().bottom())
-        .item(information())
+        .item(footer_text())
 }
 
-
-fn information() -> impl Element {
-
+/// Returns a Paragraph that is used as text of footer element.
+fn footer_text() -> impl Element {
     Paragraph::new()
-        .s(Font::new().size(25).weight(FontWeight::Bold))
-        .content("Made by the foxy science department")
+        .s(Font::new().size(14))
+        .content("© 2022 Rustiki")
 }

@@ -1,3 +1,4 @@
+//! Defines frontend modules and the entry point of the app.
 use zoon::*;
 
 // ------ ------
@@ -15,6 +16,7 @@ mod rich_text;
 //     Start
 // ------ ------
 
+/// Starts app.
 #[wasm_bindgen(start)]
 pub fn start() {
      router::router();

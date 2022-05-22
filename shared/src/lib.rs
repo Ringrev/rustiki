@@ -5,7 +5,6 @@ use moonlight::*;
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(crate = "serde")]
 pub enum UpMsg {
-
     // ------ Auth ------
     Login {
         email: String,
@@ -16,7 +15,6 @@ pub enum UpMsg {
         password: String,
         username: String,
     },
-    // Logout,
 
     //---- Article -----
     GetArticles,
@@ -26,7 +24,6 @@ pub enum UpMsg {
         author: String,
         tags: Vec<String>,
     },
-    // org_title input needs to be replaced with ID when the Article object is expanded to include ID
     EditArticle {
         id: u32,
         new_title: String,
@@ -34,7 +31,6 @@ pub enum UpMsg {
         new_contributors: Vec<String>,
         new_tags: Vec<String>,
     },
-    // This input needs to be replaced with ID when the Article object is expanded to include ID
     RemoveArticle {
         id: u32,
     },
@@ -45,12 +41,10 @@ pub enum UpMsg {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(crate = "serde")]
 pub enum DownMsg {
-
     // ------ Auth ------
+    LoggedIn(LocalUser),
     LoginError(String),
     RegistrationError(String),
-    LoggedIn(LocalUser),
-    // LoggedOut,
     // ------Article-----
     Articles(Vec<LocalArticle>),
     ArticleAdded(String),
@@ -73,7 +67,7 @@ impl LocalUser {
             id,
             email,
             username,
-            auth_token
+            auth_token,
         }
     }
 
@@ -82,7 +76,7 @@ impl LocalUser {
             id: "".to_string(),
             email: "".to_string(),
             username: "".to_string(),
-            auth_token: "".to_string()
+            auth_token: "".to_string(),
         }
     }
 }
@@ -101,13 +95,16 @@ pub struct LocalArticle {
 }
 
 impl LocalArticle {
-    pub fn new(id: u32,
-               title: String,
-               content: String,
-               contributors: Vec<String>,
-               author: String, tags: Vec<String>,
-               created_time: String,
-               updated_time: String) -> Self {
+    pub fn new(
+        id: u32,
+        title: String,
+        content: String,
+        contributors: Vec<String>,
+        author: String,
+        tags: Vec<String>,
+        created_time: String,
+        updated_time: String,
+    ) -> Self {
         Self {
             id,
             title,
@@ -116,7 +113,7 @@ impl LocalArticle {
             author,
             tags,
             created_time,
-            updated_time
+            updated_time,
         }
     }
 
@@ -129,7 +126,7 @@ impl LocalArticle {
             author: "".to_string(),
             tags: vec![],
             created_time: "".to_string(),
-            updated_time: "".to_string()
+            updated_time: "".to_string(),
         }
     }
 }

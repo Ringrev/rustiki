@@ -1,27 +1,24 @@
-use shared::{DownMsg};
-use aragog::{Record};
+//! Defines functions used for deleting articles from database.
+use crate::models::article::Article;
 use aragog::query::{Comparison, Filter};
-use crate::Article;
+use aragog::{DatabaseConnection, Record};
+use shared::DownMsg;
 
-pub async fn handler(id: u32) -> DownMsg {
-    remove_from_db(id).await;
+/// The handler for deleting articles from DB. Returns a DownMsg indicating the article was removed.
+///
+/// # Arguments
+/// * `id` - An u32 value holding the id of the article.
+pub async fn handler(id: u32, db_conn: &DatabaseConnection) -> DownMsg {
+    remove_from_db(id, db_conn).await;
     DownMsg::ArticleRemoved
-    // if res.eq("Ok") {
-    //     DownMsg::LoggedIn(user)
-    // } else {
-    //     DownMsg::LoginError(res)
-    // }
 }
 
-async fn remove_from_db(id: u32) {
-    let conn = crate::init_db().await;
-
+/// Deletes an article from the ArangoDB database using Aragog crate.
+///
+/// # Arguments
+/// * `id` - An u32 value holding the id of the article to delete.
+async fn remove_from_db(id: u32, db_conn: &DatabaseConnection) {
     let query = Article::query().filter(Filter::new(Comparison::field("id").equals(id)));
-    let mut art = Article::get(query, &conn)
-        .await
-        .unwrap()
-        .uniq()
-        .unwrap();
-    let result = art.delete(&conn).await.unwrap();
-    println!("Result from updating db after delete: {:?}", result);
+    let mut art = Article::get(query, db_conn).await.unwrap().uniq().unwrap();
+    art.delete(db_conn).await;
 }

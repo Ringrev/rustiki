@@ -1,11 +1,31 @@
-mod up_msg_handler;
+//! Defines main entry point and forwards requests to handlers.
 mod firebase;
-use shared::UpMsg;
+mod models;
+mod up_msg_handler;
+use aragog::DatabaseConnection;
 use moon::*;
-use aragog::{DatabaseConnection, Record};
+use once_cell::sync::OnceCell;
+use shared::UpMsg;
 
+pub static DB: OnceCell<DatabaseConnection> = OnceCell::new();
+
+// ------ ------
+//     Start
+// ------ ------
+
+/// Starts backend app.
+#[moon::main]
+async fn main() -> std::io::Result<()> {
+    let db = DatabaseConnection::builder().build().await.unwrap();
+    DB.set(db).unwrap();
+    start(frontend, up_msg_handler, |_| {}).await?;
+    Ok(())
+}
+
+/// Returns a Frontend element.
 async fn frontend() -> Frontend {
     Frontend::new()
+        .lang(Lang::English)
         .title("Rustiki")
         .append_to_head(
         r#"
@@ -14,10 +34,6 @@ async fn frontend() -> Frontend {
                 background-color: white;
                 color: black;
             }
-
-         /*   #rustiki_header { position: fixed; } */
-/* :focus { outline: dashed black; } */
-
         </style>
    "#
         ,
@@ -25,6 +41,10 @@ async fn frontend() -> Frontend {
 
 }
 
+/// Forwards UpMsgRequests received from frontend to "up_msg_handler" module.
+///
+/// # Arguments
+/// * `req` - An UpMsgRequest containing the UpMsg from frontend crate.
 async fn up_msg_handler(req: UpMsgRequest<UpMsg>) {
     let (session_id, cor_id) = (req.session_id, req.cor_id);
 
@@ -38,76 +58,4 @@ async fn up_msg_handler(req: UpMsgRequest<UpMsg>) {
     }
 
     println!("Cannot find the session with id `{}`", session_id);
-}
-
-#[moon::main]
-async fn main() -> std::io::Result<()> {
-    start(frontend, up_msg_handler, |_| {}).await?;
-    Ok(())
-}
-
-//ArangoDb connection
-async fn init_db() -> DatabaseConnection {
-    DatabaseConnection::builder()
-        .build()
-        .await
-        .unwrap()
-}
-
-/// This struct must be used instead of LocalArticle struct in shared folder
-/// because of an issue implementing Record for structs in shared folder.
-/// Name of struct has to match name of collection in DB. Case sensitive.
-#[derive(Debug, Serialize, Deserialize, Clone, Record)]
-#[serde(crate = "serde")]
-pub struct Article {
-    pub id: u32,
-    pub title: String,
-    pub content: String,
-    pub contributors: Vec<String>,
-    pub author: String,
-    pub tags: Vec<String>,
-    pub created_time: String,
-    pub updated_time: String,
-}
-
-impl Article {
-    pub fn new(id: u32,
-               title: String,
-               content: String,
-               contributors: Vec<String>,
-               author: String, tags: Vec<String>,
-               created_time: String,
-               updated_time: String) -> Self {
-        Self {
-            id,
-            title,
-            content,
-            contributors,
-            author,
-            tags,
-            created_time,
-            updated_time
-        }
-    }
-}
-
-/// This struct must be used instead of LocalUser struct in shared folder
-/// because of an issue implementing Record for structs in shared folder.
-/// Name of struct has to match name of collection in DB. Case sensitive.
-#[derive(Debug, Serialize, Deserialize, Clone, Record)]
-#[serde(crate = "serde")]
-pub struct User {
-    pub id: String,
-    pub email: String,
-    pub username: String,
-}
-
-impl User {
-    pub fn new(id: String, email: String, username: String) -> Self {
-        Self {
-            id,
-            email,
-            username
-        }
-    }
 }
