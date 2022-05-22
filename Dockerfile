@@ -5,6 +5,7 @@
 
 # - File built on work from Martin Kavik The MoonZoon creator.
 # .env file required for ENV vars for Rustiki. Alternative: add ENV vars on deploy.
+#Required env vars listed in project Readme.
 
 
 FROM lukemathwalker/cargo-chef:latest-rust-latest AS chef
