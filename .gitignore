@@ -4,4 +4,5 @@ mzoon
 mzoon.exe
 frontend/wasm-pack*
 .idea
+Cargo.lock
 
