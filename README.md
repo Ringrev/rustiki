@@ -2,12 +2,11 @@
 Authors: Joachim Hauso Amundsen, Linda Gjerde Hageselle, Jenny Skjeret Valderhaug.
 
 ## Description
-This open-source project is a wiki framework for Rust programmers. The project is built using the Rust fullstack framework [MoonZoon](https://github.com/MoonZoon/MoonZoon). 
-This wiki framework makes it possible to get a wiki up and running without having to build the entire underlying structure. 
+The open-source project Rustiki is a wiki framework for Rust programmers. The project is built using the Rust fullstack framework [MoonZoon](https://github.com/MoonZoon/MoonZoon). The project Rustiki makes it possible to get a wiki up and running without having to build the entire underlying structure. Feel free to use Rustiki whether that's because you want Rust a project to play around with, or because you need a wiki. If you want to contribute to improvements/changes to Rustiki, then that's awesome! Feel free to discuss ideas for changes via issues too!
 
 ## Motivation
-The project was a bachelor's assignment at Norwegian University of Science and Technology in Ålesund, Norway. 
-The project was given by the local business Ringrev to engage students in the Rust and MoonZoon community. 
+The project was a bachelor's assignment at the Norwegian University of Science and Technology in Ålesund, Norway. 
+The project was given by Ringrev (owner of this repo) to engage students in the Rust and MoonZoon community. 
 The goal was to develop a wiki framework in Rust to provide a place to share knowledge for Rust developers,
 and turn it into an open-source project to further develop and expand with the development of the MoonZoon framework. 
 We hope this project can serve as a stepping stone for novice Rust developers.
@@ -60,7 +59,7 @@ This framework uses ArangoDB to store articles and users.
    - `DB_PASSORD` containing the password you made for the user.
    
 ### Firebase
-This framework uses Firebase Auth for registration and login. 
+This framework uses Firebase Auth for registration and login. You can of course use a different method of authentication if you wish, but below you will see the steps needed to use Firebase in your Rustiki project.
 
 #### Necessary steps:
 1. [Sign up to firebase](https://firebase.google.com/).
@@ -102,4 +101,4 @@ Since Rustiki uses the Rust fullstack framework [MoonZoon](https://github.com/Mo
 The MoonZoon framework has some discussion on deploying standalone Zoon apps in [their documentation](https://github.com/MoonZoon/MoonZoon/blob/main/docs/frontend.md). 
 The Rustiki team has been able to deploy an instance of Rustiki in a Docker container on DigitalOcean, 
 but experienced issues regarding the connection between frontend and backend, which remain unsolved. 
-The Dockerfile used by the team can be found on the branch feature_deploy if anyone wants to try it out. 
+The Dockerfile used by the team can be found on the branch feature_docker if anyone wants to try it out. 
