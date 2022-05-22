@@ -4,7 +4,39 @@ use crate::elements::dialogs;
 use crate::elements::layouts::{common_layout, edit_layout};
 use crate::elements::panel;
 use crate::elements::tags;
+use crate::rich_text::TextEditor;
 use zoon::*;
+
+
+fn rich_text_editor() -> impl Element {
+    Column::new()
+        .s(Padding::new().top(15))
+        .item(Label::new()
+            .s(Font::new().color(hsluv!(0,0,0,100)))
+            .s(Padding::all(0))
+            .label("Article content:")
+        )
+        .s(Background::new().color(hsluv!(0,0,0,0)))
+        .s(Width::new(600))
+        .s(Height::new(600))
+        .item(TextEditor::new()
+            .on_change(|json| {
+                super::contents().set(format!("{json:#}"));
+            }))
+        // This is only here for testing purposes. This is how
+        .item(Paragraph::new()
+            .content("The text that appears below here when you type in the text \
+            editor is here only for testing purposes. \
+            It's the string of text generated when you type in the text editor."))
+        .item(contents_display())
+}
+
+fn contents_display() -> impl Element {
+    El::new()
+        .s(Padding::all(10))
+        .s(Font::new().family([FontFamily::Monospace]))
+        .child_signal(super::contents().signal_cloned())
+}
 
 /// Returns a Column representing the whole create article page.
 pub fn page() -> impl Element {
@@ -15,7 +47,7 @@ pub fn page() -> impl Element {
         edit_layout(
             "Create new article",
             title_panel(),
-            content_text_panel(),
+            rich_text_editor(),
             "tag_input_create_article_page",
         ),
         button_panel(),

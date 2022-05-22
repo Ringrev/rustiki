@@ -3,31 +3,11 @@ use crate::elements::dialogs;
 use crate::elements::tags;
 use crate::elements::panel;
 use crate::elements::button;
-use crate::rich_text::TextEditor;
 use crate::{app, connection};
 use shared::UpMsg;
 use zoon::*;
 
 mod view;
-
-fn rich_text_editor() -> impl Element {
-    Column::new()
-        .s(Background::new().color(hsluv!(0,0,0,0)))
-        .s(Width::new(600))
-        .s(Height::new(600))
-        .item(TextEditor::new()
-            .on_change(|json| {
-                contents().set(format!("{json:#}"));
-            }))
-
-}
-
-fn contents_display() -> impl Element {
-    El::new()
-        .s(Padding::all(10))
-        .s(Font::new().family([FontFamily::Monospace]))
-        .child_signal(contents().signal_cloned())
-}
 
 #[static_ref]
 fn contents() -> &'static Mutable<String> {
