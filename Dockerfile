@@ -6,6 +6,7 @@
 # - File built on work from Martin Kavik The MoonZoon creator.
 # .env file required for ENV vars for Rustiki. Alternative: add ENV vars on deploy.
 #Required env vars listed in project Readme.
+# Work in progress. Does not result in a fully functional image.
 
 
 FROM lukemathwalker/cargo-chef:latest-rust-latest AS chef
@@ -68,10 +69,15 @@ COPY --from=builder ./frontend/pkg ./frontend/pkg/
 RUN mkdir ./config
 COPY /backend/config/db/schema.yaml ./config
 
+
+
+#RUN mkdir ./shared
+#COPY /shared ./shared
+
 ENTRYPOINT ["./moon_app"]
 
 #PORTS
 EXPOSE 8443
-#EXPOSE 8080
+EXPOSE 8080
 EXPOSE 80
 
